@@ -6,7 +6,6 @@
 package sketches
 
 import (
-	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -26,9 +25,88 @@ type HelloCube struct {
 }
 
 func (sketch *HelloCube) Setup() {
-	version := gl.GoStr(gl.GetString(gl.VERSION))
-	fmt.Println("OpenGL version", version)
+	var cubeVertices = []float32{
+		//  X, Y, Z, U, V
+		// Bottom
+		-1.0, -1.0, -1.0, 0.0, 0.0,
+		1.0, -1.0, -1.0, 1.0, 0.0,
+		-1.0, -1.0, 1.0, 0.0, 1.0,
+		1.0, -1.0, -1.0, 1.0, 0.0,
+		1.0, -1.0, 1.0, 1.0, 1.0,
+		-1.0, -1.0, 1.0, 0.0, 1.0,
 
+		// Top
+		-1.0, 1.0, -1.0, 0.0, 0.0,
+		-1.0, 1.0, 1.0, 0.0, 1.0,
+		1.0, 1.0, -1.0, 1.0, 0.0,
+		1.0, 1.0, -1.0, 1.0, 0.0,
+		-1.0, 1.0, 1.0, 0.0, 1.0,
+		1.0, 1.0, 1.0, 1.0, 1.0,
+
+		// Front
+		-1.0, -1.0, 1.0, 1.0, 0.0,
+		1.0, -1.0, 1.0, 0.0, 0.0,
+		-1.0, 1.0, 1.0, 1.0, 1.0,
+		1.0, -1.0, 1.0, 0.0, 0.0,
+		1.0, 1.0, 1.0, 0.0, 1.0,
+		-1.0, 1.0, 1.0, 1.0, 1.0,
+
+		// Back
+		-1.0, -1.0, -1.0, 0.0, 0.0,
+		-1.0, 1.0, -1.0, 0.0, 1.0,
+		1.0, -1.0, -1.0, 1.0, 0.0,
+		1.0, -1.0, -1.0, 1.0, 0.0,
+		-1.0, 1.0, -1.0, 0.0, 1.0,
+		1.0, 1.0, -1.0, 1.0, 1.0,
+
+		// Left
+		-1.0, -1.0, 1.0, 0.0, 1.0,
+		-1.0, 1.0, -1.0, 1.0, 0.0,
+		-1.0, -1.0, -1.0, 0.0, 0.0,
+		-1.0, -1.0, 1.0, 0.0, 1.0,
+		-1.0, 1.0, 1.0, 1.0, 1.0,
+		-1.0, 1.0, -1.0, 1.0, 0.0,
+
+		// Right
+		1.0, -1.0, 1.0, 1.0, 1.0,
+		1.0, -1.0, -1.0, 1.0, 0.0,
+		1.0, 1.0, -1.0, 0.0, 0.0,
+		1.0, -1.0, 1.0, 1.0, 1.0,
+		1.0, 1.0, -1.0, 0.0, 0.0,
+		1.0, 1.0, 1.0, 0.0, 1.0,
+	}
+
+	var vertexShader = `
+	#version 330
+
+	uniform mat4 projection;
+	uniform mat4 camera;
+	uniform mat4 model;
+
+	in vec3 vert;
+	in vec2 vertTexCoord;
+
+	out vec2 fragTexCoord;
+
+	void main() {
+		fragTexCoord = vertTexCoord;
+		gl_Position = projection * camera * model * vec4(vert, 1);
+	}
+	` + "\x00"
+
+	var fragmentShader = `
+	#version 330
+
+	uniform sampler2D tex;
+
+	in vec2 fragTexCoord;
+
+	out vec4 outputColor;
+
+	void main() {
+		outputColor = texture(tex, fragTexCoord);
+	}
+	` + "\x00"
 	// Configure the vertex and fragment shaders
 	var err error
 	sketch.Program, err = utils.NewProgram(vertexShader, fragmentShader)
@@ -122,86 +200,3 @@ func (sketch *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.
 		sketch.Window.SetShouldClose(true)
 	}
 }
-
-var cubeVertices = []float32{
-	//  X, Y, Z, U, V
-	// Bottom
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-
-	// Top
-	-1.0, 1.0, -1.0, 0.0, 0.0,
-	-1.0, 1.0, 1.0, 0.0, 1.0,
-	1.0, 1.0, -1.0, 1.0, 0.0,
-	1.0, 1.0, -1.0, 1.0, 0.0,
-	-1.0, 1.0, 1.0, 0.0, 1.0,
-	1.0, 1.0, 1.0, 1.0, 1.0,
-
-	// Front
-	-1.0, -1.0, 1.0, 1.0, 0.0,
-	1.0, -1.0, 1.0, 0.0, 0.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-	1.0, -1.0, 1.0, 0.0, 0.0,
-	1.0, 1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-
-	// Back
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	-1.0, 1.0, -1.0, 0.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	-1.0, 1.0, -1.0, 0.0, 1.0,
-	1.0, 1.0, -1.0, 1.0, 1.0,
-
-	// Left
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, -1.0, 1.0, 0.0,
-	-1.0, -1.0, -1.0, 0.0, 0.0,
-	-1.0, -1.0, 1.0, 0.0, 1.0,
-	-1.0, 1.0, 1.0, 1.0, 1.0,
-	-1.0, 1.0, -1.0, 1.0, 0.0,
-
-	// Right
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	1.0, -1.0, -1.0, 1.0, 0.0,
-	1.0, 1.0, -1.0, 0.0, 0.0,
-	1.0, -1.0, 1.0, 1.0, 1.0,
-	1.0, 1.0, -1.0, 0.0, 0.0,
-	1.0, 1.0, 1.0, 0.0, 1.0,
-}
-
-var vertexShader = `
-	#version 330
-
-	uniform mat4 projection;
-	uniform mat4 camera;
-	uniform mat4 model;
-
-	in vec3 vert;
-	in vec2 vertTexCoord;
-
-	out vec2 fragTexCoord;
-
-	void main() {
-		fragTexCoord = vertTexCoord;
-		gl_Position = projection * camera * model * vec4(vert, 1);
-	}
-	` + "\x00"
-
-var fragmentShader = `
-	#version 330
-
-	uniform sampler2D tex;
-
-	in vec2 fragTexCoord;
-
-	out vec4 outputColor;
-
-	void main() {
-		outputColor = texture(tex, fragTexCoord);
-	}
-	` + "\x00"

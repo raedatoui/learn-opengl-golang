@@ -11,6 +11,7 @@ import (
 
 	"github.com/raedatoui/learn-opengl/sketches"
 	"github.com/raedatoui/learn-opengl/utils"
+	"fmt"
 )
 
 const WIDTH = 800
@@ -23,11 +24,32 @@ func init() {
 }
 
 func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	fmt.Println(scancode, action)
+	newIndex := sketchIndex
+	if action == glfw.Press && scancode == 124 {
+		newIndex = sketchIndex + 1
+		if newIndex > len(theSketches) - 1 {
+			newIndex = len(theSketches) - 1
+		}
+	}
+	if action == glfw.Press && scancode == 123 {
+		newIndex = sketchIndex - 1
+		if newIndex < 0 {
+			newIndex = 0
+		}
+	}
+	if action == glfw.Press && newIndex != sketchIndex {
+		sketchIndex = newIndex
+		theSketch.Close()
+		theSketch = theSketches[newIndex]
+		theSketch.Setup()
+	}
 	theSketch.HandleKeyboard(key, scancode, action, mods)
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
+	theSketch.Update()
 	render(w)
 }
 
@@ -45,6 +67,7 @@ func setup() *glfw.Window {
 	window.MakeContextCurrent()
 
 	// Initialize Glow - this is the equivalent of glew
+
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
@@ -55,12 +78,18 @@ func setup() *glfw.Window {
 	//Keyboard Callback
 	window.SetKeyCallback(keyCallBack)
 
-	//width, height := window.GetFramebufferSize()
-	//gl.Viewport(0, 0, int32(width), int32(height))
+	version := gl.GoStr(gl.GetString(gl.VERSION))
+	fmt.Println("OpenGL version", version)
+
+	width, height := window.GetFramebufferSize()
+	gl.Viewport(0, 0, int32(width), int32(height))
+
 	return window
 }
 
 var theSketch sketches.Sketch
+var sketchIndex = 0
+var theSketches []sketches.Sketch
 
 func main() {
 	// init GLFW
@@ -72,8 +101,16 @@ func main() {
 	// create window
 	window := setup()
 
+	// make a slice of pointers to sketch instances
+	theSketches = []sketches.Sketch{
+		&sketches.HelloWindow{Window: window},
+		&sketches.HelloCube{Window: window},
+		&sketches.HelloTriangle{Window: window},
+		&sketches.HelloSquare{Window: window},
+	}
+
 	//Use a pointer to the sketch in order to call mutating functions
-	theSketch = &sketches.HelloCube{Window: window}
+	theSketch = theSketches[sketchIndex]
 	theSketch.Setup()
 
 	// loop
