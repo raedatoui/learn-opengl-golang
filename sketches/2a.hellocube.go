@@ -6,32 +6,30 @@
 package sketches
 
 import (
-	_ "image/png"
-	"log"
+	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl/utils"
-	"fmt"
+	_ "image/png"
+	"log"
 )
 
 type HelloCube struct {
-	Window *glfw.Window
-	Program uint32
-	Vao, Vbo uint32
-	Texture uint32
+	Window              *glfw.Window
+	Program             uint32
+	Vao, Vbo            uint32
+	Texture             uint32
 	Angle, PreviousTime float64
-	Model mgl32.Mat4
-	ModelUniform int32
+	Model               mgl32.Mat4
+	ModelUniform        int32
 }
-
 
 func (sketch *HelloCube) Setup() {
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	fmt.Println("OpenGL version", version)
 
 	// Configure the vertex and fragment shaders
-	fmt.Println("setup cube")
 	var err error
 	sketch.Program, err = utils.NewProgram(vertexShader, fragmentShader)
 	if err != nil {
@@ -40,7 +38,7 @@ func (sketch *HelloCube) Setup() {
 
 	gl.UseProgram(sketch.Program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(800.0) / 600.0, 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(800.0)/600.0, 0.1, 10.0)
 	projectionUniform := gl.GetUniformLocation(sketch.Program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
@@ -69,15 +67,15 @@ func (sketch *HelloCube) Setup() {
 
 	gl.GenBuffers(1, &sketch.Vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, sketch.Vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices) * 4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
-	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5 * 4, gl.PtrOffset(0))
+	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
 
 	texCoordAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vertTexCoord\x00")))
 	gl.EnableVertexAttribArray(texCoordAttrib)
-	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5 * 4, gl.PtrOffset(3 * 4))
+	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
 	// Configure global settings
 	gl.Enable(gl.DEPTH_TEST)
@@ -86,9 +84,6 @@ func (sketch *HelloCube) Setup() {
 
 	sketch.Angle = 0.0
 	sketch.PreviousTime = glfw.GetTime()
-	fmt.Println("Done setup cube")
-	fmt.Printf("Prog: %d, Vao: %d, Vbo: %d, Tex: %d, MU: %d, Model:\n%v\n",
-		sketch.Program, sketch.Vao, sketch.Vbo, sketch.Texture, sketch.ModelUniform, sketch.Model)
 }
 
 func (sketch *HelloCube) Update() {
@@ -114,14 +109,16 @@ func (sketch *HelloCube) Draw() {
 
 	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 
-	//gl.DeleteVertexArrays(1, &vao)
-	//gl.DeleteBuffers(1, &vbo)
-	//gl.DeleteBuffers(1, &vao)
-	//glfw.Terminate()
+}
+
+func (sketch *HelloCube) Close() {
+	gl.DeleteVertexArrays(1, &sketch.Vao)
+	gl.DeleteBuffers(1, &sketch.Vbo)
+	gl.DeleteBuffers(1, &sketch.Vao)
 }
 
 func (sketch *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if (key == glfw.KeyEscape && action == glfw.Press) {
+	if key == glfw.KeyEscape && action == glfw.Press {
 		sketch.Window.SetShouldClose(true)
 	}
 }
@@ -178,33 +175,33 @@ var cubeVertices = []float32{
 }
 
 var vertexShader = `
-#version 330
+	#version 330
 
-uniform mat4 projection;
-uniform mat4 camera;
-uniform mat4 model;
+	uniform mat4 projection;
+	uniform mat4 camera;
+	uniform mat4 model;
 
-in vec3 vert;
-in vec2 vertTexCoord;
+	in vec3 vert;
+	in vec2 vertTexCoord;
 
-out vec2 fragTexCoord;
+	out vec2 fragTexCoord;
 
-void main() {
-    fragTexCoord = vertTexCoord;
-    gl_Position = projection * camera * model * vec4(vert, 1);
-}
-` + "\x00"
+	void main() {
+		fragTexCoord = vertTexCoord;
+		gl_Position = projection * camera * model * vec4(vert, 1);
+	}
+	` + "\x00"
 
 var fragmentShader = `
-#version 330
+	#version 330
 
-uniform sampler2D tex;
+	uniform sampler2D tex;
 
-in vec2 fragTexCoord;
+	in vec2 fragTexCoord;
 
-out vec4 outputColor;
+	out vec4 outputColor;
 
-void main() {
-    outputColor = texture(tex, fragTexCoord);
-}
-` + "\x00"
+	void main() {
+		outputColor = texture(tex, fragTexCoord);
+	}
+	` + "\x00"

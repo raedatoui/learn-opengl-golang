@@ -1,8 +1,8 @@
 package sketches
 
 import (
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 type HelloWindow struct {
@@ -23,8 +23,7 @@ func (sketch HelloWindow) Update() {
 }
 
 func (sketch HelloWindow) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if (key == glfw.KeyEscape && action == glfw.Press) {
+	if key == glfw.KeyEscape && action == glfw.Press {
 		sketch.Window.SetShouldClose(true)
 	}
 }
-

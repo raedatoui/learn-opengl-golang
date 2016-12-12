@@ -6,5 +6,6 @@ type Sketch interface {
 	Setup()
 	Update()
 	Draw()
+	Close()
 	HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey)
 }

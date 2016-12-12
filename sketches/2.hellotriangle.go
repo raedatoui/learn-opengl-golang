@@ -1,14 +1,14 @@
 package sketches
 
 import (
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl/utils"
-	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type HelloTriangle struct {
-	Window *glfw.Window
-	Program uint32
+	Window        *glfw.Window
+	Program       uint32
 	Vao, Vbo, Ebo uint32
 }
 
@@ -32,7 +32,7 @@ func (sketch HelloTriangle) Setup() {
 	//gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*4, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vert\x00")))
-	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5 * 4, gl.PtrOffset(0))
+	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(vertAttrib)
 
 	//gl.BindBuffer(gl.ARRAY_BUFFER, 0)
@@ -57,7 +57,7 @@ func (sketch HelloTriangle) Draw() {
 }
 
 func (sketch HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if (key == glfw.KeyEscape && action == glfw.Press) {
+	if key == glfw.KeyEscape && action == glfw.Press {
 		sketch.Window.SetShouldClose(true)
 	}
 }
@@ -76,14 +76,14 @@ void main() {
   color = vec4(1.0f, 1.0f, 0.2f, 1.0f);
 }` + "\x00"
 
-var vertices = []float32 {
-	 0.5,  0.5, 0.0, // Top Right
-	 0.5, -0.5, 0.0, // Bottom Right
+var vertices = []float32{
+	0.5, 0.5, 0.0, // Top Right
+	0.5, -0.5, 0.0, // Bottom Right
 	-0.5, -0.5, 0.0, // Bottom Left
-	-0.5,  0.5, 0.0, // Top Left
-};
+	-0.5, 0.5, 0.0, // Top Left
+}
 
-var indices = []uint32 {
+var indices = []uint32{
 	0, 1, 3, // First Triangle
 	1, 2, 3, // Second Triangle
 }

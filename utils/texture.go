@@ -1,12 +1,11 @@
 package utils
 
 import (
-	"image"
-	"os"
 	"fmt"
-	"image/draw"
 	"github.com/go-gl/gl/v4.1-core/gl"
-
+	"image"
+	"image/draw"
+	"os"
 )
 
 func NewTexture(file string) (uint32, error) {

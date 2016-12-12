@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"strings"
 	"fmt"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"strings"
 )
 
 func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
@@ -63,4 +63,3 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 
 	return shader, nil
 }
-

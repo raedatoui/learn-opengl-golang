@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	_ "image/png"
 	"log"
 	"os"
@@ -20,7 +19,6 @@ const HEIGHT = 600
 func init() {
 	// This is needed to arrange that main() runs on main thread.
 	// See documentation for functions that are only allowed to be called from the main thread.
-	fmt.Println("init1")
 	runtime.LockOSThread()
 }
 
@@ -30,11 +28,11 @@ func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Ac
 
 func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
-	//render(w)
+	render(w)
 }
 
 func setup() *glfw.Window {
-	glfw.WindowHint(glfw.Resizable, glfw.False)
+	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
@@ -52,15 +50,17 @@ func setup() *glfw.Window {
 	}
 
 	// Resize Callback
-	//window.SetKeyCallback(keyCallBack)
-	//window.SetFramebufferSizeCallback(resizeCallback)
+	window.SetFramebufferSizeCallback(resizeCallback)
+
+	//Keyboard Callback
+	window.SetKeyCallback(keyCallBack)
 
 	//width, height := window.GetFramebufferSize()
 	//gl.Viewport(0, 0, int32(width), int32(height))
 	return window
 }
 
-var theSketch sketches.HelloCube
+var theSketch sketches.Sketch
 
 func main() {
 	// init GLFW
@@ -71,32 +71,38 @@ func main() {
 
 	// create window
 	window := setup()
-	theSketch = sketches.HelloCube{Window: window}
+
+	//Use a pointer to the sketch in order to call mutating functions
+	theSketch = &sketches.HelloCube{Window: window}
 	theSketch.Setup()
-	fmt.Printf("Prog: %d, Vao: %d, Vbo: %d, Tex: %d, MU: %d, Model:\n%v\n",
-			theSketch.Program, theSketch.Vao, theSketch.Vbo, theSketch.Texture, theSketch.ModelUniform, theSketch.Model)
+
 	// loop
 	for !window.ShouldClose() {
+		// Update
 		theSketch.Update()
 
 		//Render
-		theSketch.Draw()
+		render(window)
 
-		window.SwapBuffers()
+		// Poll Events
 		glfw.PollEvents()
 	}
+	theSketch.Close()
 	glfw.Terminate()
 }
 
 func init() {
-	fmt.Println("init2")
 	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
 	if err != nil {
 		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
 	}
 	err = os.Chdir(dir)
-	fmt.Println(dir)
 	if err != nil {
 		log.Panicln("os.Chdir:", err)
 	}
+}
+
+func render(window *glfw.Window) {
+	theSketch.Draw()
+	window.SwapBuffers()
 }
