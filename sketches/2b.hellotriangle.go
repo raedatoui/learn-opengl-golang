@@ -40,7 +40,7 @@ func (sketch *HelloSquare) Setup() {
 	}
 
 	var err error
-	sketch.Program, err = utils.NewProgram(vertexShader2, fragShader2)
+	sketch.Program, err = utils.BasicProgram(vertexShader2, fragShader2)
 	if err != nil {
 		panic(err)
 	}

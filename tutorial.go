@@ -17,6 +17,10 @@ import (
 const WIDTH = 800
 const HEIGHT = 600
 
+var theSketch sketches.Sketch
+var sketchIndex = 0
+var theSketches []sketches.Sketch
+
 func init() {
 	// This is needed to arrange that main() runs on main thread.
 	// See documentation for functions that are only allowed to be called from the main thread.
@@ -24,7 +28,6 @@ func init() {
 }
 
 func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	fmt.Println(scancode, action)
 	newIndex := sketchIndex
 	if action == glfw.Press && scancode == 124 {
 		newIndex = sketchIndex + 1
@@ -87,9 +90,21 @@ func setup() *glfw.Window {
 	return window
 }
 
-var theSketch sketches.Sketch
-var sketchIndex = 0
-var theSketches []sketches.Sketch
+func init() {
+	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
+	if err != nil {
+		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
+	}
+	err = os.Chdir(dir)
+	if err != nil {
+		log.Panicln("os.Chdir:", err)
+	}
+}
+
+func render(window *glfw.Window) {
+	theSketch.Draw()
+	window.SwapBuffers()
+}
 
 func main() {
 	// init GLFW
@@ -107,6 +122,7 @@ func main() {
 		&sketches.HelloCube{Window: window},
 		&sketches.HelloTriangle{Window: window},
 		&sketches.HelloSquare{Window: window},
+		&sketches.HelloShaders{Window: window},
 	}
 
 	//Use a pointer to the sketch in order to call mutating functions
@@ -126,20 +142,4 @@ func main() {
 	}
 	theSketch.Close()
 	glfw.Terminate()
-}
-
-func init() {
-	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
-	if err != nil {
-		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
-	}
-	err = os.Chdir(dir)
-	if err != nil {
-		log.Panicln("os.Chdir:", err)
-	}
-}
-
-func render(window *glfw.Window) {
-	theSketch.Draw()
-	window.SwapBuffers()
 }

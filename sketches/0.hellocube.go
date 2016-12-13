@@ -109,7 +109,7 @@ func (sketch *HelloCube) Setup() {
 	` + "\x00"
 	// Configure the vertex and fragment shaders
 	var err error
-	sketch.Program, err = utils.NewProgram(vertexShader, fragmentShader)
+	sketch.Program, err = utils.BasicProgram(vertexShader, fragmentShader)
 	if err != nil {
 		panic(err)
 	}
@@ -134,7 +134,7 @@ func (sketch *HelloCube) Setup() {
 	gl.BindFragDataLocation(sketch.Program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	sketch.Texture, err = utils.NewTexture("sketches/square.png")
+	sketch.Texture, err = utils.NewTexture("sketches/assets/square.png")
 	if err != nil {
 		log.Fatalln(err)
 	}

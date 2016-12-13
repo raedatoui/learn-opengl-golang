@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
+func BasicProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
 		return 0, err
@@ -41,6 +41,54 @@ func NewProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error)
 	return program, nil
 }
 
+func Shader(vertFile, fragFile, geomFile string) (uint32, error) {
+	vertexShaderSource, err := readFile(vertFile)
+	if err != nil {
+		return 0, err
+	}
+
+	fragmentShaderSource, err := readFile(fragFile)
+	if err != nil {
+		return 0, err
+	}
+
+	var geometryShaderSource []byte
+	if geomFile != "" {
+		geometryShaderSource, err = readFile(geomFile)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	vertexShader, err := compileShader(string(vertexShaderSource), gl.VERTEX_SHADER)
+	if err != nil {
+		return 0, err
+	}
+
+	fragmentShader, err := compileShader(string(fragmentShaderSource), gl.FRAGMENT_SHADER)
+	if err != nil {
+		return 0, err
+	}
+
+	var geometryShader uint32
+	if geomFile != "" {
+		geometryShader, err = compileShader(string(geometryShaderSource), gl.GEOMETRY_SHADER)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	program, err := createProgram(vertexShader, fragmentShader, geometryShader)
+
+	gl.DeleteShader(vertexShader)
+	gl.DeleteShader(fragmentShader)
+	if geomFile != "" {
+		gl.DeleteShader(geometryShader)
+	}
+
+	return program, nil
+}
+
 func compileShader(source string, shaderType uint32) (uint32, error) {
 	shader := gl.CreateShader(shaderType)
 
@@ -62,4 +110,29 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	}
 
 	return shader, nil
+}
+
+func createProgram(vertexShader, fragmentShader, geometryShader uint32) (uint32, error) {
+	program := gl.CreateProgram()
+	gl.AttachShader(program, vertexShader)
+	gl.AttachShader(program, fragmentShader)
+	if geometryShader != 0 {
+		gl.AttachShader(program, geometryShader)
+	}
+
+	gl.LinkProgram(program)
+	// check for program linking errors
+	var status int32
+	gl.GetProgramiv(program, gl.LINK_STATUS, &status)
+	if status == gl.FALSE {
+		var logLength int32
+		gl.GetProgramiv(program, gl.INFO_LOG_LENGTH, &logLength)
+
+		log := strings.Repeat("\x00", int(logLength+1))
+		gl.GetProgramInfoLog(program, logLength, nil, gl.Str(log))
+
+		return 0, fmt.Errorf("failed to link program: %v", log)
+	}
+
+	return program, nil
 }

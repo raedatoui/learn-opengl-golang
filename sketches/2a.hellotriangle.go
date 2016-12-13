@@ -34,7 +34,7 @@ func (sketch *HelloTriangle) Setup() {
 		0.0, 0.5, 0.0, // Top
 	}
 	var err error
-	sketch.Program, err = utils.NewProgram(vertexShader, fragShader)
+	sketch.Program, err = utils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		panic(err)
 	}
