@@ -20,6 +20,7 @@ const HEIGHT = 600
 var theSketch sketches.Sketch
 var sketchIndex = 0
 var theSketches []sketches.Sketch
+var switching bool
 
 func init() {
 	// This is needed to arrange that main() runs on main thread.
@@ -28,26 +29,33 @@ func init() {
 }
 
 func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	newIndex := sketchIndex
-	if action == glfw.Press && scancode == 124 {
-		newIndex = sketchIndex + 1
-		if newIndex > len(theSketches) - 1 {
-			newIndex = len(theSketches) - 1
+	if !switching && action == glfw.Press {
+		switching = true
+		newIndex := sketchIndex
+		if action == glfw.Press && scancode == 124 {
+			newIndex = sketchIndex + 1
+			if newIndex > len(theSketches) - 1 {
+				newIndex = len(theSketches) - 1
+			}
 		}
-	}
-	if action == glfw.Press && scancode == 123 {
-		newIndex = sketchIndex - 1
-		if newIndex < 0 {
-			newIndex = 0
+		if action == glfw.Press && scancode == 123 {
+			newIndex = sketchIndex - 1
+			if newIndex < 0 {
+				newIndex = 0
+			}
 		}
+		if action == glfw.Press && newIndex != sketchIndex {
+			sketchIndex = newIndex
+			theSketch.Close()
+			theSketch = theSketches[newIndex]
+			theSketch.Setup()
+		}
+		theSketch.HandleKeyboard(key, scancode, action, mods)
+		switching = false
+	} else {
+		fmt.Println("switching in progress")
 	}
-	if action == glfw.Press && newIndex != sketchIndex {
-		sketchIndex = newIndex
-		theSketch.Close()
-		theSketch = theSketches[newIndex]
-		theSketch.Setup()
-	}
-	theSketch.HandleKeyboard(key, scancode, action, mods)
+
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
