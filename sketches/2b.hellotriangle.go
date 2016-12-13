@@ -84,6 +84,7 @@ func (sketch *HelloSquare) Close() {
 	gl.DeleteVertexArrays(1, &sketch.Vao)
 	gl.DeleteBuffers(1, &sketch.Vbo)
 	gl.DeleteBuffers(1, &sketch.Ebo)
+	gl.UseProgram(0)
 }
 
 func (sketch *HelloSquare) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {

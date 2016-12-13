@@ -79,6 +79,7 @@ func (sketch *HelloTriangle) Draw() {
 func (sketch *HelloTriangle) Close() {
 	gl.DeleteVertexArrays(1, &sketch.Vao)
 	gl.DeleteBuffers(1, &sketch.Vbo)
+	gl.UseProgram(0)
 }
 
 func (sketch *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {

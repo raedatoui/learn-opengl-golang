@@ -12,6 +12,7 @@ type HelloShaders struct {
 	Shader  uint32
 }
 
+
 func (sketch *HelloShaders) Setup() {
 	var err error
 	sketch.Shader, err = utils.Shader(
@@ -67,6 +68,7 @@ func (sketch *HelloShaders) Draw() {
 func (sketch *HelloShaders) Close() {
 	gl.DeleteVertexArrays(1, &sketch.Vao)
 	gl.DeleteBuffers(1, &sketch.Vbo)
+	gl.UseProgram(0)
 }
 
 func (sketch *HelloShaders) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {

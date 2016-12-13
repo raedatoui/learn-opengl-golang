@@ -193,6 +193,7 @@ func (sketch *HelloCube) Close() {
 	gl.DeleteVertexArrays(1, &sketch.Vao)
 	gl.DeleteBuffers(1, &sketch.Vbo)
 	gl.DeleteBuffers(1, &sketch.Vao)
+	gl.UseProgram(0)
 }
 
 func (sketch *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
