@@ -66,8 +66,8 @@ func resizeCallback(w *glfw.Window, width int, height int) {
 
 func setup() *glfw.Window {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 2)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 	window, err := glfw.CreateWindow(WIDTH, HEIGHT, "Test Tutorial", nil, nil)
@@ -130,9 +130,9 @@ func main() {
 		&sketches.HelloTextures{Window: window},
 		&sketches.HelloWindow{Window: window},
 		&sketches.HelloCube{Window: window},
-		//&sketches.HelloTriangle{Window: window},
-		//&sketches.HelloSquare{Window: window},
-		//&sketches.HelloShaders{Window: window},
+		&sketches.HelloTriangle{Window: window},
+		&sketches.HelloSquare{Window: window},
+		&sketches.HelloShaders{Window: window},
 	}
 
 	//Use a pointer to the sketch in order to call mutating functions

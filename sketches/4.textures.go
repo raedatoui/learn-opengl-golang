@@ -146,7 +146,10 @@ func (sketch *HelloTextures) Draw() {
 }
 
 func (sketch *HelloTextures) Close() {
-
+	gl.DeleteVertexArrays(1, &sketch.Vao)
+	gl.DeleteBuffers(1, &sketch.Vbo)
+	gl.DeleteBuffers(1, &sketch.Ebo)
+	gl.UseProgram(0)
 }
 
 func (sketch *HelloTextures) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {

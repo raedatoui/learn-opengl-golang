@@ -60,19 +60,19 @@ func Shader(vertFile, fragFile, geomFile string) (uint32, error) {
 		}
 	}
 
-	vertexShader, err := compileShader(string(vertexShaderSource), gl.VERTEX_SHADER)
+	vertexShader, err := compileShader(string(vertexShaderSource)+"\x00", gl.VERTEX_SHADER)
 	if err != nil {
 		return 0, err
 	}
 
-	fragmentShader, err := compileShader(string(fragmentShaderSource), gl.FRAGMENT_SHADER)
+	fragmentShader, err := compileShader(string(fragmentShaderSource)+"\x00", gl.FRAGMENT_SHADER)
 	if err != nil {
 		return 0, err
 	}
 
 	var geometryShader uint32
 	if geomFile != "" {
-		geometryShader, err = compileShader(string(geometryShaderSource), gl.GEOMETRY_SHADER)
+		geometryShader, err = compileShader(string(geometryShaderSource)+"\x00", gl.GEOMETRY_SHADER)
 		if err != nil {
 			return 0, err
 		}
@@ -80,9 +80,13 @@ func Shader(vertFile, fragFile, geomFile string) (uint32, error) {
 
 	program, err := createProgram(vertexShader, fragmentShader, geometryShader)
 
+	gl.DetachShader(program, vertexShader)
+	gl.DetachShader(program, fragmentShader)
+
 	gl.DeleteShader(vertexShader)
 	gl.DeleteShader(fragmentShader)
 	if geomFile != "" {
+		gl.DetachShader(program, geometryShader)
 		gl.DeleteShader(geometryShader)
 	}
 
