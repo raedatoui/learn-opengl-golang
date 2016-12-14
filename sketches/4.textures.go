@@ -19,13 +19,14 @@ func (sketch *HelloTextures) Setup() {
 	if err != nil {
 		panic(err)
 	}
+	gl.UseProgram(sketch.Shader)
 
 	vertices := []float32{
-		// Positions          // Colors           // Texture Coords
-		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, // Top Right
-		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, // Bottom Right
-		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, // Bottom Left
-		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
+		// Positions      // Colors       // Texture Coords
+		 0.5,  0.5, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, // Top Right
+		 0.5, -0.5, 0.0,  0.0, 1.0, 0.0,  1.0, 0.0, // Bottom Right
+		-0.5, -0.5, 0.0,  0.0, 0.0, 1.0,  0.0, 0.0, // Bottom Left
+		-0.5,  0.5, 0.0,  1.0, 1.0, 0.0,  0.0, 1.0, // Top Left
 	}
 
 	indices := []uint32{ // Note that we start from 0!
@@ -64,8 +65,54 @@ func (sketch *HelloTextures) Setup() {
 	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture1)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-    gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+
+	rgba, err := utils.ImageToPixelData("sketches/assets/images/container.png")
+	if err != nil {
+		panic(err)
+	}
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGB,
+		int32(rgba.Rect.Size().X),
+		int32(rgba.Rect.Size().Y),
+		0,
+		gl.RGB,
+		gl.UNSIGNED_BYTE,
+		gl.Ptr(rgba.Pix))
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	// ====================
+	// Texture 2
+	// ====================
+	gl.GenTextures(1, &sketch.Texture2)
+	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture2)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+
+	rgba, err = utils.ImageToPixelData("sketches/assets/images/awesomeface.png")
+	if err != nil {
+		panic(err)
+	}
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGB,
+		int32(rgba.Rect.Size().X),
+		int32(rgba.Rect.Size().Y),
+		0,
+		gl.RGB,
+		gl.UNSIGNED_BYTE,
+		gl.Ptr(rgba.Pix))
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	gl.Disable(gl.DEPTH_TEST)
 }
 
 func (sketch *HelloTextures) Update() {
@@ -73,7 +120,29 @@ func (sketch *HelloTextures) Update() {
 }
 
 func (sketch *HelloTextures) Draw() {
+	// Render
+	// Clear the colorbuffer
+	gl.ClearColor(0.8, 0.3, 0.3, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 
+	// Bind Textures using texture units
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture1)
+	loc1 := gl.GetUniformLocation(sketch.Shader, gl.Str("ourTexture1\x00"))
+	gl.Uniform1i(loc1, 0)
+
+	gl.ActiveTexture(gl.TEXTURE1);
+	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture2)
+	loc2 := gl.GetUniformLocation(sketch.Shader, gl.Str("ourTexture2\x00"))
+	gl.Uniform1i(loc2, 1);
+
+	// Activate shader
+	gl.UseProgram(sketch.Shader)
+
+	// Draw container
+	gl.BindVertexArray(sketch.Vao)
+	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
+	gl.BindVertexArray(0)
 }
 
 func (sketch *HelloTextures) Close() {

@@ -126,11 +126,12 @@ func main() {
 
 	// make a slice of pointers to sketch instances
 	theSketches = []sketches.Sketch{
+		&sketches.HelloTextures{Window: window},
 		&sketches.HelloWindow{Window: window},
 		&sketches.HelloCube{Window: window},
-		&sketches.HelloTriangle{Window: window},
-		&sketches.HelloSquare{Window: window},
-		&sketches.HelloShaders{Window: window},
+		//&sketches.HelloTriangle{Window: window},
+		//&sketches.HelloSquare{Window: window},
+		//&sketches.HelloShaders{Window: window},
 	}
 
 	//Use a pointer to the sketch in order to call mutating functions
