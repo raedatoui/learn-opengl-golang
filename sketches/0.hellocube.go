@@ -134,7 +134,7 @@ func (sketch *HelloCube) Setup() {
 	gl.BindFragDataLocation(sketch.Program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	sketch.Texture, err = utils.NewTexture("sketches/assets/square.png")
+	sketch.Texture, err = utils.NewTexture("sketches/assets/0.cube/square.png")
 	if err != nil {
 		log.Fatalln(err)
 	}
