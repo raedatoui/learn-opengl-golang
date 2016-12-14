@@ -75,11 +75,11 @@ func (sketch *HelloTextures) Setup() {
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
 		0,
-		gl.RGB,
+		gl.RGBA,
 		int32(rgba.Rect.Size().X),
 		int32(rgba.Rect.Size().Y),
 		0,
-		gl.RGB,
+		gl.RGBA,
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(rgba.Pix))
 	gl.GenerateMipmap(gl.TEXTURE_2D)
@@ -102,11 +102,11 @@ func (sketch *HelloTextures) Setup() {
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
 		0,
-		gl.RGB,
+		gl.RGBA,
 		int32(rgba.Rect.Size().X),
 		int32(rgba.Rect.Size().Y),
 		0,
-		gl.RGB,
+		gl.RGBA,
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(rgba.Pix))
 	gl.GenerateMipmap(gl.TEXTURE_2D)

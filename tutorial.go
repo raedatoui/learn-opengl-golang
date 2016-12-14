@@ -66,10 +66,10 @@ func resizeCallback(w *glfw.Window, width int, height int) {
 
 func setup() *glfw.Window {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 2)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 	window, err := glfw.CreateWindow(WIDTH, HEIGHT, "Test Tutorial", nil, nil)
 	if err != nil {
 		panic(err)
@@ -90,7 +90,8 @@ func setup() *glfw.Window {
 	window.SetKeyCallback(keyCallBack)
 
 	version := gl.GoStr(gl.GetString(gl.VERSION))
-	fmt.Println("OpenGL version", version)
+	glsl := gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION))
+	fmt.Println("OpenGL version", version, glsl)
 
 	width, height := window.GetFramebufferSize()
 	gl.Viewport(0, 0, int32(width), int32(height))
