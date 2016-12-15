@@ -126,7 +126,9 @@ func main() {
 	window := setup()
 
 	// make a slice of pointers to sketch instances
+
 	theSketches = []sketches.Sketch{
+		&sketches.HelloTransformations{Window: window},
 		&sketches.HelloTextures{Window: window},
 		&sketches.HelloWindow{Window: window},
 		&sketches.HelloCube{Window: window},
