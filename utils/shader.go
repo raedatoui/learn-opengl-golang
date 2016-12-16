@@ -79,12 +79,16 @@ func Shader(vertFile, fragFile, geomFile string) (uint32, error) {
 	}
 
 	program, err := createProgram(vertexShader, fragmentShader, geometryShader)
+	if err != nil {
+		return 0, err
+	}
 
 	gl.DetachShader(program, vertexShader)
 	gl.DetachShader(program, fragmentShader)
 
 	gl.DeleteShader(vertexShader)
 	gl.DeleteShader(fragmentShader)
+
 	if geomFile != "" {
 		gl.DetachShader(program, geometryShader)
 		gl.DeleteShader(geometryShader)
