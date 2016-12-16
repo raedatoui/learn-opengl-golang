@@ -53,7 +53,7 @@ func NewCamera(position, up mgl32.Vec3, yaw, pitch float32) Camera{
 }
 
 // Constructor with scalar values
-func NewCameraWithScalars(posX, posY, posZ, upX, upY, upZ, yaw, pitch float32) {
+func NewCameraWithScalars(posX, posY, posZ, upX, upY, upZ, yaw, pitch float32) Camera {
 	cam := Camera{
 		Position: mgl32.Vec3{posX, posY, posZ},
 		WorldUp: mgl32.Vec3{upX, upY, upZ},
@@ -131,13 +131,20 @@ func (cam *Camera) ProcessMouseScroll(yoffset float32) {
 
 func (cam *Camera) updateCameraVectors() {
 	
-	x := math.Cos(cam.Yaw * DegToRad) * math.Cos(cam.Pitch * DegToRad)
-	y := math.Sin(cam.Pitch * DegToRad)
-	z := math.Sin(cam.Yaw * DegToRad) * math.Cos(cam.Pitch * DegToRad)
+	x := cos(cam.Yaw * DegToRad) * cos(cam.Pitch * DegToRad)
+	y := sin(cam.Pitch * DegToRad)
+	z := sin(cam.Yaw * DegToRad) * cos(cam.Pitch * DegToRad)
 	front := mgl32.Vec3{x, y, z}
 	front = front.Normalize()
 	// Also re-calculate the Right and Up vector
 	// Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	cam.Right = front.Cross(cam.WorldUp).Normalize()
 	cam.Up = cam.Right.Cross(cam.Front).Normalize()
+}
+
+func cos(f float32) float32 {
+	return float32(math.Cos(float64(f)))
+}
+func sin(f float32) float32 {
+	return float32(math.Sin(float64(f)))
 }

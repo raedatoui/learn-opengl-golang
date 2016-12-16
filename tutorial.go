@@ -135,6 +135,7 @@ func main() {
 		&sketches.HelloTextures{Window: window},
 		&sketches.HelloTransformations{Window: window},
 		&sketches.HelloCoordinates{Window: window},
+		&sketches.HelloCamera{Window: window},
 	}
 
 	//Use a pointer to the sketch in order to call mutating functions
