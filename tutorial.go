@@ -55,7 +55,14 @@ func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Ac
 	} else {
 		fmt.Println("switching in progress")
 	}
+}
 
+func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
+	theSketch.HandleMousePosition(xpos, ypos)
+}
+
+func scrollCallback(w *Window, xoff float64, yoff float64) {
+	theSketch.HandleScroll(xoff, xoff)
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
@@ -88,7 +95,8 @@ func setup() *glfw.Window {
 
 	//Keyboard Callback
 	window.SetKeyCallback(keyCallBack)
-
+	window.SetCursorPosCallback(mouseCallback)
+    window.SetScrollCallback(scrollCallback)
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	glsl := gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION))
 	fmt.Println("OpenGL version", version, glsl)
