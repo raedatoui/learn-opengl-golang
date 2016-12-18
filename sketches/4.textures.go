@@ -157,3 +157,11 @@ func (sketch *HelloTextures) HandleKeyboard(key glfw.Key, scancode int, action g
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloTextures) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloTextures) HandleScroll(xoff, yoff float64) {
+
+}

@@ -31,3 +31,11 @@ func (sketch *HelloWindow) HandleKeyboard(key glfw.Key, scancode int, action glf
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloWindow) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloWindow) HandleScroll(xoff, yoff float64) {
+
+}

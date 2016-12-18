@@ -168,3 +168,11 @@ func (sketch *HelloTransformations) HandleKeyboard(key glfw.Key, scancode int, a
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloTransformations) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloTransformations) HandleScroll(xoff, yoff float64) {
+
+}

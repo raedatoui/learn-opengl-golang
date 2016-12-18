@@ -76,3 +76,11 @@ func (sketch *HelloShaders) HandleKeyboard(key glfw.Key, scancode int, action gl
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloShaders) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloShaders) HandleScroll(xoff, yoff float64) {
+
+}

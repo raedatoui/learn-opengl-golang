@@ -29,6 +29,7 @@ func init() {
 }
 
 func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	theSketch.HandleKeyboard(key, scancode, action, mods)
 	if !switching && action == glfw.Press {
 		switching = true
 		newIndex := sketchIndex
@@ -50,10 +51,7 @@ func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Ac
 			theSketch = theSketches[newIndex]
 			theSketch.Setup()
 		}
-		theSketch.HandleKeyboard(key, scancode, action, mods)
 		switching = false
-	} else {
-		fmt.Println("switching in progress")
 	}
 }
 
@@ -61,7 +59,7 @@ func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
 	theSketch.HandleMousePosition(xpos, ypos)
 }
 
-func scrollCallback(w *Window, xoff float64, yoff float64) {
+func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
 	theSketch.HandleScroll(xoff, xoff)
 }
 

@@ -201,3 +201,11 @@ func (sketch *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloCube) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloCube) HandleScroll(xoff, yoff float64) {
+
+}

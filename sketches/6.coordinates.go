@@ -228,3 +228,11 @@ func (sketch *HelloCoordinates) HandleKeyboard(key glfw.Key, scancode int, actio
 		sketch.Window.SetShouldClose(true)
 	}
 }
+
+func (sketch *HelloCoordinates) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (sketch *HelloCoordinates) HandleScroll(xoff, yoff float64) {
+
+}

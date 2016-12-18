@@ -6,6 +6,10 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl/utils"
 )
+var keys map[glfw.Key]bool
+var lastX float64 = 400
+var lastY float64 = 300
+var firstMouse bool = true
 
 type HelloCamera struct {
 	Window             *glfw.Window
@@ -167,6 +171,8 @@ func (sketch *HelloCamera) Setup() {
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	gl.Enable(gl.DEPTH_TEST)
+
+	keys = make(map[glfw.Key]bool)
 }
 
 func (sketch *HelloCamera) Update() {
@@ -174,7 +180,18 @@ func (sketch *HelloCamera) Update() {
 	currentFrame := glfw.GetTime()
 	sketch.DeltaTime = currentFrame - sketch.LastFrame
 	sketch.LastFrame = currentFrame
-	sketch.Camera.ProcessKeyboard(utils.BACKWARD, float32(sketch.DeltaTime))
+	if keys[glfw.KeyW] {
+		sketch.Camera.ProcessKeyboard(utils.FORWARD, float32(sketch.DeltaTime))
+	}
+	if keys[glfw.KeyS] {
+		sketch.Camera.ProcessKeyboard(utils.BACKWARD, float32(sketch.DeltaTime))
+	}
+	if keys[glfw.KeyA] {
+		sketch.Camera.ProcessKeyboard(utils.LEFT, float32(sketch.DeltaTime))
+	}
+	if keys[glfw.KeyD] {
+		sketch.Camera.ProcessKeyboard(utils.RIGHT, float32(sketch.DeltaTime))
+	}
 }
 
 func (sketch *HelloCamera) Draw() {
@@ -243,4 +260,29 @@ func (sketch *HelloCamera) HandleKeyboard(key glfw.Key, scancode int, action glf
 	if key == glfw.KeyEscape && action == glfw.Press {
 		sketch.Window.SetShouldClose(true)
 	}
+    if action == glfw.Press {
+		keys[key] = true
+	} else if action == glfw.Release {
+		keys[key] = false
+	}
+}
+
+func (sketch *HelloCamera) HandleMousePosition(xpos, ypos float64) {
+	if firstMouse {
+		lastX = xpos
+		lastY = ypos
+		firstMouse = false
+	}
+
+    xoffset := xpos - lastX
+    yoffset := lastY - ypos  // Reversed since y-coordinates go from bottom to left
+
+    lastX = xpos
+    lastY = ypos
+
+    sketch.Camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+}
+
+func (sketch *HelloCamera) HandleScroll(xoff, yoff float64) {
+	sketch.Camera.ProcessMouseScroll(float32(yoff))
 }
