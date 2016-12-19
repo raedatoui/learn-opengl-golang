@@ -154,8 +154,6 @@ func (sketch *HelloCoordinates) Setup() {
 		gl.Ptr(rgba.Pix))
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
-
-	gl.Enable(gl.DEPTH_TEST)
 }
 
 func (sketch *HelloCoordinates) Update() {
@@ -163,11 +161,6 @@ func (sketch *HelloCoordinates) Update() {
 }
 
 func (sketch *HelloCoordinates) Draw() {
-	// Render
-	// Clear the colorbuffer
-	gl.ClearColor(0.8, 0.3, 0.8, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture1)

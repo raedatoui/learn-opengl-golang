@@ -64,7 +64,6 @@ func (sketch *HelloSquare) Setup() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
-	gl.Disable(gl.DEPTH_TEST)
 }
 
 func (sketch *HelloSquare) Update() {
@@ -72,8 +71,6 @@ func (sketch *HelloSquare) Update() {
 }
 
 func (sketch *HelloSquare) Draw() {
-	gl.ClearColor(0.5, 0.5, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
 	gl.UseProgram(sketch.Program)
 	gl.BindVertexArray(sketch.Vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))

@@ -170,8 +170,6 @@ func (sketch *HelloCamera) Setup() {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
-	gl.Enable(gl.DEPTH_TEST)
-
 	keys = make(map[glfw.Key]bool)
 }
 
@@ -195,11 +193,6 @@ func (sketch *HelloCamera) Update() {
 }
 
 func (sketch *HelloCamera) Draw() {
-	// Render
-	// Clear the colorbuffer
-	gl.ClearColor(0.8, 0.3, 0.8, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture1)

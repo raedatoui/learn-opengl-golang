@@ -1,7 +1,6 @@
 package sketches
 
 import (
-	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -14,8 +13,7 @@ func (sketch *HelloWindow) Setup() {
 }
 
 func (sketch *HelloWindow) Draw() {
-	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
 }
 
 func (sketch *HelloWindow) Update() {

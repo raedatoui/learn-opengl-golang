@@ -46,8 +46,6 @@ func (sketch *HelloShaders) Setup() {
 	gl.EnableVertexAttribArray(1)
 
 	gl.BindVertexArray(0)
-
-	gl.Disable(gl.DEPTH_TEST)
 }
 
 func (sketch *HelloShaders) Update() {
@@ -55,9 +53,6 @@ func (sketch *HelloShaders) Update() {
 }
 
 func (sketch *HelloShaders) Draw() {
-	gl.ClearColor(0.2, 0.3, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-
 	// Draw the triangle
 	gl.UseProgram(sketch.Shader)
 	gl.BindVertexArray(sketch.Vao)

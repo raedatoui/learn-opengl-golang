@@ -4,4 +4,7 @@
 
 ### Notes
 * sizeof(GLfloat) is 4 , float32
-* size of uint32?
+* size of uint32 - 4
+
+no need to disable 3d depth when drawing 2D shapes
+

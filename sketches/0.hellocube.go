@@ -156,9 +156,6 @@ func (sketch *HelloCube) Setup() {
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
 	// Configure global settings
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
 	sketch.Angle = 0.0
 	sketch.PreviousTime = glfw.GetTime()
@@ -174,9 +171,6 @@ func (sketch *HelloCube) Update() {
 }
 
 func (sketch *HelloCube) Draw() {
-	// Render
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
 	gl.UseProgram(sketch.Program)
 	gl.UniformMatrix4fv(sketch.ModelUniform, 1, false, &sketch.Model[0])
 

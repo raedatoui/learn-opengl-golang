@@ -56,9 +56,6 @@ func (sketch *HelloTriangle) Setup() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
-	// switch to 2d mode
-	gl.Disable(gl.DEPTH_TEST)
-	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 }
 
 func (sketch *HelloTriangle) Update() {
@@ -66,8 +63,8 @@ func (sketch *HelloTriangle) Update() {
 }
 
 func (sketch *HelloTriangle) Draw() {
-	gl.ClearColor(0.5, 0.5, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
+	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+
 	// Draw our first triangle
 	gl.UseProgram(sketch.Program)
 	gl.BindVertexArray(sketch.Vao)

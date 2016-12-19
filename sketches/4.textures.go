@@ -112,7 +112,6 @@ func (sketch *HelloTextures) Setup() {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
-	gl.Disable(gl.DEPTH_TEST)
 }
 
 func (sketch *HelloTextures) Update() {
@@ -120,11 +119,6 @@ func (sketch *HelloTextures) Update() {
 }
 
 func (sketch *HelloTextures) Draw() {
-	// Render
-	// Clear the colorbuffer
-	gl.ClearColor(0.8, 0.3, 0.3, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture1)
