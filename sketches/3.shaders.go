@@ -13,9 +13,9 @@ type HelloShaders struct {
 }
 
 
-func (sketch *HelloShaders) Setup() error {
+func (hs *HelloShaders) Setup() error {
 	var err error
-	sketch.Shader, err = utils.Shader(
+	hs.Shader, err = utils.Shader(
 		"sketches/_assets/3.shaders/basic.vs",
 		"sketches/_assets/3.shaders/basic.frag", "")
 
@@ -29,12 +29,12 @@ func (sketch *HelloShaders) Setup() error {
 		-0.5, -0.5, 0.0,  0.0, 1.0, 0.0, // Bottom Left
 		0.0, 0.5, 0.0,    0.0, 0.0, 1.0, // Top
 	}
-	gl.GenVertexArrays(1, &sketch.Vao)
-	gl.GenBuffers(1, &sketch.Vbo)
+	gl.GenVertexArrays(1, &hs.Vao)
+	gl.GenBuffers(1, &hs.Vbo)
 
-	gl.BindVertexArray(sketch.Vao)
+	gl.BindVertexArray(hs.Vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, sketch.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hs.Vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices) * utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// position uniform
@@ -50,34 +50,34 @@ func (sketch *HelloShaders) Setup() error {
 	return nil
 }
 
-func (sketch *HelloShaders) Update() {
+func (hs *HelloShaders) Update() {
 
 }
 
-func (sketch *HelloShaders) Draw() {
+func (hs *HelloShaders) Draw() {
 	// Draw the triangle
-	gl.UseProgram(sketch.Shader)
-	gl.BindVertexArray(sketch.Vao)
+	gl.UseProgram(hs.Shader)
+	gl.BindVertexArray(hs.Vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
 }
 
-func (sketch *HelloShaders) Close() {
-	gl.DeleteVertexArrays(1, &sketch.Vao)
-	gl.DeleteBuffers(1, &sketch.Vbo)
+func (hs *HelloShaders) Close() {
+	gl.DeleteVertexArrays(1, &hs.Vao)
+	gl.DeleteBuffers(1, &hs.Vbo)
 	gl.UseProgram(0)
 }
 
-func (sketch *HelloShaders) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (hs *HelloShaders) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		sketch.Window.SetShouldClose(true)
+		hs.Window.SetShouldClose(true)
 	}
 }
 
-func (sketch *HelloShaders) HandleMousePosition(xpos, ypos float64) {
+func (hs *HelloShaders) HandleMousePosition(xpos, ypos float64) {
 
 }
 
-func (sketch *HelloShaders) HandleScroll(xoff, yoff float64) {
+func (hs *HelloShaders) HandleScroll(xoff, yoff float64) {
 
 }

@@ -12,7 +12,7 @@ type HelloSquare struct {
 	Vao, Vbo, Ebo uint32
 }
 
-func (sketch *HelloSquare) Setup() error {
+func (hs *HelloSquare) Setup() error {
 	var vertexShader2 = `
 	#version 330 core
 	in vec3 vert;
@@ -40,25 +40,25 @@ func (sketch *HelloSquare) Setup() error {
 	}
 
 	var err error
-	sketch.Program, err = utils.BasicProgram(vertexShader2, fragShader2)
+	hs.Program, err = utils.BasicProgram(vertexShader2, fragShader2)
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(sketch.Program)
+	gl.UseProgram(hs.Program)
 
-	gl.GenVertexArrays(1, &sketch.Vao)
-	gl.BindVertexArray(sketch.Vao)
+	gl.GenVertexArrays(1, &hs.Vao)
+	gl.BindVertexArray(hs.Vao)
 
-	gl.GenBuffers(1, &sketch.Vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, sketch.Vbo)
+	gl.GenBuffers(1, &hs.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hs.Vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)* utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	gl.GenBuffers(1, &sketch.Ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, sketch.Ebo)
+	gl.GenBuffers(1, &hs.Ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, hs.Ebo)
 	// seems like 4 works best here for the size of uint32
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices) * 4, gl.Ptr(indices), gl.STATIC_DRAW)
 
-	vertAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vert\x00")))
+	vertAttrib := uint32(gl.GetAttribLocation(hs.Program, gl.Str("vert\x00")))
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 3 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(vertAttrib)
 
@@ -68,34 +68,34 @@ func (sketch *HelloSquare) Setup() error {
 	return nil
 }
 
-func (sketch *HelloSquare) Update() {
+func (hs *HelloSquare) Update() {
 
 }
 
-func (sketch *HelloSquare) Draw() {
-	gl.UseProgram(sketch.Program)
-	gl.BindVertexArray(sketch.Vao)
+func (hs *HelloSquare) Draw() {
+	gl.UseProgram(hs.Program)
+	gl.BindVertexArray(hs.Vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
-func (sketch *HelloSquare) Close() {
-	gl.DeleteVertexArrays(1, &sketch.Vao)
-	gl.DeleteBuffers(1, &sketch.Vbo)
-	gl.DeleteBuffers(1, &sketch.Ebo)
+func (hs *HelloSquare) Close() {
+	gl.DeleteVertexArrays(1, &hs.Vao)
+	gl.DeleteBuffers(1, &hs.Vbo)
+	gl.DeleteBuffers(1, &hs.Ebo)
 	gl.UseProgram(0)
 }
 
-func (sketch *HelloSquare) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (hs *HelloSquare) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		sketch.Window.SetShouldClose(true)
+		hs.Window.SetShouldClose(true)
 	}
 }
 
-func (sketch *HelloSquare) HandleMousePosition(xpos, ypos float64) {
+func (hs *HelloSquare) HandleMousePosition(xpos, ypos float64) {
 
 }
 
-func (sketch *HelloSquare) HandleScroll(xoff, yoff float64) {
+func (hs *HelloSquare) HandleScroll(xoff, yoff float64) {
 
 }

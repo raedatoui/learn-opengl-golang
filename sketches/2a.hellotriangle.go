@@ -12,7 +12,7 @@ type HelloTriangle struct {
 	Vao, Vbo      uint32
 }
 
-func (sketch *HelloTriangle) Setup() error {
+func (ht *HelloTriangle) Setup() error {
 
 	var vertexShader = `
 	#version 330 core
@@ -34,21 +34,21 @@ func (sketch *HelloTriangle) Setup() error {
 		0.0, 0.5, 0.0, // Top
 	}
 	var err error
-	sketch.Program, err = utils.BasicProgram(vertexShader, fragShader)
+	ht.Program, err = utils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(sketch.Program)
+	gl.UseProgram(ht.Program)
 
-	gl.GenVertexArrays(1, &sketch.Vao)
-	gl.GenBuffers(1, &sketch.Vbo)
+	gl.GenVertexArrays(1, &ht.Vao)
+	gl.GenBuffers(1, &ht.Vbo)
 
-	gl.BindVertexArray(sketch.Vao)
+	gl.BindVertexArray(ht.Vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, sketch.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, ht.Vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)* utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	//vertAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("position\x00")))
+	//vertAttrib := uint32(gl.GetAttribLocation(ht.Program, gl.Str("position\x00")))
 	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
 	// the uniform
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
@@ -60,37 +60,37 @@ func (sketch *HelloTriangle) Setup() error {
 	return nil
 }
 
-func (sketch *HelloTriangle) Update() {
+func (ht *HelloTriangle) Update() {
 
 }
 
-func (sketch *HelloTriangle) Draw() {
+func (ht *HelloTriangle) Draw() {
 	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	// Draw our first triangle
-	gl.UseProgram(sketch.Program)
-	gl.BindVertexArray(sketch.Vao)
+	gl.UseProgram(ht.Program)
+	gl.BindVertexArray(ht.Vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
-func (sketch *HelloTriangle) Close() {
-	gl.DeleteVertexArrays(1, &sketch.Vao)
-	gl.DeleteBuffers(1, &sketch.Vbo)
+func (ht *HelloTriangle) Close() {
+	gl.DeleteVertexArrays(1, &ht.Vao)
+	gl.DeleteBuffers(1, &ht.Vbo)
 	gl.UseProgram(0)
 }
 
-func (sketch *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (ht *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		sketch.Window.SetShouldClose(true)
+		ht.Window.SetShouldClose(true)
 	}
 }
 
-func (sketch *HelloTriangle) HandleMousePosition(xpos, ypos float64) {
+func (ht *HelloTriangle) HandleMousePosition(xpos, ypos float64) {
 
 }
 
-func (sketch *HelloTriangle) HandleScroll(xoff, yoff float64) {
+func (ht *HelloTriangle) HandleScroll(xoff, yoff float64) {
 
 }

@@ -23,7 +23,7 @@ type HelloCube struct {
 	ModelUniform        int32
 }
 
-func (sketch *HelloCube) Setup() error {
+func (hc *HelloCube) Setup() error {
 	var cubeVertices = []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -108,98 +108,98 @@ func (sketch *HelloCube) Setup() error {
 	` + "\x00"
 	// Configure the vertex and fragment shaders
 	var err error
-	sketch.Program, err = utils.BasicProgram(vertexShader, fragmentShader)
+	hc.Program, err = utils.BasicProgram(vertexShader, fragmentShader)
 	if err != nil {
 		return err
 	}
 
-	gl.UseProgram(sketch.Program)
+	gl.UseProgram(hc.Program)
 
 	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(800.0)/600.0, 0.1, 10.0)
-	projectionUniform := gl.GetUniformLocation(sketch.Program, gl.Str("projection\x00"))
+	projectionUniform := gl.GetUniformLocation(hc.Program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
 	camera := mgl32.LookAtV(mgl32.Vec3{3, 3, 3}, mgl32.Vec3{0, 0, 0}, mgl32.Vec3{0, 1, 0})
-	cameraUniform := gl.GetUniformLocation(sketch.Program, gl.Str("camera\x00"))
+	cameraUniform := gl.GetUniformLocation(hc.Program, gl.Str("camera\x00"))
 	gl.UniformMatrix4fv(cameraUniform, 1, false, &camera[0])
 
-	sketch.Model = mgl32.Ident4()
-	sketch.ModelUniform = gl.GetUniformLocation(sketch.Program, gl.Str("model\x00"))
-	gl.UniformMatrix4fv(sketch.ModelUniform, 1, false, &sketch.Model[0])
+	hc.Model = mgl32.Ident4()
+	hc.ModelUniform = gl.GetUniformLocation(hc.Program, gl.Str("model\x00"))
+	gl.UniformMatrix4fv(hc.ModelUniform, 1, false, &hc.Model[0])
 
-	textureUniform := gl.GetUniformLocation(sketch.Program, gl.Str("tex\x00"))
+	textureUniform := gl.GetUniformLocation(hc.Program, gl.Str("tex\x00"))
 	gl.Uniform1i(textureUniform, 0)
 
-	gl.BindFragDataLocation(sketch.Program, 0, gl.Str("outputColor\x00"))
+	gl.BindFragDataLocation(hc.Program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	sketch.Texture, err = utils.NewTexture("sketches/_assets/0.cube/square.png")
+	hc.Texture, err = utils.NewTexture("sketches/_assets/0.cube/square.png")
 	if err != nil {
 		return err
 	}
 
 	// Configure the vertex data
-	gl.GenVertexArrays(1, &sketch.Vao)
-	gl.BindVertexArray(sketch.Vao)
+	gl.GenVertexArrays(1, &hc.Vao)
+	gl.BindVertexArray(hc.Vao)
 
-	gl.GenBuffers(1, &sketch.Vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, sketch.Vbo)
+	gl.GenBuffers(1, &hc.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hc.Vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(cubeVertices)*4, gl.Ptr(cubeVertices), gl.STATIC_DRAW)
 
-	vertAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vert\x00")))
+	vertAttrib := uint32(gl.GetAttribLocation(hc.Program, gl.Str("vert\x00")))
 	gl.EnableVertexAttribArray(vertAttrib)
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 5*4, gl.PtrOffset(0))
 
-	texCoordAttrib := uint32(gl.GetAttribLocation(sketch.Program, gl.Str("vertTexCoord\x00")))
+	texCoordAttrib := uint32(gl.GetAttribLocation(hc.Program, gl.Str("vertTexCoord\x00")))
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
 	// Configure global settings
 
-	sketch.Angle = 0.0
-	sketch.PreviousTime = glfw.GetTime()
+	hc.Angle = 0.0
+	hc.PreviousTime = glfw.GetTime()
 	return nil
 }
 
-func (sketch *HelloCube) Update() {
+func (hc *HelloCube) Update() {
 	time := glfw.GetTime()
-	elapsed := time - sketch.PreviousTime
-	sketch.PreviousTime = time
+	elapsed := time - hc.PreviousTime
+	hc.PreviousTime = time
 
-	sketch.Angle += elapsed
-	sketch.Model = mgl32.HomogRotate3D(float32(sketch.Angle), mgl32.Vec3{0, 1, 0})
+	hc.Angle += elapsed
+	hc.Model = mgl32.HomogRotate3D(float32(hc.Angle), mgl32.Vec3{0, 1, 0})
 }
 
-func (sketch *HelloCube) Draw() {
-	gl.UseProgram(sketch.Program)
-	gl.UniformMatrix4fv(sketch.ModelUniform, 1, false, &sketch.Model[0])
+func (hc *HelloCube) Draw() {
+	gl.UseProgram(hc.Program)
+	gl.UniformMatrix4fv(hc.ModelUniform, 1, false, &hc.Model[0])
 
-	gl.BindVertexArray(sketch.Vao)
+	gl.BindVertexArray(hc.Vao)
 
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, sketch.Texture)
+	gl.BindTexture(gl.TEXTURE_2D, hc.Texture)
 
 	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
 
 }
 
-func (sketch *HelloCube) Close() {
-	gl.DeleteVertexArrays(1, &sketch.Vao)
-	gl.DeleteBuffers(1, &sketch.Vbo)
-	gl.DeleteBuffers(1, &sketch.Vao)
+func (hc *HelloCube) Close() {
+	gl.DeleteVertexArrays(1, &hc.Vao)
+	gl.DeleteBuffers(1, &hc.Vbo)
+	gl.DeleteBuffers(1, &hc.Vao)
 	gl.UseProgram(0)
 }
 
-func (sketch *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		sketch.Window.SetShouldClose(true)
+		hc.Window.SetShouldClose(true)
 	}
 }
 
-func (sketch *HelloCube) HandleMousePosition(xpos, ypos float64) {
+func (hc *HelloCube) HandleMousePosition(xpos, ypos float64) {
 
 }
 
-func (sketch *HelloCube) HandleScroll(xoff, yoff float64) {
+func (hc *HelloCube) HandleScroll(xoff, yoff float64) {
 
 }
