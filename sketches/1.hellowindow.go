@@ -8,8 +8,8 @@ type HelloWindow struct {
 	Window *glfw.Window
 }
 
-func (sketch *HelloWindow) Setup() {
-
+func (sketch *HelloWindow) Setup() error {
+	return nil
 }
 
 func (sketch *HelloWindow) Draw() {

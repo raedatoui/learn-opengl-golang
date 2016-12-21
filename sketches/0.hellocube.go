@@ -11,7 +11,6 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl/utils"
 	_ "image/png"
-	"log"
 )
 
 type HelloCube struct {
@@ -24,7 +23,7 @@ type HelloCube struct {
 	ModelUniform        int32
 }
 
-func (sketch *HelloCube) Setup() {
+func (sketch *HelloCube) Setup() error {
 	var cubeVertices = []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -111,7 +110,7 @@ func (sketch *HelloCube) Setup() {
 	var err error
 	sketch.Program, err = utils.BasicProgram(vertexShader, fragmentShader)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	gl.UseProgram(sketch.Program)
@@ -134,9 +133,9 @@ func (sketch *HelloCube) Setup() {
 	gl.BindFragDataLocation(sketch.Program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	sketch.Texture, err = utils.NewTexture("sketches/assets/0.cube/square.png")
+	sketch.Texture, err = utils.NewTexture("sketches/_assets/0.cube/square.png")
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
 	// Configure the vertex data
@@ -159,6 +158,7 @@ func (sketch *HelloCube) Setup() {
 
 	sketch.Angle = 0.0
 	sketch.PreviousTime = glfw.GetTime()
+	return nil
 }
 
 func (sketch *HelloCube) Update() {

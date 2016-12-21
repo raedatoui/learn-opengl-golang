@@ -15,11 +15,12 @@ type HelloTransformations struct {
 	Transform mgl32.Mat4
 }
 
-func (sketch *HelloTransformations) Setup() {
+func (sketch *HelloTransformations) Setup() error{
 	var err error
-	sketch.Shader, err = utils.Shader("sketches/assets/5.transformations/transform.vs", "sketches/assets/5.transformations/transform.frag", "")
+	sketch.Shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
+		"sketches/_assets/5.transformations/transform.frag", "")
 	if err != nil {
-		panic(err)
+		return err
 	}
 	gl.UseProgram(sketch.Shader)
 
@@ -70,9 +71,9 @@ func (sketch *HelloTransformations) Setup() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-	rgba, err := utils.ImageToPixelData("sketches/assets/images/container.png")
+	rgba, err := utils.ImageToPixelData("sketches/_assets/images/container.png")
 	if err != nil {
-		panic(err)
+		return err
 	}
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
@@ -97,7 +98,7 @@ func (sketch *HelloTransformations) Setup() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-	rgba, err = utils.ImageToPixelData("sketches/assets/images/awesomeface.png")
+	rgba, err = utils.ImageToPixelData("sketches/_assets/images/awesomeface.png")
 	if err != nil {
 		panic(err)
 	}
@@ -113,6 +114,8 @@ func (sketch *HelloTransformations) Setup() {
 		gl.Ptr(rgba.Pix))
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	return nil
 }
 
 func (sketch *HelloTransformations) Update() {

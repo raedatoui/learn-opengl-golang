@@ -13,14 +13,14 @@ type HelloShaders struct {
 }
 
 
-func (sketch *HelloShaders) Setup() {
+func (sketch *HelloShaders) Setup() error {
 	var err error
 	sketch.Shader, err = utils.Shader(
-		"sketches/assets/3.shaders/basic.vs",
-		"sketches/assets/3.shaders/basic.frag", "")
+		"sketches/_assets/3.shaders/basic.vs",
+		"sketches/_assets/3.shaders/basic.frag", "")
 
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	var vertices = []float32{
@@ -46,6 +46,8 @@ func (sketch *HelloShaders) Setup() {
 	gl.EnableVertexAttribArray(1)
 
 	gl.BindVertexArray(0)
+
+	return nil
 }
 
 func (sketch *HelloShaders) Update() {

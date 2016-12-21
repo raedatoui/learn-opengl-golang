@@ -24,15 +24,27 @@ type Tutorial struct {
 	Sketch sketches.Sketch
 }
 
-var theSketch sketches.Sketch
-var tutorialIndex = 0
-var tutorials []Tutorial
-var switching bool
+var (
+	theSketch sketches.Sketch
+	tutorialIndex = 0
+	tutorials []Tutorial
+	switching bool
+)
 
 func init() {
 	// This is needed to arrange that main() runs on main thread.
 	// See documentation for functions that are only allowed to be called from the main thread.
 	runtime.LockOSThread()
+}
+
+func init() {
+	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
+	if err != nil {
+		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
+	}
+	if err := os.Chdir(dir); err != nil {
+		log.Panicln("os.Chdir:", err)
+	}
 }
 
 func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
@@ -78,22 +90,22 @@ func resizeCallback(w *glfw.Window, width int, height int) {
 	theSketch.Draw()
 }
 
-func setup() *glfw.Window {
+func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
+
 	window, err := glfw.CreateWindow(WIDTH, HEIGHT, "learnopengl.com in Golang", nil, nil)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
 	window.MakeContextCurrent()
 
 	// Initialize Glow - this is the equivalent of glew
 	if err := gl.Init(); err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	// Resize Callback
@@ -103,6 +115,7 @@ func setup() *glfw.Window {
 	window.SetKeyCallback(keyCallBack)
 	window.SetCursorPosCallback(mouseCallback)
 	window.SetScrollCallback(scrollCallback)
+
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	glsl := gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION))
 	fmt.Println("OpenGL version", version, glsl)
@@ -110,67 +123,56 @@ func setup() *glfw.Window {
 	width, height := window.GetFramebufferSize()
 	gl.Viewport(0, 0, int32(width), int32(height))
 
-	return window
+	return window, nil
 }
 
-func init() {
-	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
-	if err != nil {
-		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
-	}
-	err = os.Chdir(dir)
-	if err != nil {
-		log.Panicln("os.Chdir:", err)
-	}
-}
-
-func initTutorials(window *glfw.Window) []Tutorial {
+func initTutorials(w *glfw.Window) []Tutorial {
 	// make a slice of pointers to sketch instances
 	return []Tutorial{
 		Tutorial{
 			Name:   "0. Test Cube From github.com/go-gl/examples",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCube{Window: window},
+			Sketch: &sketches.HelloCube{Window: w},
 		},
 		Tutorial{
 			Name:   "1. Hello Window",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloWindow{Window: window},
+			Sketch: &sketches.HelloWindow{Window: w},
 		},
 		Tutorial{
 			Name:   "2. Hello Triangles",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTriangle{Window: window},
+			Sketch: &sketches.HelloTriangle{Window: w},
 		},
 		Tutorial{
 			Name:   "2a. Hello Cube",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloSquare{Window: window},
+			Sketch: &sketches.HelloSquare{Window: w},
 		},
 		Tutorial{
 			Name:   "3. Shaders",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloShaders{Window: window},
+			Sketch: &sketches.HelloShaders{Window: w},
 		},
 		Tutorial{
 			Name:   "4. Textures",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTextures{Window: window},
+			Sketch: &sketches.HelloTextures{Window: w},
 		},
 		Tutorial{
 			Name:   "5. Transformations",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTransformations{Window: window},
+			Sketch: &sketches.HelloTransformations{Window: w},
 		},
 		Tutorial{
 			Name:   "6. Coordinate Systems",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCoordinates{Window: window},
+			Sketch: &sketches.HelloCoordinates{Window: w},
 		},
 		Tutorial{
 			Name:   "7. Camera (use WSDA and mouse)",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCamera{Window: window},
+			Sketch: &sketches.HelloCamera{Window: w},
 		},
 	}
 }
@@ -183,19 +185,22 @@ func main() {
 	defer glfw.Terminate()
 
 	// create window
-	window := setup()
+	window, err := setup()
+	if err != nil {
+		log.Fatalf("cant create window %v", err)
+	}
 
-	//Use a pointer to the sketch in order to call mutating functions
 	tutorials = initTutorials(window)
-	fmt.Println(len(tutorials))
 	tutorial := tutorials[tutorialIndex]
 	theSketch = tutorial.Sketch
-	theSketch.Setup()
+	if err := theSketch.Setup(); err != nil {
+		log.Fatalf("Failed setting up sketch: %v", err)
+	}
 
 	//load font (fontfile, font scale, window width, window height
-	font, err := utils.LoadFont("sketches/assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
+	font, err := utils.LoadFont("sketches/_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
 	if err != nil {
-		log.Panicf("LoadFont: %v", err)
+		log.Fatalf("LoadFont: %v", err)
 	}
 
 	gl.Enable(gl.DEPTH_TEST)
@@ -222,5 +227,4 @@ func main() {
 		glfw.PollEvents()
 	}
 	theSketch.Close()
-	glfw.Terminate()
 }

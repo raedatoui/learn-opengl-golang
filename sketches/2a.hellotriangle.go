@@ -12,7 +12,7 @@ type HelloTriangle struct {
 	Vao, Vbo      uint32
 }
 
-func (sketch *HelloTriangle) Setup() {
+func (sketch *HelloTriangle) Setup() error {
 
 	var vertexShader = `
 	#version 330 core
@@ -36,7 +36,7 @@ func (sketch *HelloTriangle) Setup() {
 	var err error
 	sketch.Program, err = utils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	gl.UseProgram(sketch.Program)
 
@@ -56,6 +56,8 @@ func (sketch *HelloTriangle) Setup() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
+
+	return nil
 }
 
 func (sketch *HelloTriangle) Update() {

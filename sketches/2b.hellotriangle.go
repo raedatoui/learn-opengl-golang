@@ -12,7 +12,7 @@ type HelloSquare struct {
 	Vao, Vbo, Ebo uint32
 }
 
-func (sketch *HelloSquare) Setup() {
+func (sketch *HelloSquare) Setup() error {
 	var vertexShader2 = `
 	#version 330 core
 	in vec3 vert;
@@ -42,7 +42,7 @@ func (sketch *HelloSquare) Setup() {
 	var err error
 	sketch.Program, err = utils.BasicProgram(vertexShader2, fragShader2)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	gl.UseProgram(sketch.Program)
 
@@ -64,6 +64,8 @@ func (sketch *HelloSquare) Setup() {
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
+
+	return nil
 }
 
 func (sketch *HelloSquare) Update() {
