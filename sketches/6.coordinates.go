@@ -138,7 +138,7 @@ func (hc *HelloCoordinates) Setup() error {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-	rgba, err = utils.ImageToPixelData("sketches/assets/images/awesomeface.png")
+	rgba, err = utils.ImageToPixelData("sketches/_assets/images/awesomeface.png")
 	if err != nil {
 		return err
 	}
