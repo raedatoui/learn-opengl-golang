@@ -11,8 +11,8 @@ import (
 
 	"fmt"
 
-	"github.com/raedatoui/learn-opengl/sketches"
-	"github.com/raedatoui/learn-opengl/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
+	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 const WIDTH = 800
@@ -25,10 +25,10 @@ type Tutorial struct {
 }
 
 var (
-	theSketch sketches.Sketch
+	theSketch     sketches.Sketch
 	tutorialIndex = 0
-	tutorials []Tutorial
-	switching bool
+	tutorials     []Tutorial
+	switching     bool
 )
 
 func init() {
