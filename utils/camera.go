@@ -11,24 +11,28 @@ const (
 	LEFT
 	RIGHT
 )
-const YAW = -90.0
-const PITCH = 0.0
-const SPEED = 3.0
-const SENSITIVTY = 0.25
-const ZOOM = 45.0
+
+const (
+	YAW = -90.0
+	PITCH = 0.0
+	SPEED = 3.0
+	SENSITIVTY = 0.25
+	ZOOM = 45.0
+)
 
 const (
     RadToDeg = 180/math.Pi
     DegToRad = math.Pi/180
 )
 
+// Camera is the camera object maintaing the stae
 type Camera struct {
 	Position mgl32.Vec3
 	Front    mgl32.Vec3
 	Up       mgl32.Vec3
 	Right    mgl32.Vec3
 	WorldUp  mgl32.Vec3
-	// Eular Angles
+	// Euler Angles
 	Yaw   float32
 	Pitch float32
 	// Camera options
@@ -38,7 +42,7 @@ type Camera struct {
 }
 
 func NewCamera(position, up mgl32.Vec3, yaw, pitch float32) Camera{
-	cam := Camera{
+	c:= Camera{
 		Position: position,
 		WorldUp: up,
 		Yaw: yaw,
@@ -48,13 +52,13 @@ func NewCamera(position, up mgl32.Vec3, yaw, pitch float32) Camera{
 		MouseSensitivity: SENSITIVTY,
 		Zoom: ZOOM,
 	}
-	cam.updateCameraVectors()
-	return cam
+	c.updateCameraVectors()
+	return c
 }
 
 // Constructor with scalar values
 func NewCameraWithScalars(posX, posY, posZ, upX, upY, upZ, yaw, pitch float32) Camera {
-	cam := Camera{
+	c := Camera{
 		Position: mgl32.Vec3{posX, posY, posZ},
 		WorldUp: mgl32.Vec3{upX, upY, upZ},
 		Yaw: yaw,
@@ -64,14 +68,15 @@ func NewCameraWithScalars(posX, posY, posZ, upX, upY, upZ, yaw, pitch float32) C
 		MouseSensitivity: SENSITIVTY,
 		Zoom: ZOOM,
 	}
-	cam.updateCameraVectors()
-	return cam
+	c.updateCameraVectors()
+	return c
 }
 
-func (cam *Camera)  GetViewMatrix() mgl32.Mat4 {
-	eye := cam.Position
-	center := cam.Position.Add(cam.Front)
-	up := cam.Up
+// GetViewMatrix returns the view natrix
+func (c *Camera)  GetViewMatrix() mgl32.Mat4 {
+	eye := c.Position
+	center := c.Position.Add(c.Front)
+	up := c.Up
 	return mgl32.LookAt(
 		eye.X(), eye.Y(), eye.Z(),
 		center.X(), center.Y(), center.Z(),
@@ -79,72 +84,73 @@ func (cam *Camera)  GetViewMatrix() mgl32.Mat4 {
 }
 
 // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-func (cam *Camera) ProcessKeyboard(direction int, deltaTime float32) {
-	velocity := float32(cam.MovementSpeed) * deltaTime
+func (c *Camera) ProcessKeyboard(direction int, deltaTime float32) {
+	velocity := float32(c.MovementSpeed) * deltaTime
 	if (direction == FORWARD) {
-		cam.Position = cam.Position.Add(cam.Front.Mul(velocity))
+		c.Position = c.Position.Add(c.Front.Mul(velocity))
 	}
 	if (direction == BACKWARD) {
-		cam.Position = cam.Position.Sub(cam.Front.Mul(velocity))
+		c.Position = c.Position.Sub(c.Front.Mul(velocity))
 	}
 	if (direction == LEFT) {
-		cam.Position = cam.Position.Sub(cam.Right.Mul(velocity))
+		c.Position = c.Position.Sub(c.Right.Mul(velocity))
 	}
 	if (direction == RIGHT) {
-		cam.Position = cam.Position.Add(cam.Right.Mul(velocity))
+		c.Position = c.Position.Add(c.Right.Mul(velocity))
 	}
 }
 
 // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-func (cam *Camera) ProcessMouseMovement(xoffset, yoffset float32, constrainPitch bool) {
-	xoffset *= cam.MouseSensitivity
-	yoffset *= cam.MouseSensitivity
+func (c *Camera) ProcessMouseMovement(xoffset, yoffset float32, constrainPitch bool) {
+	xoffset *= c.MouseSensitivity
+	yoffset *= c.MouseSensitivity
 
-	cam.Yaw   += xoffset
-	cam.Pitch += yoffset
+	c.Yaw   += xoffset
+	c.Pitch += yoffset
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (constrainPitch){
-		if (cam.Pitch > 89.0) {
-			cam.Pitch = 89.0
+		if (c.Pitch > 89.0) {
+			c.Pitch = 89.0
 		}
-		if (cam.Pitch < -89.0) {
-			cam.Pitch = -89.0
+		if (c.Pitch < -89.0) {
+			c.Pitch = -89.0
 		}
 	}
 	// Update Front, Right and Up Vectors using the updated Eular angles
-	cam.updateCameraVectors()
+	c.updateCameraVectors()
 }
 
 // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-func (cam *Camera) ProcessMouseScroll(yoffset float32) {
-	if (cam.Zoom >= 1.0 && cam.Zoom <= 45.0) {
-		cam.Zoom -= yoffset
+func (c *Camera) ProcessMouseScroll(yoffset float32) {
+	if (c.Zoom >= 1.0 && c.Zoom <= 45.0) {
+		c.Zoom -= yoffset
 	}
-	if (cam.Zoom <= 1.0) {
-		cam.Zoom = 1.0
+	if (c.Zoom <= 1.0) {
+		c.Zoom = 1.0
 	}
-	if (cam.Zoom >= 45.0) {
-		cam.Zoom = 45.0
+	if (c.Zoom >= 45.0) {
+		c.Zoom = 45.0
 	}
 }
 
-func (cam *Camera) updateCameraVectors() {
+func (c *Camera) updateCameraVectors() {
 	
-	x := cos(cam.Yaw * DegToRad) * cos(cam.Pitch * DegToRad)
-	y := sin(cam.Pitch * DegToRad)
-	z := sin(cam.Yaw * DegToRad) * cos(cam.Pitch * DegToRad)
+	x := cos(c.Yaw * DegToRad) * cos(c.Pitch * DegToRad)
+	y := sin(c.Pitch * DegToRad)
+	z := sin(c.Yaw * DegToRad) * cos(c.Pitch * DegToRad)
 	front := mgl32.Vec3{x, y, z}
 	front = front.Normalize()
 	// Also re-calculate the Right and Up vector
 	// Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	cam.Right = front.Cross(cam.WorldUp).Normalize()
-	cam.Up = cam.Right.Cross(cam.Front).Normalize()
+	c.Right = front.Cross(c.WorldUp).Normalize()
+	c.Up = c.Right.Cross(c.Front).Normalize()
 }
 
 func cos(f float32) float32 {
 	return float32(math.Cos(float64(f)))
 }
+
 func sin(f float32) float32 {
 	return float32(math.Sin(float64(f)))
 }

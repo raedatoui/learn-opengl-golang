@@ -5,7 +5,7 @@ import (
 )
 
 type HelloWindow struct {
-	Window *glfw.Window
+	window *glfw.Window
 }
 
 func (hw *HelloWindow) Setup() error {
@@ -26,7 +26,7 @@ func (hw *HelloWindow) Close() {
 
 func (hw *HelloWindow) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		hw.Window.SetShouldClose(true)
+		hw.window.SetShouldClose(true)
 	}
 }
 

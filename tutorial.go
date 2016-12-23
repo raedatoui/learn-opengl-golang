@@ -15,9 +15,12 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
+// WIDTH is the width of the window
 const WIDTH = 800
+// HEIGHT is the height of the window
 const HEIGHT = 600
 
+// Tutorial is a simple struct for sketches
 type Tutorial struct {
 	Name   string
 	Color  utils.ColorA
@@ -38,7 +41,7 @@ func init() {
 }
 
 func init() {
-	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl")
+	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl-golang")
 	if err != nil {
 		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
 	}
@@ -47,24 +50,24 @@ func init() {
 	}
 }
 
-func keyCallBack(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	theSketch.HandleKeyboard(key, scancode, action, mods)
-	if !switching && action == glfw.Press {
+func keyCallBack(w *glfw.Window, k glfw.Key, scancode int, a glfw.Action, mk glfw.ModifierKey) {
+	theSketch.HandleKeyboard(k, scancode, a, mk)
+	if !switching && a== glfw.Press {
 		switching = true
 		newIndex := tutorialIndex
-		if action == glfw.Press && scancode == 124 {
+		if a == glfw.Press && scancode == 124 {
 			newIndex = tutorialIndex + 1
 			if newIndex > len(tutorials)-1 {
 				newIndex = len(tutorials) - 1
 			}
 		}
-		if action == glfw.Press && scancode == 123 {
+		if a == glfw.Press && scancode == 123 {
 			newIndex = tutorialIndex - 1
 			if newIndex < 0 {
 				newIndex = 0
 			}
 		}
-		if action == glfw.Press && newIndex != tutorialIndex {
+		if a == glfw.Press && newIndex != tutorialIndex {
 			tutorialIndex = newIndex
 			theSketch.Close()
 			tut := &tutorials[newIndex]

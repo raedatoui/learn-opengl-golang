@@ -3,7 +3,7 @@ package sketches
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/raedatoui/learn-opengl/utils"
+	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 type HelloTextures struct {

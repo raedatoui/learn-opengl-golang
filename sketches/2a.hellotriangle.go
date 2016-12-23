@@ -7,9 +7,9 @@ import (
 )
 
 type HelloTriangle struct {
-	Window        *glfw.Window
-	Program       uint32
-	Vao, Vbo      uint32
+	window        *glfw.Window
+	program       uint32
+	vao, vbo      uint32
 }
 
 func (ht *HelloTriangle) Setup() error {
@@ -34,21 +34,21 @@ func (ht *HelloTriangle) Setup() error {
 		0.0, 0.5, 0.0, // Top
 	}
 	var err error
-	ht.Program, err = utils.BasicProgram(vertexShader, fragShader)
+	ht.program, err = utils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.Program)
+	gl.UseProgram(ht.program)
 
-	gl.GenVertexArrays(1, &ht.Vao)
-	gl.GenBuffers(1, &ht.Vbo)
+	gl.GenVertexArrays(1, &ht.vao)
+	gl.GenBuffers(1, &ht.vbo)
 
-	gl.BindVertexArray(ht.Vao)
+	gl.BindVertexArray(ht.vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)* utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	//vertAttrib := uint32(gl.GetAttribLocation(ht.Program, gl.Str("position\x00")))
+	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
 	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
 	// the uniform
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
@@ -68,22 +68,22 @@ func (ht *HelloTriangle) Draw() {
 	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	// Draw our first triangle
-	gl.UseProgram(ht.Program)
-	gl.BindVertexArray(ht.Vao)
+	gl.UseProgram(ht.program)
+	gl.BindVertexArray(ht.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
 func (ht *HelloTriangle) Close() {
-	gl.DeleteVertexArrays(1, &ht.Vao)
-	gl.DeleteBuffers(1, &ht.Vbo)
+	gl.DeleteVertexArrays(1, &ht.vao)
+	gl.DeleteBuffers(1, &ht.vbo)
 	gl.UseProgram(0)
 }
 
 func (ht *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		ht.Window.SetShouldClose(true)
+		ht.window.SetShouldClose(true)
 	}
 }
 
