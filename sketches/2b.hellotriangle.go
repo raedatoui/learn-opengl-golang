@@ -8,8 +8,8 @@ import (
 
 type HelloSquare struct {
 	Window        *glfw.Window
-	Program       uint32
-	Vao, Vbo, Ebo uint32
+	program       uint32
+	vao, vbo, ebo uint32
 }
 
 func (hs *HelloSquare) Setup() error {
@@ -40,25 +40,25 @@ func (hs *HelloSquare) Setup() error {
 	}
 
 	var err error
-	hs.Program, err = utils.BasicProgram(vertexShader2, fragShader2)
+	hs.program, err = utils.BasicProgram(vertexShader2, fragShader2)
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(hs.Program)
+	gl.UseProgram(hs.program)
 
-	gl.GenVertexArrays(1, &hs.Vao)
-	gl.BindVertexArray(hs.Vao)
+	gl.GenVertexArrays(1, &hs.vao)
+	gl.BindVertexArray(hs.vao)
 
-	gl.GenBuffers(1, &hs.Vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, hs.Vbo)
+	gl.GenBuffers(1, &hs.vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hs.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)* utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	gl.GenBuffers(1, &hs.Ebo)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, hs.Ebo)
+	gl.GenBuffers(1, &hs.ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, hs.ebo)
 	// seems like 4 works best here for the size of uint32
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices) * 4, gl.Ptr(indices), gl.STATIC_DRAW)
 
-	vertAttrib := uint32(gl.GetAttribLocation(hs.Program, gl.Str("vert\x00")))
+	vertAttrib := uint32(gl.GetAttribLocation(hs.program, gl.Str("vert\x00")))
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 3 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(vertAttrib)
 
@@ -73,16 +73,16 @@ func (hs *HelloSquare) Update() {
 }
 
 func (hs *HelloSquare) Draw() {
-	gl.UseProgram(hs.Program)
-	gl.BindVertexArray(hs.Vao)
+	gl.UseProgram(hs.program)
+	gl.BindVertexArray(hs.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
 func (hs *HelloSquare) Close() {
-	gl.DeleteVertexArrays(1, &hs.Vao)
-	gl.DeleteBuffers(1, &hs.Vbo)
-	gl.DeleteBuffers(1, &hs.Ebo)
+	gl.DeleteVertexArrays(1, &hs.vao)
+	gl.DeleteBuffers(1, &hs.vbo)
+	gl.DeleteBuffers(1, &hs.ebo)
 	gl.UseProgram(0)
 }
 

@@ -8,19 +8,19 @@ import (
 
 type HelloTextures struct {
 	Window             *glfw.Window
-	Shader             uint32
-	Vao, Vbo, Ebo      uint32
-	Texture1, Texture2 uint32
+	shader             uint32
+	vao, vbo, ebo      uint32
+	texture1, texture2 uint32
 }
 
 func (ht *HelloTextures) Setup() error {
 	var err error
-	ht.Shader, err = utils.Shader("sketches/_assets/4.textures/texture.vs",
+	ht.shader, err = utils.Shader("sketches/_assets/4.textures/texture.vs",
 		"sketches/_assets/4.textures/texture.frag", "")
 	if err != nil {
 		panic(err)
 	}
-	gl.UseProgram(ht.Shader)
+	gl.UseProgram(ht.shader)
 
 	vertices := []float32{
 		// Positions      // Colors       // Texture Coords
@@ -35,16 +35,16 @@ func (ht *HelloTextures) Setup() error {
 		1, 2, 3, // Second Triangle
 	}
 
-	gl.GenVertexArrays(1, &ht.Vao)
-	gl.GenBuffers(1, &ht.Vbo)
-	gl.GenBuffers(1, &ht.Ebo)
+	gl.GenVertexArrays(1, &ht.vao)
+	gl.GenBuffers(1, &ht.vbo)
+	gl.GenBuffers(1, &ht.ebo)
 
-	gl.BindVertexArray(ht.Vao)
+	gl.BindVertexArray(ht.vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.Ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.ebo)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*utils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	// Position attribute
@@ -62,8 +62,8 @@ func (ht *HelloTextures) Setup() error {
 	// ====================
 	// Texture 1
 	// ====================
-	gl.GenTextures(1, &ht.Texture1)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture1)
+	gl.GenTextures(1, &ht.texture1)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -89,8 +89,8 @@ func (ht *HelloTextures) Setup() error {
 	// ====================
 	// Texture 2
 	// ====================
-	gl.GenTextures(1, &ht.Texture2)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
+	gl.GenTextures(1, &ht.texture2)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -122,28 +122,28 @@ func (ht *HelloTextures) Update() {
 func (ht *HelloTextures) Draw() {
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture1)
-	loc1 := gl.GetUniformLocation(ht.Shader, gl.Str("ourTexture1\x00"))
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
+	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
 	gl.ActiveTexture(gl.TEXTURE1);
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
-	loc2 := gl.GetUniformLocation(ht.Shader, gl.Str("ourTexture2\x00"))
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
+	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	gl.Uniform1i(loc2, 1);
 
 	// Activate shader
-	gl.UseProgram(ht.Shader)
+	gl.UseProgram(ht.shader)
 
 	// Draw container
-	gl.BindVertexArray(ht.Vao)
+	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
 func (ht *HelloTextures) Close() {
-	gl.DeleteVertexArrays(1, &ht.Vao)
-	gl.DeleteBuffers(1, &ht.Vbo)
-	gl.DeleteBuffers(1, &ht.Ebo)
+	gl.DeleteVertexArrays(1, &ht.vao)
+	gl.DeleteBuffers(1, &ht.vbo)
+	gl.DeleteBuffers(1, &ht.ebo)
 	gl.UseProgram(0)
 }
 

@@ -17,24 +17,24 @@ var (
 
 type HelloCamera struct {
 	Window             *glfw.Window
-	Shader             uint32
-	Vao, Vbo, Ebo      uint32
-	Texture1, Texture2 uint32
-	Transform          mgl32.Mat4
-	CubePositions      []mgl32.Vec3
-	Camera             utils.Camera
-	DeltaTime, LastFrame float64
+	shader             uint32
+	vao, vbo, ebo      uint32
+	texture1, texture2 uint32
+	transform          mgl32.Mat4
+	cubePositions      []mgl32.Vec3
+	camera             utils.Camera
+	deltaTime, lastFrame float64
 }
 
 func (hc *HelloCamera) Setup() error {
 	var err error
-	hc.Shader, err = utils.Shader("sketches/_assets/6.coordinates/coordinate.vs",
+	hc.shader, err = utils.Shader("sketches/_assets/6.coordinates/coordinate.vs",
 		"sketches/_assets/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
 	}
 
-	gl.UseProgram(hc.Shader)
+	gl.UseProgram(hc.shader)
 
 	vertices := []float32{
 		-0.5, -0.5, -0.5, 0.0, 0.0,
@@ -80,7 +80,7 @@ func (hc *HelloCamera) Setup() error {
 		-0.5, 0.5, -0.5, 0.0, 1.0,
 	}
 
-	hc.CubePositions = []mgl32.Vec3{
+	hc.cubePositions = []mgl32.Vec3{
 		mgl32.Vec3{0.0, 0.0, 0.0},
 		mgl32.Vec3{2.0, 5.0, -15.0},
 		mgl32.Vec3{-1.5, -2.2, -2.5},
@@ -94,21 +94,21 @@ func (hc *HelloCamera) Setup() error {
 	}
 
 	// ====================
-	// Camera
+	// camera
 	// ====================
-	hc.Camera = utils.NewCamera(
+	hc.camera = utils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		utils.YAW, utils.PITCH,
 	)
 
-	gl.GenVertexArrays(1, &hc.Vao)
-	gl.GenBuffers(1, &hc.Vbo)
-	gl.GenBuffers(1, &hc.Ebo)
+	gl.GenVertexArrays(1, &hc.vao)
+	gl.GenBuffers(1, &hc.vbo)
+	gl.GenBuffers(1, &hc.ebo)
 
-	gl.BindVertexArray(hc.Vao)
+	gl.BindVertexArray(hc.vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, hc.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hc.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Position attribute
@@ -124,8 +124,8 @@ func (hc *HelloCamera) Setup() error {
 	// ====================
 	// Texture 1
 	// ====================
-	gl.GenTextures(1, &hc.Texture1)
-	gl.BindTexture(gl.TEXTURE_2D, hc.Texture1)
+	gl.GenTextures(1, &hc.texture1)
+	gl.BindTexture(gl.TEXTURE_2D, hc.texture1)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -151,8 +151,8 @@ func (hc *HelloCamera) Setup() error {
 	// ====================
 	// Texture 2
 	// ====================
-	gl.GenTextures(1, &hc.Texture2)
-	gl.BindTexture(gl.TEXTURE_2D, hc.Texture2)
+	gl.GenTextures(1, &hc.texture2)
+	gl.BindTexture(gl.TEXTURE_2D, hc.texture2)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -182,45 +182,45 @@ func (hc *HelloCamera) Setup() error {
 func (hc *HelloCamera) Update() {
 	// Set frame time
 	currentFrame := glfw.GetTime()
-	hc.DeltaTime = currentFrame - hc.LastFrame
-	hc.LastFrame = currentFrame
+	hc.deltaTime = currentFrame - hc.lastFrame
+	hc.lastFrame = currentFrame
 	if keys[glfw.KeyW] {
-		hc.Camera.ProcessKeyboard(utils.FORWARD, float32(hc.DeltaTime))
+		hc.camera.ProcessKeyboard(utils.FORWARD, float32(hc.deltaTime))
 	}
 	if keys[glfw.KeyS] {
-		hc.Camera.ProcessKeyboard(utils.BACKWARD, float32(hc.DeltaTime))
+		hc.camera.ProcessKeyboard(utils.BACKWARD, float32(hc.deltaTime))
 	}
 	if keys[glfw.KeyA] {
-		hc.Camera.ProcessKeyboard(utils.LEFT, float32(hc.DeltaTime))
+		hc.camera.ProcessKeyboard(utils.LEFT, float32(hc.deltaTime))
 	}
 	if keys[glfw.KeyD] {
-		hc.Camera.ProcessKeyboard(utils.RIGHT, float32(hc.DeltaTime))
+		hc.camera.ProcessKeyboard(utils.RIGHT, float32(hc.deltaTime))
 	}
 }
 
 func (hc *HelloCamera) Draw() {
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, hc.Texture1)
-	loc1 := gl.GetUniformLocation(hc.Shader, gl.Str("ourTexture1\x00"))
+	gl.BindTexture(gl.TEXTURE_2D, hc.texture1)
+	loc1 := gl.GetUniformLocation(hc.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
 	gl.ActiveTexture(gl.TEXTURE1)
-	gl.BindTexture(gl.TEXTURE_2D, hc.Texture2)
-	loc2 := gl.GetUniformLocation(hc.Shader, gl.Str("ourTexture2\x00"))
+	gl.BindTexture(gl.TEXTURE_2D, hc.texture2)
+	loc2 := gl.GetUniformLocation(hc.shader, gl.Str("ourTexture2\x00"))
 	gl.Uniform1i(loc2, 1)
 
 	// Activate shader
-	gl.UseProgram(hc.Shader)
+	gl.UseProgram(hc.shader)
 
 	// Create camera transformations
-	view := hc.Camera.GetViewMatrix()
-	projection := mgl32.Perspective(hc.Camera.Zoom, 800.0/600.0, 0.1, 1000.0)
+	view := hc.camera.GetViewMatrix()
+	projection := mgl32.Perspective(hc.camera.Zoom, 800.0/600.0, 0.1, 1000.0)
 
 	// Get their uniform location
-	modelLoc := gl.GetUniformLocation(hc.Shader, gl.Str("model\x00"))
-	viewLoc := gl.GetUniformLocation(hc.Shader,  gl.Str("view\x00"))
-	projLoc := gl.GetUniformLocation(hc.Shader, gl.Str("projection\x00"))
+	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
+	viewLoc := gl.GetUniformLocation(hc.shader,  gl.Str("view\x00"))
+	projLoc := gl.GetUniformLocation(hc.shader, gl.Str("projection\x00"))
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
 	// Note: currently we set the projection matrix each frame,
@@ -228,14 +228,14 @@ func (hc *HelloCamera) Draw() {
 	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
 
 	// Draw container
-	gl.BindVertexArray(hc.Vao)
+	gl.BindVertexArray(hc.vao)
 
 	for i := 0; i < 10; i++ {
 		// Calculate the model matrix for each object and pass it to shader before drawing
 		model := mgl32.Translate3D(
-			hc.CubePositions[i][0],
-			hc.CubePositions[i][1],
-			hc.CubePositions[i][2])
+			hc.cubePositions[i][0],
+			hc.cubePositions[i][1],
+			hc.cubePositions[i][2])
 		//angle := 20.0 * float32(i)
 		//if i % 3 == 0 {
 		angle := float32(glfw.GetTime()) * float32(i+1)
@@ -249,9 +249,9 @@ func (hc *HelloCamera) Draw() {
 }
 
 func (hc *HelloCamera) Close() {
-	gl.DeleteVertexArrays(1, &hc.Vao)
-	gl.DeleteBuffers(1, &hc.Vbo)
-	gl.DeleteBuffers(1, &hc.Ebo)
+	gl.DeleteVertexArrays(1, &hc.vao)
+	gl.DeleteBuffers(1, &hc.vbo)
+	gl.DeleteBuffers(1, &hc.ebo)
 	gl.UseProgram(0)
 }
 
@@ -279,9 +279,9 @@ func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {
     lastX = xpos
     lastY = ypos
 
-    hc.Camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+    hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
 
 func (hc *HelloCamera) HandleScroll(xoff, yoff float64) {
-	hc.Camera.ProcessMouseScroll(float32(yoff))
+	hc.camera.ProcessMouseScroll(float32(yoff))
 }

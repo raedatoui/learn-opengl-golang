@@ -7,7 +7,7 @@ import (
 )
 
 type HelloTriangle struct {
-	window        *glfw.Window
+	Window        *glfw.Window
 	program       uint32
 	vao, vbo      uint32
 }
@@ -83,7 +83,7 @@ func (ht *HelloTriangle) Close() {
 
 func (ht *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		ht.window.SetShouldClose(true)
+		ht.Window.SetShouldClose(true)
 	}
 }
 

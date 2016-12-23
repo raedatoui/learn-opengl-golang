@@ -1,6 +1,6 @@
 package sketches
 
-import "github.com/go-gl/glfw/v3.0/glfw"
+import "github.com/go-gl/glfw/v3.2/glfw"
 
 type LightingColors struct {
 	window  *glfw.Window

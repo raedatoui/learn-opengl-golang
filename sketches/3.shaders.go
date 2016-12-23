@@ -8,14 +8,14 @@ import (
 
 type HelloShaders struct {
 	Window   *glfw.Window
-	Vao, Vbo uint32
-	Shader  uint32
+	vao, vbo uint32
+	shader  uint32
 }
 
 
 func (hs *HelloShaders) Setup() error {
 	var err error
-	hs.Shader, err = utils.Shader(
+	hs.shader, err = utils.Shader(
 		"sketches/_assets/3.shaders/basic.vs",
 		"sketches/_assets/3.shaders/basic.frag", "")
 
@@ -29,12 +29,12 @@ func (hs *HelloShaders) Setup() error {
 		-0.5, -0.5, 0.0,  0.0, 1.0, 0.0, // Bottom Left
 		0.0, 0.5, 0.0,    0.0, 0.0, 1.0, // Top
 	}
-	gl.GenVertexArrays(1, &hs.Vao)
-	gl.GenBuffers(1, &hs.Vbo)
+	gl.GenVertexArrays(1, &hs.vao)
+	gl.GenBuffers(1, &hs.vbo)
 
-	gl.BindVertexArray(hs.Vao)
+	gl.BindVertexArray(hs.vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, hs.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, hs.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices) * utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// position uniform
@@ -56,15 +56,15 @@ func (hs *HelloShaders) Update() {
 
 func (hs *HelloShaders) Draw() {
 	// Draw the triangle
-	gl.UseProgram(hs.Shader)
-	gl.BindVertexArray(hs.Vao)
+	gl.UseProgram(hs.shader)
+	gl.BindVertexArray(hs.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
 }
 
 func (hs *HelloShaders) Close() {
-	gl.DeleteVertexArrays(1, &hs.Vao)
-	gl.DeleteBuffers(1, &hs.Vbo)
+	gl.DeleteVertexArrays(1, &hs.vao)
+	gl.DeleteBuffers(1, &hs.vbo)
 	gl.UseProgram(0)
 }
 

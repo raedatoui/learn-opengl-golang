@@ -15,7 +15,7 @@ import (
 
 // HelloCube  Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
 type HelloCube struct {
-	window              *glfw.Window
+	Window              *glfw.Window
 	program             uint32
 	vao, vbo            uint32
 	texture             uint32
@@ -176,7 +176,7 @@ func (hc *HelloCube) Update() {
 // Draw implements the draw method
 func (hc *HelloCube) Draw() {
 	gl.UseProgram(hc.program)
-	gl.UniformMatrix4fv(hc.model, 1, false, &hc.model[0])
+	gl.UniformMatrix4fv(hc.modelUniform, 1, false, &hc.model[0])
 
 	gl.BindVertexArray(hc.vao)
 
@@ -197,7 +197,7 @@ func (hc *HelloCube) Close() {
 // HandleKeyboard implements the draw meth
 func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
-		hc.window.SetShouldClose(true)
+		hc.Window.SetShouldClose(true)
 	}
 }
 

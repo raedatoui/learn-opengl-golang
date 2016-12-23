@@ -9,20 +9,20 @@ import (
 
 type HelloTransformations struct {
 	Window             *glfw.Window
-	Shader             uint32
-	Vao, Vbo, Ebo      uint32
+	shader             uint32
+	vao, vbo, ebo      uint32
 	Texture1, Texture2 uint32
 	Transform mgl32.Mat4
 }
 
 func (ht *HelloTransformations) Setup() error{
 	var err error
-	ht.Shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
+	ht.shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
 		"sketches/_assets/5.transformations/transform.frag", "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.Shader)
+	gl.UseProgram(ht.shader)
 
 	vertices := []float32{
 		// Positions      // Colors       // Texture Coords
@@ -37,16 +37,16 @@ func (ht *HelloTransformations) Setup() error{
 		1, 2, 3, // Second Triangle
 	}
 
-	gl.GenVertexArrays(1, &ht.Vao)
-	gl.GenBuffers(1, &ht.Vbo)
-	gl.GenBuffers(1, &ht.Ebo)
+	gl.GenVertexArrays(1, &ht.vao)
+	gl.GenBuffers(1, &ht.vbo)
+	gl.GenBuffers(1, &ht.ebo)
 
-	gl.BindVertexArray(ht.Vao)
+	gl.BindVertexArray(ht.vao)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.Vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.Ebo)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.ebo)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*utils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	// Position attribute
@@ -126,36 +126,36 @@ func (ht *HelloTransformations) Draw() {
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, ht.Texture1)
-	loc1 := gl.GetUniformLocation(ht.Shader, gl.Str("ourTexture1\x00"))
+	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
 	gl.ActiveTexture(gl.TEXTURE1);
 	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
-	loc2 := gl.GetUniformLocation(ht.Shader, gl.Str("ourTexture2\x00"))
+	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	gl.Uniform1i(loc2, 1);
 
 	// Activate shader
-	gl.UseProgram(ht.Shader)
+	gl.UseProgram(ht.shader)
 
 	// create transform
 	ht.Transform = mgl32.Translate3D(0.5, -0.5, 0.0)
 	// rotate
 	ht.Transform = ht.Transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()) , mgl32.Vec3{0.0, 0.0, 1.0}))
-	transformLoc := gl.GetUniformLocation(ht.Shader, gl.Str("transform\x00"))
+	transformLoc := gl.GetUniformLocation(ht.shader, gl.Str("transform\x00"))
 	// here we create a pointer from the first element of the matrix?
 	// read up and update this comm
 	gl.UniformMatrix4fv(transformLoc, 1, false, &ht.Transform[0])
 
 	// Draw container
-	gl.BindVertexArray(ht.Vao)
+	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
 func (ht *HelloTransformations) Close() {
-	gl.DeleteVertexArrays(1, &ht.Vao)
-	gl.DeleteBuffers(1, &ht.Vbo)
-	gl.DeleteBuffers(1, &ht.Ebo)
+	gl.DeleteVertexArrays(1, &ht.vao)
+	gl.DeleteBuffers(1, &ht.vbo)
+	gl.DeleteBuffers(1, &ht.ebo)
 	gl.UseProgram(0)
 }
 
