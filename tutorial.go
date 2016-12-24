@@ -13,6 +13,7 @@ import (
 
 	"github.com/raedatoui/learn-opengl-golang/sketches"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches/getstarted"
 )
 
 // WIDTH is the width of the window
@@ -135,47 +136,47 @@ func initTutorials(w *glfw.Window) []Tutorial {
 		Tutorial{
 			Name:   "0. Test Cube From github.com/go-gl/examples",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCube{Window: w},
+			Sketch: &getstarted.HelloCube{Window: w},
 		},
 		Tutorial{
 			Name:   "1. Hello Window",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloWindow{Window: w},
+			Sketch: &getstarted.HelloWindow{Window: w},
 		},
 		Tutorial{
 			Name:   "2. Hello Triangles",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTriangle{Window: w},
+			Sketch: &getstarted.HelloTriangle{Window: w},
 		},
 		Tutorial{
 			Name:   "2a. Hello Cube",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloSquare{Window: w},
+			Sketch: &getstarted.HelloSquare{Window: w},
 		},
 		Tutorial{
 			Name:   "3. Shaders",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloShaders{Window: w},
+			Sketch: &getstarted.HelloShaders{Window: w},
 		},
 		Tutorial{
 			Name:   "4. Textures",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTextures{Window: w},
+			Sketch: &getstarted.HelloTextures{Window: w},
 		},
 		Tutorial{
 			Name:   "5. Transformations",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloTransformations{Window: w},
+			Sketch: &getstarted.HelloTransformations{Window: w},
 		},
 		Tutorial{
 			Name:   "6. Coordinate Systems",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCoordinates{Window: w},
+			Sketch: &getstarted.HelloCoordinates{Window: w},
 		},
 		Tutorial{
 			Name:   "7. Camera (use WSDA and mouse)",
 			Color:  utils.RandColor(),
-			Sketch: &sketches.HelloCamera{Window: w},
+			Sketch: &getstarted.HelloCamera{Window: w},
 		},
 	}
 }

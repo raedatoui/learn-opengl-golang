@@ -13,7 +13,7 @@ import (
 	"io/ioutil"
 )
 
-type character struct {
+type 	character struct {
 	textureID uint32 // ID handle of the glyph texture
 	width     int    //glyph width
 	height    int    //glyph height
@@ -43,7 +43,6 @@ func LoadTrueTypeFont(program uint32, r io.Reader, scale int32, low, high rune, 
 
 	//make each gylph
 	for ch := low; ch <= high; ch++ {
-
 		char := new(character)
 
 		//create new face to measure glyph diamensions

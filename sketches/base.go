@@ -11,3 +11,14 @@ type Sketch interface {
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
 }
+
+type BaseSketch struct {
+	Sketch
+	Window *glfw.Window
+}
+
+func (s *BaseSketch) HandleKeyboard(k glfw.Key, sc int, a glfw.Action, m glfw.ModifierKey) {
+	if k == glfw.KeyEscape && a == glfw.Press {
+		s.Window.SetShouldClose(true)
+	}
+}

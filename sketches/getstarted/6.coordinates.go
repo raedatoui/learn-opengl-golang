@@ -1,4 +1,4 @@
-package sketches
+package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -7,33 +7,22 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
-var (
-	keys map[glfw.Key]bool
-	lastX float64 = 400
-	lastY float64 = 300
-	firstMouse bool = true
-)
-
-
-type HelloCamera struct {
+type HelloCoordinates struct {
 	Window             *glfw.Window
 	shader             uint32
 	vao, vbo, ebo      uint32
 	texture1, texture2 uint32
 	transform          mgl32.Mat4
 	cubePositions      []mgl32.Vec3
-	camera             utils.Camera
-	deltaTime, lastFrame float64
 }
 
-func (hc *HelloCamera) Setup() error {
+func (hc *HelloCoordinates) Setup() error {
 	var err error
 	hc.shader, err = utils.Shader("sketches/_assets/6.coordinates/coordinate.vs",
 		"sketches/_assets/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
 	}
-
 	gl.UseProgram(hc.shader)
 
 	vertices := []float32{
@@ -93,15 +82,6 @@ func (hc *HelloCamera) Setup() error {
 		mgl32.Vec3{-1.3, 1.0, -1.5},
 	}
 
-	// ====================
-	// camera
-	// ====================
-	hc.camera = utils.NewCamera(
-		mgl32.Vec3{0.0, 0.0, 3.0},
-		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
-	)
-
 	gl.GenVertexArrays(1, &hc.vao)
 	gl.GenBuffers(1, &hc.vbo)
 	gl.GenBuffers(1, &hc.ebo)
@@ -133,7 +113,7 @@ func (hc *HelloCamera) Setup() error {
 
 	rgba, err := utils.ImageToPixelData("sketches/_assets/images/container.png")
 	if err != nil {
-		return err
+		panic(err)
 	}
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
@@ -175,30 +155,14 @@ func (hc *HelloCamera) Setup() error {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
-	keys = make(map[glfw.Key]bool)
 	return nil
 }
 
-func (hc *HelloCamera) Update() {
-	// Set frame time
-	currentFrame := glfw.GetTime()
-	hc.deltaTime = currentFrame - hc.lastFrame
-	hc.lastFrame = currentFrame
-	if keys[glfw.KeyW] {
-		hc.camera.ProcessKeyboard(utils.FORWARD, float32(hc.deltaTime))
-	}
-	if keys[glfw.KeyS] {
-		hc.camera.ProcessKeyboard(utils.BACKWARD, float32(hc.deltaTime))
-	}
-	if keys[glfw.KeyA] {
-		hc.camera.ProcessKeyboard(utils.LEFT, float32(hc.deltaTime))
-	}
-	if keys[glfw.KeyD] {
-		hc.camera.ProcessKeyboard(utils.RIGHT, float32(hc.deltaTime))
-	}
+func (hc *HelloCoordinates) Update() {
+
 }
 
-func (hc *HelloCamera) Draw() {
+func (hc *HelloCoordinates) Draw() {
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, hc.texture1)
@@ -213,10 +177,9 @@ func (hc *HelloCamera) Draw() {
 	// Activate shader
 	gl.UseProgram(hc.shader)
 
-	// Create camera transformations
-	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(hc.camera.Zoom, 800.0/600.0, 0.1, 1000.0)
-
+	// Create transformations
+	view := mgl32.Translate3D(0.0, 0.0, -3.0)
+	projection := mgl32.Perspective(45.0, 800.0 / 600.0, 0.1, 100.0)
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(hc.shader,  gl.Str("view\x00"))
@@ -248,40 +211,23 @@ func (hc *HelloCamera) Draw() {
 	gl.BindVertexArray(0)
 }
 
-func (hc *HelloCamera) Close() {
+func (hc *HelloCoordinates) Close() {
 	gl.DeleteVertexArrays(1, &hc.vao)
 	gl.DeleteBuffers(1, &hc.vbo)
 	gl.DeleteBuffers(1, &hc.ebo)
 	gl.UseProgram(0)
 }
 
-func (hc *HelloCamera) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+func (hc *HelloCoordinates) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	if key == glfw.KeyEscape && action == glfw.Press {
 		hc.Window.SetShouldClose(true)
 	}
-    if action == glfw.Press {
-		keys[key] = true
-	} else if action == glfw.Release {
-		keys[key] = false
-	}
 }
 
-func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {
-	if firstMouse {
-		lastX = xpos
-		lastY = ypos
-		firstMouse = false
-	}
+func (hc *HelloCoordinates) HandleMousePosition(xpos, ypos float64) {
 
-    xoffset := xpos - lastX
-    yoffset := lastY - ypos  // Reversed since y-coordinates go from bottom to left
-
-    lastX = xpos
-    lastY = ypos
-
-    hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
 
-func (hc *HelloCamera) HandleScroll(xoff, yoff float64) {
-	hc.camera.ProcessMouseScroll(float32(yoff))
+func (hc *HelloCoordinates) HandleScroll(xoff, yoff float64) {
+
 }

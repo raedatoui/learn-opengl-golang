@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package sketches represents each tutorial
-package sketches
+package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -11,10 +11,12 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	_ "image/png"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
 )
 
 // HelloCube  Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
 type HelloCube struct {
+	sketches.BaseSketch
 	Window              *glfw.Window
 	program             uint32
 	vao, vbo            uint32
@@ -195,11 +197,11 @@ func (hc *HelloCube) Close() {
 }
 
 // HandleKeyboard implements the draw meth
-func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hc.Window.SetShouldClose(true)
-	}
-}
+//func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+//	if key == glfw.KeyEscape && action == glfw.Press {
+//		hc.Window.SetShouldClose(true)
+//	}
+//}
 
 func (hc *HelloCube) HandleMousePosition(xpos, ypos float64) {
 
