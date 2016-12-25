@@ -17,7 +17,6 @@ import (
 // HelloCube  Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
 type HelloCube struct {
 	sketches.BaseSketch
-	Window              *glfw.Window
 	program             uint32
 	vao, vbo            uint32
 	texture             uint32
@@ -27,7 +26,13 @@ type HelloCube struct {
 }
 
 // Setup is inherited
-func (hc *HelloCube) Setup() error {
+func (hc *HelloCube) Setup(w *glfw.Window, f *utils.Font) error {
+	hc.Window = w
+	hc.Font = f
+	hc.angle = 0.0
+	hc.Color = utils.RandColor()
+	hc.Name = "0. Test Cube From github.com/go-gl/examples"
+
 	var cubeVertices = []float32{
 		//  X, Y, Z, U, V
 		// Bottom
@@ -158,10 +163,13 @@ func (hc *HelloCube) Setup() error {
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
 
-	// Configure global settings
 
-	hc.angle = 0.0
 	hc.previousTime = glfw.GetTime()
+
+	// TODO: move this later - or address it. do we always need to enabled the depth test?
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+
 	return nil
 }
 
@@ -177,6 +185,9 @@ func (hc *HelloCube) Update() {
 
 // Draw implements the draw method
 func (hc *HelloCube) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(hc.Color.R, hc.Color.G, hc.Color.B, hc.Color.A)
+
 	gl.UseProgram(hc.program)
 	gl.UniformMatrix4fv(hc.modelUniform, 1, false, &hc.model[0])
 
@@ -186,6 +197,9 @@ func (hc *HelloCube) Draw() {
 	gl.BindTexture(gl.TEXTURE_2D, hc.texture)
 
 	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
+
+	hc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
+	hc.Font.Printf(30, 30, 0.5, hc.Name)
 
 }
 
@@ -197,11 +211,11 @@ func (hc *HelloCube) Close() {
 }
 
 // HandleKeyboard implements the draw meth
-//func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-//	if key == glfw.KeyEscape && action == glfw.Press {
-//		hc.Window.SetShouldClose(true)
-//	}
-//}
+func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
+	if key == glfw.KeyEscape && action == glfw.Press {
+		hc.Window.SetShouldClose(true)
+	}
+}
 
 func (hc *HelloCube) HandleMousePosition(xpos, ypos float64) {
 

@@ -4,15 +4,20 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
 )
 
 type HelloTriangle struct {
-	Window        *glfw.Window
-	program       uint32
-	vao, vbo      uint32
+	sketches.BaseSketch
+	program  uint32
+	vao, vbo uint32
 }
 
-func (ht *HelloTriangle) Setup() error {
+func (ht *HelloTriangle) Setup(w *glfw.Window, f *utils.Font) error {
+	ht.Window = w
+	ht.Font = f
+	ht.Color = utils.RandColor()
+	ht.Name = "2. Hello Triangles"
 
 	var vertexShader = `
 	#version 330 core
@@ -46,12 +51,12 @@ func (ht *HelloTriangle) Setup() error {
 	gl.BindVertexArray(ht.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)* utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
 	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
 	// the uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
@@ -65,6 +70,8 @@ func (ht *HelloTriangle) Update() {
 }
 
 func (ht *HelloTriangle) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(ht.Color.R, ht.Color.G, ht.Color.B, ht.Color.A)
 	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	// Draw our first triangle
@@ -73,6 +80,9 @@ func (ht *HelloTriangle) Draw() {
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
+
+	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
+	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTriangle) Close() {

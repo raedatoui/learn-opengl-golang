@@ -92,11 +92,11 @@ func (hc *HelloCoordinates) Setup() error {
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
@@ -179,10 +179,10 @@ func (hc *HelloCoordinates) Draw() {
 
 	// Create transformations
 	view := mgl32.Translate3D(0.0, 0.0, -3.0)
-	projection := mgl32.Perspective(45.0, 800.0 / 600.0, 0.1, 100.0)
+	projection := mgl32.Perspective(45.0, 800.0/600.0, 0.1, 100.0)
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
-	viewLoc := gl.GetUniformLocation(hc.shader,  gl.Str("view\x00"))
+	viewLoc := gl.GetUniformLocation(hc.shader, gl.Str("view\x00"))
 	projLoc := gl.GetUniformLocation(hc.shader, gl.Str("projection\x00"))
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])

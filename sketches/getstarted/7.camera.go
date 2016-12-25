@@ -8,21 +8,20 @@ import (
 )
 
 var (
-	keys map[glfw.Key]bool
-	lastX float64 = 400
-	lastY float64 = 300
-	firstMouse bool = true
+	keys       map[glfw.Key]bool
+	lastX      float64 = 400
+	lastY      float64 = 300
+	firstMouse bool    = true
 )
 
-
 type HelloCamera struct {
-	Window             *glfw.Window
-	shader             uint32
-	vao, vbo, ebo      uint32
-	texture1, texture2 uint32
-	transform          mgl32.Mat4
-	cubePositions      []mgl32.Vec3
-	camera             utils.Camera
+	Window               *glfw.Window
+	shader               uint32
+	vao, vbo, ebo        uint32
+	texture1, texture2   uint32
+	transform            mgl32.Mat4
+	cubePositions        []mgl32.Vec3
+	camera               utils.Camera
 	deltaTime, lastFrame float64
 }
 
@@ -112,11 +111,11 @@ func (hc *HelloCamera) Setup() error {
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5 * utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
@@ -219,7 +218,7 @@ func (hc *HelloCamera) Draw() {
 
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
-	viewLoc := gl.GetUniformLocation(hc.shader,  gl.Str("view\x00"))
+	viewLoc := gl.GetUniformLocation(hc.shader, gl.Str("view\x00"))
 	projLoc := gl.GetUniformLocation(hc.shader, gl.Str("projection\x00"))
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
@@ -259,7 +258,7 @@ func (hc *HelloCamera) HandleKeyboard(key glfw.Key, scancode int, action glfw.Ac
 	if key == glfw.KeyEscape && action == glfw.Press {
 		hc.Window.SetShouldClose(true)
 	}
-    if action == glfw.Press {
+	if action == glfw.Press {
 		keys[key] = true
 	} else if action == glfw.Release {
 		keys[key] = false
@@ -273,13 +272,13 @@ func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {
 		firstMouse = false
 	}
 
-    xoffset := xpos - lastX
-    yoffset := lastY - ypos  // Reversed since y-coordinates go from bottom to left
+	xoffset := xpos - lastX
+	yoffset := lastY - ypos // Reversed since y-coordinates go from bottom to left
 
-    lastX = xpos
-    lastY = ypos
+	lastX = xpos
+	lastY = ypos
 
-    hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+	hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
 
 func (hc *HelloCamera) HandleScroll(xoff, yoff float64) {

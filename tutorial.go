@@ -12,27 +12,26 @@ import (
 	"fmt"
 
 	"github.com/raedatoui/learn-opengl-golang/sketches"
-	"github.com/raedatoui/learn-opengl-golang/utils"
 	"github.com/raedatoui/learn-opengl-golang/sketches/getstarted"
+	"github.com/raedatoui/learn-opengl-golang/utils"
+	"reflect"
+
 )
 
 // WIDTH is the width of the window
 const WIDTH = 800
+
 // HEIGHT is the height of the window
 const HEIGHT = 600
 
-// Tutorial is a simple struct for sketches
-type Tutorial struct {
-	Name   string
-	Color  utils.ColorA
-	Sketch sketches.Sketch
-}
-
 var (
-	theSketch     sketches.Sketch
-	tutorialIndex = 0
-	tutorials     []Tutorial
+	currentSlide  sketches.Slide
+	currentSketch sketches.Sketch // polymorphic
+	slides        []sketches.Slide
+	slideIndex    = 0
 	switching     bool
+	window        *glfw.Window
+	font          *utils.Font
 )
 
 func init() {
@@ -51,47 +50,49 @@ func init() {
 	}
 }
 
-func keyCallBack(w *glfw.Window, k glfw.Key, scancode int, a glfw.Action, mk glfw.ModifierKey) {
-	theSketch.HandleKeyboard(k, scancode, a, mk)
-	if !switching && a== glfw.Press {
+func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+	if currentSketch != nil {
+		sketches.HandleKeyboardSketch(currentSketch, k, s, a, mk)
+	}
+
+	if !switching && a == glfw.Press {
 		switching = true
-		newIndex := tutorialIndex
-		if a == glfw.Press && scancode == 124 {
-			newIndex = tutorialIndex + 1
-			if newIndex > len(tutorials)-1 {
-				newIndex = len(tutorials) - 1
+		newIndex := slideIndex
+		if a == glfw.Press && s == 124 {
+			newIndex = slideIndex + 1
+			if newIndex > len(slides)-1 {
+				newIndex = len(slides) - 1
 			}
 		}
-		if a == glfw.Press && scancode == 123 {
-			newIndex = tutorialIndex - 1
+		if a == glfw.Press && s == 123 {
+			newIndex = slideIndex - 1
 			if newIndex < 0 {
 				newIndex = 0
 			}
 		}
-		if a == glfw.Press && newIndex != tutorialIndex {
-			tutorialIndex = newIndex
-			theSketch.Close()
-			tut := &tutorials[newIndex]
-			tut.Color = utils.RandColor()
-			theSketch = tut.Sketch
-			theSketch.Setup()
+		if a == glfw.Press && newIndex != slideIndex {
+			slideIndex = newIndex
+			currentSketch.Close()
+			currentSlide = slides[newIndex]
+			currentSketch = getSketch(currentSlide)
+			sketches.SetupSlide(currentSlide, window, font)
 		}
 		switching = false
 	}
 }
 
 func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
-	theSketch.HandleMousePosition(xpos, ypos)
+	sketches.HandleMousePositionSketch(currentSketch, xpos, ypos)
 }
 
 func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
-	theSketch.HandleScroll(xoff, xoff)
+	sketches.HandleScrollSketch(currentSketch, xoff, yoff)
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
-	theSketch.Update()
-	theSketch.Draw()
+	sketches.UpdateSlide(currentSlide)
+	sketches.DrawSlide(currentSlide)
 }
 
 func setup() (*glfw.Window, error) {
@@ -130,55 +131,49 @@ func setup() (*glfw.Window, error) {
 	return window, nil
 }
 
-func initTutorials(w *glfw.Window) []Tutorial {
+func setupSlides() []sketches.Slide {
 	// make a slice of pointers to sketch instances
-	return []Tutorial{
-		Tutorial{
-			Name:   "0. Test Cube From github.com/go-gl/examples",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloCube{Window: w},
-		},
-		Tutorial{
-			Name:   "1. Hello Window",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloWindow{Window: w},
-		},
-		Tutorial{
-			Name:   "2. Hello Triangles",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloTriangle{Window: w},
-		},
-		Tutorial{
-			Name:   "2a. Hello Cube",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloSquare{Window: w},
-		},
-		Tutorial{
-			Name:   "3. Shaders",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloShaders{Window: w},
-		},
-		Tutorial{
-			Name:   "4. Textures",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloTextures{Window: w},
-		},
-		Tutorial{
-			Name:   "5. Transformations",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloTransformations{Window: w},
-		},
-		Tutorial{
-			Name:   "6. Coordinate Systems",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloCoordinates{Window: w},
-		},
-		Tutorial{
-			Name:   "7. Camera (use WSDA and mouse)",
-			Color:  utils.RandColor(),
-			Sketch: &getstarted.HelloCamera{Window: w},
-		},
+	return []sketches.Slide{
+		&getstarted.HelloCube{},
+		&getstarted.HelloWindow{},
+		&getstarted.HelloTriangle{},
+		&getstarted.HelloSquare{},
+		&getstarted.HelloShaders{},
+		//},
+		//Tutorial{
+		//	Name:   "4. Textures",
+		//	Color:  utils.RandColor(),
+		//	Sketch: &getstarted.HelloTextures{},
+		//},
+		//Tutorial{
+		//	Name:   "5. Transformations",
+		//	Color:  utils.RandColor(),
+		//	Sketch: &getstarted.HelloTransformations{},
+		//},
+		//Tutorial{
+		//	Name:   "6. Coordinate Systems",
+		//	Color:  utils.RandColor(),
+		//	Sketch: &getstarted.HelloCoordinates{},
+		//},
+		//Tutorial{
+		//	Name:   "7. Camera (use WSDA and mouse)",
+		//	Color:  utils.RandColor(),
+		//	Sketch: &getstarted.HelloCamera{},
+		//},
 	}
+}
+
+func getSketch(o interface{}) sketches.Sketch {
+	i := reflect.ValueOf(o).Type()
+	s := reflect.TypeOf((*sketches.Sketch)(nil)).Elem()
+	if i.Implements(s) {
+		s, ok := currentSlide.(sketches.Sketch)
+		if !ok {
+			log.Fatalf("cant convert Slide to Sketch. Bravo!")
+		}
+		return s
+	}
+	return nil
 }
 
 func main() {
@@ -189,46 +184,39 @@ func main() {
 	defer glfw.Terminate()
 
 	// create window
-	window, err := setup()
+	w, err := setup()
 	if err != nil {
 		log.Fatalf("cant create window %v", err)
 	}
-
-	tutorials = initTutorials(window)
-	tutorial := tutorials[tutorialIndex]
-	theSketch = tutorial.Sketch
-	if err := theSketch.Setup(); err != nil {
-		log.Fatalf("Failed setting up sketch: %v", err)
-	}
+	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	font, err := utils.LoadFont("sketches/_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
+	f, err := utils.LoadFont("sketches/_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}
+	font  = f
 
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
+	slides = setupSlides()
+	currentSlide = slides[0]
+	currentSketch = getSketch(currentSlide)
+
+	if err := sketches.SetupSlide(currentSlide, window, font); err != nil {
+		log.Fatalf("Failed setting up sketch: %v", err)
+	}
 
 	// loop
 	for !window.ShouldClose() {
-		t := tutorials[tutorialIndex]
 
 		// Update
-		theSketch.Update()
-
-		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-		gl.ClearColor(t.Color.R, t.Color.G, t.Color.B, t.Color.A)
+		sketches.UpdateSlide(currentSlide)
 
 		//Render
-		theSketch.Draw()
-
-		font.SetColor(0.0, 0.0, 0.0, 1.0)
-		font.Printf(30, 30, 0.5, t.Name)
+		sketches.DrawSlide(currentSlide)
 
 		window.SwapBuffers()
 		// Poll Events
 		glfw.PollEvents()
 	}
-	theSketch.Close()
+	sketches.CloseSlide(currentSlide)
 }

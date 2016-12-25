@@ -13,7 +13,7 @@ import (
 	"io/ioutil"
 )
 
-type 	character struct {
+type character struct {
 	textureID uint32 // ID handle of the glyph texture
 	width     int    //glyph width
 	height    int    //glyph height

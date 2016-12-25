@@ -7,5 +7,5 @@ type ColorA struct {
 }
 
 func RandColor() ColorA {
-	return ColorA{rand.Float32(),rand.Float32(), rand.Float32(), 1.0 }
+	return ColorA{rand.Float32(), rand.Float32(), rand.Float32(), 1.0}
 }

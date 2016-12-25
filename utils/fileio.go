@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"os"
-	"log"
 	"io/ioutil"
+	"log"
+	"os"
 )
 
 func readFile(file string) ([]byte, error) {

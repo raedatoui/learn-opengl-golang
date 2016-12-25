@@ -24,10 +24,10 @@ func (ht *HelloTextures) Setup() error {
 
 	vertices := []float32{
 		// Positions      // Colors       // Texture Coords
-		 0.5,  0.5, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, // Top Right
-		 0.5, -0.5, 0.0,  0.0, 1.0, 0.0,  1.0, 0.0, // Bottom Right
-		-0.5, -0.5, 0.0,  0.0, 0.0, 1.0,  0.0, 0.0, // Bottom Left
-		-0.5,  0.5, 0.0,  1.0, 1.0, 0.0,  0.0, 1.0, // Top Left
+		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, // Top Right
+		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, // Bottom Right
+		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, // Bottom Left
+		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
 	}
 
 	indices := []uint32{ // Note that we start from 0!
@@ -126,10 +126,10 @@ func (ht *HelloTextures) Draw() {
 	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
-	gl.ActiveTexture(gl.TEXTURE1);
+	gl.ActiveTexture(gl.TEXTURE1)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
 	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
-	gl.Uniform1i(loc2, 1);
+	gl.Uniform1i(loc2, 1)
 
 	// Activate shader
 	gl.UseProgram(ht.shader)

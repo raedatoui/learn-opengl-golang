@@ -3,8 +3,8 @@ package getstarted
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/raedatoui/learn-opengl-golang/utils"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 type HelloTransformations struct {
@@ -12,10 +12,10 @@ type HelloTransformations struct {
 	shader             uint32
 	vao, vbo, ebo      uint32
 	Texture1, Texture2 uint32
-	Transform mgl32.Mat4
+	Transform          mgl32.Mat4
 }
 
-func (ht *HelloTransformations) Setup() error{
+func (ht *HelloTransformations) Setup() error {
 	var err error
 	ht.shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
 		"sketches/_assets/5.transformations/transform.frag", "")
@@ -26,10 +26,10 @@ func (ht *HelloTransformations) Setup() error{
 
 	vertices := []float32{
 		// Positions      // Colors       // Texture Coords
-		 0.5,  0.5, 0.0,  1.0, 0.0, 0.0,  1.0, 1.0, // Top Right
-		 0.5, -0.5, 0.0,  0.0, 1.0, 0.0,  1.0, 0.0, // Bottom Right
-		-0.5, -0.5, 0.0,  0.0, 0.0, 1.0,  0.0, 0.0, // Bottom Left
-		-0.5,  0.5, 0.0,  1.0, 1.0, 0.0,  0.0, 1.0, // Top Left
+		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, // Top Right
+		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, // Bottom Right
+		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, // Bottom Left
+		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
 	}
 
 	indices := []uint32{ // Note that we start from 0!
@@ -129,10 +129,10 @@ func (ht *HelloTransformations) Draw() {
 	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
-	gl.ActiveTexture(gl.TEXTURE1);
+	gl.ActiveTexture(gl.TEXTURE1)
 	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
 	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
-	gl.Uniform1i(loc2, 1);
+	gl.Uniform1i(loc2, 1)
 
 	// Activate shader
 	gl.UseProgram(ht.shader)
@@ -140,7 +140,7 @@ func (ht *HelloTransformations) Draw() {
 	// create transform
 	ht.Transform = mgl32.Translate3D(0.5, -0.5, 0.0)
 	// rotate
-	ht.Transform = ht.Transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()) , mgl32.Vec3{0.0, 0.0, 1.0}))
+	ht.Transform = ht.Transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0.0, 0.0, 1.0}))
 	transformLoc := gl.GetUniformLocation(ht.shader, gl.Str("transform\x00"))
 	// here we create a pointer from the first element of the matrix?
 	// read up and update this comm
