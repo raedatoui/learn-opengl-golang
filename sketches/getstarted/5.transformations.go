@@ -5,17 +5,23 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
 )
 
 type HelloTransformations struct {
-	Window             *glfw.Window
+	sketches.BaseSketch
 	shader             uint32
 	vao, vbo, ebo      uint32
-	Texture1, Texture2 uint32
-	Transform          mgl32.Mat4
+	texture1, texture2 uint32
+	transform          mgl32.Mat4
 }
 
-func (ht *HelloTransformations) Setup() error {
+func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
+	ht.Window = w
+	ht.Font = f
+	ht.Name = "5. Transformations"
+	ht.Color = utils.RandColor()
+
 	var err error
 	ht.shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
 		"sketches/_assets/5.transformations/transform.frag", "")
@@ -64,8 +70,8 @@ func (ht *HelloTransformations) Setup() error {
 	// ====================
 	// Texture 1
 	// ====================
-	gl.GenTextures(1, &ht.Texture1)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture1)
+	gl.GenTextures(1, &ht.texture1)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -91,8 +97,8 @@ func (ht *HelloTransformations) Setup() error {
 	// ====================
 	// Texture 2
 	// ====================
-	gl.GenTextures(1, &ht.Texture2)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
+	gl.GenTextures(1, &ht.texture2)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -123,14 +129,17 @@ func (ht *HelloTransformations) Update() {
 }
 
 func (ht *HelloTransformations) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(ht.Color.R, ht.Color.G, ht.Color.B, ht.Color.A)
+
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture1)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
 	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	gl.Uniform1i(loc1, 0)
 
 	gl.ActiveTexture(gl.TEXTURE1)
-	gl.BindTexture(gl.TEXTURE_2D, ht.Texture2)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
 	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	gl.Uniform1i(loc2, 1)
 
@@ -138,18 +147,21 @@ func (ht *HelloTransformations) Draw() {
 	gl.UseProgram(ht.shader)
 
 	// create transform
-	ht.Transform = mgl32.Translate3D(0.5, -0.5, 0.0)
+	ht.transform = mgl32.Translate3D(0.5, -0.5, 0.0)
 	// rotate
-	ht.Transform = ht.Transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0.0, 0.0, 1.0}))
+	ht.transform = ht.transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0.0, 0.0, 1.0}))
 	transformLoc := gl.GetUniformLocation(ht.shader, gl.Str("transform\x00"))
 	// here we create a pointer from the first element of the matrix?
 	// read up and update this comm
-	gl.UniformMatrix4fv(transformLoc, 1, false, &ht.Transform[0])
+	gl.UniformMatrix4fv(transformLoc, 1, false, &ht.transform[0])
 
 	// Draw container
 	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
+
+	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
+	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTransformations) Close() {

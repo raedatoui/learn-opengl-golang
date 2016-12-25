@@ -139,27 +139,10 @@ func setupSlides() []sketches.Slide {
 		&getstarted.HelloTriangle{},
 		&getstarted.HelloSquare{},
 		&getstarted.HelloShaders{},
-		//},
-		//Tutorial{
-		//	Name:   "4. Textures",
-		//	Color:  utils.RandColor(),
-		//	Sketch: &getstarted.HelloTextures{},
-		//},
-		//Tutorial{
-		//	Name:   "5. Transformations",
-		//	Color:  utils.RandColor(),
-		//	Sketch: &getstarted.HelloTransformations{},
-		//},
-		//Tutorial{
-		//	Name:   "6. Coordinate Systems",
-		//	Color:  utils.RandColor(),
-		//	Sketch: &getstarted.HelloCoordinates{},
-		//},
-		//Tutorial{
-		//	Name:   "7. Camera (use WSDA and mouse)",
-		//	Color:  utils.RandColor(),
-		//	Sketch: &getstarted.HelloCamera{},
-		//},
+		&getstarted.HelloTextures{},
+		&getstarted.HelloTransformations{},
+		&getstarted.HelloCoordinates{},
+		&getstarted.HelloCamera{},
 	}
 }
 

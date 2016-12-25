@@ -5,6 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
 )
 
 var (
@@ -15,7 +16,7 @@ var (
 )
 
 type HelloCamera struct {
-	Window               *glfw.Window
+	sketches.BaseSketch
 	shader               uint32
 	vao, vbo, ebo        uint32
 	texture1, texture2   uint32
@@ -25,7 +26,12 @@ type HelloCamera struct {
 	deltaTime, lastFrame float64
 }
 
-func (hc *HelloCamera) Setup() error {
+func (hc *HelloCamera) Setup(w *glfw.Window, f *utils.Font) error {
+	hc.Name = "7. Camera (use WSDA and mouse)"
+	hc.Color = utils.RandColor()
+	hc.Window = w
+	hc.Font = f
+
 	var err error
 	hc.shader, err = utils.Shader("sketches/_assets/6.coordinates/coordinate.vs",
 		"sketches/_assets/6.coordinates/coordinate.frag", "")
@@ -198,6 +204,9 @@ func (hc *HelloCamera) Update() {
 }
 
 func (hc *HelloCamera) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(hc.Color.R, hc.Color.G, hc.Color.B, hc.Color.A)
+
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, hc.texture1)
@@ -245,6 +254,9 @@ func (hc *HelloCamera) Draw() {
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	}
 	gl.BindVertexArray(0)
+
+	hc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
+	hc.Font.Printf(30, 30, 0.5, hc.Name)
 }
 
 func (hc *HelloCamera) Close() {

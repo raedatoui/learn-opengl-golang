@@ -4,16 +4,22 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sketches"
 )
 
 type HelloTextures struct {
-	Window             *glfw.Window
+	sketches.BaseSketch
 	shader             uint32
 	vao, vbo, ebo      uint32
 	texture1, texture2 uint32
 }
 
-func (ht *HelloTextures) Setup() error {
+func (ht *HelloTextures) Setup(w *glfw.Window, f *utils.Font) error {
+	ht.Window = w
+	ht.Font = f
+	ht.Color = utils.RandColor()
+	ht.Name = "4. Textures"
+
 	var err error
 	ht.shader, err = utils.Shader("sketches/_assets/4.textures/texture.vs",
 		"sketches/_assets/4.textures/texture.frag", "")
@@ -120,6 +126,9 @@ func (ht *HelloTextures) Update() {
 }
 
 func (ht *HelloTextures) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(ht.Color.R, ht.Color.G, ht.Color.B, ht.Color.A)
+
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
@@ -138,6 +147,9 @@ func (ht *HelloTextures) Draw() {
 	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
+
+	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
+	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTextures) Close() {
