@@ -16,13 +16,8 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
 )
-
-// WIDTH is the width of the window
-const WIDTH = 800
-
-// HEIGHT is the height of the window
-const HEIGHT = 600
 
 var (
 	currentSlide  sections.Slide
@@ -51,7 +46,7 @@ func init() {
 }
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-	if k == glfw.KeyEscape && a== glfw.Press {
+	if k == glfw.KeyEscape && a == glfw.Press {
 		window.SetShouldClose(true)
 	}
 
@@ -110,7 +105,7 @@ func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 
-	window, err := glfw.CreateWindow(WIDTH, HEIGHT, "learnopengl.com in Golang", nil, nil)
+	window, err := glfw.CreateWindow(utils.WIDTH, utils.HEIGHT, "learnopengl.com in Golang", nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +137,7 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
-		&sections.TitleSlide{Name: "Test Installation of gl,\nglwf, glow"},
+		&sections.TitleSlide{Name: "Test Installation of gl,\nglfw, glow"},
 		new(getstarted.HelloCube),
 		&sections.TitleSlide{Name: "Section 1: Getting Started"},
 		new(getstarted.HelloWindow),
@@ -154,6 +149,7 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
 		&sections.TitleSlide{Name: "Section 2: Lighting"},
+		new(sketches.LightingColors),
 	}
 }
 
@@ -185,7 +181,7 @@ func main() {
 	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	f, err := utils.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
+	f, err := utils.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), utils.WIDTH, utils.HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}

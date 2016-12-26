@@ -9,9 +9,9 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	_ "image/png"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 // HelloCube  Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
@@ -162,7 +162,6 @@ func (hc *HelloCube) Setup(w *glfw.Window, f *utils.Font) error {
 	texCoordAttrib := uint32(gl.GetAttribLocation(hc.program, gl.Str("vertTexCoord\x00")))
 	gl.EnableVertexAttribArray(texCoordAttrib)
 	gl.VertexAttribPointer(texCoordAttrib, 2, gl.FLOAT, false, 5*4, gl.PtrOffset(3*4))
-
 
 	hc.previousTime = glfw.GetTime()
 

@@ -25,10 +25,9 @@ type Sketch interface {
 type BaseSlide struct {
 	Slide
 	Window *glfw.Window
-	Font  *utils.Font
-	Name string
-	Color utils.ColorA
-
+	Font   *utils.Font
+	Name   string
+	Color  utils.ColorA
 }
 type BaseSketch struct {
 	Sketch
