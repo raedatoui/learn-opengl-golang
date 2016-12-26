@@ -34,33 +34,3 @@ type BaseSketch struct {
 	Sketch
 	BaseSlide
 }
-
-func SetupSlide(a Slide, w *glfw.Window, f *utils.Font) error {
-	a.Setup(w, f)
-	return nil
-}
-
-func UpdateSlide(a Slide) {
-	a.Update()
-}
-
-func DrawSlide(a Slide) {
-	a.Draw()
-}
-
-func CloseSlide(a Slide) {
-	a.Close()
-}
-
-func HandleKeyboardSketch(s Sketch, k glfw.Key, sc int, a glfw.Action, m glfw.ModifierKey) {
-	s.HandleKeyboard(k, sc, a, m)
-}
-
-func HandleMousePositionSketch(s Sketch, xpos, ypos float64) {
-	s.HandleMousePosition(xpos, ypos)
-}
-
-func HandleScrollSketch(s Sketch, xoff, yoff float64) {
-	s.HandleScroll(xoff, yoff)
-}
-

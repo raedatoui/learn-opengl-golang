@@ -52,7 +52,7 @@ func init() {
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
 	if currentSketch != nil {
-		sections.HandleKeyboardSketch(currentSketch, k, s, a, mk)
+		currentSketch.HandleKeyboard(k, s, a, mk)
 	}
 
 	if !switching && a == glfw.Press {
@@ -75,24 +75,28 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			currentSketch.Close()
 			currentSlide = slides[newIndex]
 			currentSketch = getSketch(currentSlide)
-			sections.SetupSlide(currentSlide, window, font)
+			currentSlide.Setup(window, font)
 		}
 		switching = false
 	}
 }
 
 func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
-	sections.HandleMousePositionSketch(currentSketch, xpos, ypos)
+	if currentSketch != nil {
+		currentSketch.HandleMousePosition(xpos, ypos)
+	}
 }
 
 func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
-	sections.HandleScrollSketch(currentSketch, xoff, yoff)
+	if currentSketch != nil {
+		currentSketch.HandleScroll(xoff, yoff)
+	}
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
-	sections.UpdateSlide(currentSlide)
-	sections.DrawSlide(currentSlide)
+	currentSlide.Update()
+	currentSlide.Draw()
 }
 
 func setup() (*glfw.Window, error) {
@@ -184,7 +188,7 @@ func main() {
 	currentSlide = slides[0]
 	currentSketch = getSketch(currentSlide)
 
-	if err := sections.SetupSlide(currentSlide, window, font); err != nil {
+	if err := currentSlide.Setup(window, font); err != nil {
 		log.Fatalf("Failed setting up sketch: %v", err)
 	}
 
@@ -192,14 +196,14 @@ func main() {
 	for !window.ShouldClose() {
 
 		// Update
-		sections.UpdateSlide(currentSlide)
+		currentSlide.Update()
 
 		//Render
-		sections.DrawSlide(currentSlide)
+		currentSlide.Draw()
 
 		window.SwapBuffers()
 		// Poll Events
 		glfw.PollEvents()
 	}
-	sections.CloseSlide(currentSlide)
+	currentSlide.Close()
 }
