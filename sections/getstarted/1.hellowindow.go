@@ -3,12 +3,12 @@ package getstarted
 import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
-	"github.com/raedatoui/learn-opengl-golang/sketches"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloWindow struct {
-	sketches.BaseSketch
+	sections.BaseSketch
 }
 
 func (hw *HelloWindow) Setup(w *glfw.Window, f *utils.Font) error {

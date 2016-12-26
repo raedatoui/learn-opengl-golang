@@ -5,11 +5,11 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/utils"
-	"github.com/raedatoui/learn-opengl-golang/sketches"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloTransformations struct {
-	sketches.BaseSketch
+	sections.BaseSketch
 	shader             uint32
 	vao, vbo, ebo      uint32
 	texture1, texture2 uint32
@@ -23,8 +23,8 @@ func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
 	ht.Color = utils.RandColor()
 
 	var err error
-	ht.shader, err = utils.Shader("sketches/_assets/5.transformations/transform.vs",
-		"sketches/_assets/5.transformations/transform.frag", "")
+	ht.shader, err = utils.Shader("_assets/5.transformations/transform.vs",
+		"_assets/5.transformations/transform.frag", "")
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-	rgba, err := utils.ImageToPixelData("sketches/_assets/images/container.png")
+	rgba, err := utils.ImageToPixelData("_assets/images/container.png")
 	if err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-	rgba, err = utils.ImageToPixelData("sketches/_assets/images/awesomeface.png")
+	rgba, err = utils.ImageToPixelData("_assets/images/awesomeface.png")
 	if err != nil {
 		panic(err)
 	}

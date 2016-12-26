@@ -11,12 +11,12 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	_ "image/png"
-	"github.com/raedatoui/learn-opengl-golang/sketches"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 // HelloCube  Renders a textured spinning cube using GLFW 3 and OpenGL 4.1 core forward-compatible profile.
 type HelloCube struct {
-	sketches.BaseSketch
+	sections.BaseSketch
 	program             uint32
 	vao, vbo            uint32
 	texture             uint32
@@ -142,7 +142,7 @@ func (hc *HelloCube) Setup(w *glfw.Window, f *utils.Font) error {
 	gl.BindFragDataLocation(hc.program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	hc.texture, err = utils.NewTexture("sketches/_assets/0.cube/square.png")
+	hc.texture, err = utils.NewTexture("_assets/0.cube/square.png")
 	if err != nil {
 		return err
 	}

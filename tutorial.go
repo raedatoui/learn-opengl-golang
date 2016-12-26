@@ -11,11 +11,11 @@ import (
 
 	"fmt"
 
-	"github.com/raedatoui/learn-opengl-golang/sketches"
-	"github.com/raedatoui/learn-opengl-golang/sketches/getstarted"
-	"github.com/raedatoui/learn-opengl-golang/utils"
 	"reflect"
 
+	"github.com/raedatoui/learn-opengl-golang/sections"
+	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
+	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 // WIDTH is the width of the window
@@ -25,9 +25,9 @@ const WIDTH = 800
 const HEIGHT = 600
 
 var (
-	currentSlide  sketches.Slide
-	currentSketch sketches.Sketch // polymorphic
-	slides        []sketches.Slide
+	currentSlide  sections.Slide
+	currentSketch sections.Sketch // polymorphic
+	slides        []sections.Slide
 	slideIndex    = 0
 	switching     bool
 	window        *glfw.Window
@@ -52,7 +52,7 @@ func init() {
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
 	if currentSketch != nil {
-		sketches.HandleKeyboardSketch(currentSketch, k, s, a, mk)
+		sections.HandleKeyboardSketch(currentSketch, k, s, a, mk)
 	}
 
 	if !switching && a == glfw.Press {
@@ -75,24 +75,24 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			currentSketch.Close()
 			currentSlide = slides[newIndex]
 			currentSketch = getSketch(currentSlide)
-			sketches.SetupSlide(currentSlide, window, font)
+			sections.SetupSlide(currentSlide, window, font)
 		}
 		switching = false
 	}
 }
 
 func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
-	sketches.HandleMousePositionSketch(currentSketch, xpos, ypos)
+	sections.HandleMousePositionSketch(currentSketch, xpos, ypos)
 }
 
 func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
-	sketches.HandleScrollSketch(currentSketch, xoff, yoff)
+	sections.HandleScrollSketch(currentSketch, xoff, yoff)
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
-	sketches.UpdateSlide(currentSlide)
-	sketches.DrawSlide(currentSlide)
+	sections.UpdateSlide(currentSlide)
+	sections.DrawSlide(currentSlide)
 }
 
 func setup() (*glfw.Window, error) {
@@ -131,9 +131,9 @@ func setup() (*glfw.Window, error) {
 	return window, nil
 }
 
-func setupSlides() []sketches.Slide {
+func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
-	return []sketches.Slide{
+	return []sections.Slide{
 		&getstarted.HelloCube{},
 		&getstarted.HelloWindow{},
 		&getstarted.HelloTriangle{},
@@ -146,11 +146,11 @@ func setupSlides() []sketches.Slide {
 	}
 }
 
-func getSketch(o interface{}) sketches.Sketch {
+func getSketch(o interface{}) sections.Sketch {
 	i := reflect.ValueOf(o).Type()
-	s := reflect.TypeOf((*sketches.Sketch)(nil)).Elem()
+	s := reflect.TypeOf((*sections.Sketch)(nil)).Elem()
 	if i.Implements(s) {
-		s, ok := currentSlide.(sketches.Sketch)
+		s, ok := currentSlide.(sections.Sketch)
 		if !ok {
 			log.Fatalf("cant convert Slide to Sketch. Bravo!")
 		}
@@ -174,17 +174,17 @@ func main() {
 	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	f, err := utils.LoadFont("sketches/_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
+	f, err := utils.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), WIDTH, HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}
-	font  = f
+	font = f
 
 	slides = setupSlides()
 	currentSlide = slides[0]
 	currentSketch = getSketch(currentSlide)
 
-	if err := sketches.SetupSlide(currentSlide, window, font); err != nil {
+	if err := sections.SetupSlide(currentSlide, window, font); err != nil {
 		log.Fatalf("Failed setting up sketch: %v", err)
 	}
 
@@ -192,14 +192,14 @@ func main() {
 	for !window.ShouldClose() {
 
 		// Update
-		sketches.UpdateSlide(currentSlide)
+		sections.UpdateSlide(currentSlide)
 
 		//Render
-		sketches.DrawSlide(currentSlide)
+		sections.DrawSlide(currentSlide)
 
 		window.SwapBuffers()
 		// Poll Events
 		glfw.PollEvents()
 	}
-	sketches.CloseSlide(currentSlide)
+	sections.CloseSlide(currentSlide)
 }

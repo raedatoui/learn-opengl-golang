@@ -4,11 +4,11 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
-	"github.com/raedatoui/learn-opengl-golang/sketches"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloShaders struct {
-	sketches.BaseSketch
+	sections.BaseSketch
 	vao, vbo uint32
 	shader   uint32
 }
@@ -21,8 +21,8 @@ func (hs *HelloShaders) Setup(w *glfw.Window, f *utils.Font) error {
 
 	var err error
 	hs.shader, err = utils.Shader(
-		"sketches/_assets/3.shaders/basic.vs",
-		"sketches/_assets/3.shaders/basic.frag", "")
+		"_assets/3.shaders/basic.vs",
+		"_assets/3.shaders/basic.frag", "")
 
 	if err != nil {
 		return err
