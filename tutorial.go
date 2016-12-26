@@ -72,7 +72,7 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 		}
 		if a == glfw.Press && newIndex != slideIndex {
 			slideIndex = newIndex
-			currentSketch.Close()
+			currentSlide.Close()
 			currentSlide = slides[newIndex]
 			currentSketch = getSketch(currentSlide)
 			currentSlide.Setup(window, font)
@@ -138,15 +138,18 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
-		&getstarted.HelloCube{},
-		&getstarted.HelloWindow{},
-		&getstarted.HelloTriangle{},
-		&getstarted.HelloSquare{},
-		&getstarted.HelloShaders{},
-		&getstarted.HelloTextures{},
-		&getstarted.HelloTransformations{},
-		&getstarted.HelloCoordinates{},
-		&getstarted.HelloCamera{},
+		&sections.TitleSlide{Name: "Test Installation of gl,\nglwf, glow"},
+		new(getstarted.HelloCube),
+		&sections.TitleSlide{Name: "Section 1: Getting Started"},
+		new(getstarted.HelloWindow),
+		new(getstarted.HelloTriangle),
+		new(getstarted.HelloSquare),
+		new(getstarted.HelloShaders),
+		new(getstarted.HelloTextures),
+		new(getstarted.HelloTransformations),
+		new(getstarted.HelloCoordinates),
+		new(getstarted.HelloCamera),
+		&sections.TitleSlide{Name: "Section 2: Lighting"},
 	}
 }
 
