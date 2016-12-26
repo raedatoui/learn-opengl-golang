@@ -1,4 +1,4 @@
-package sketches
+package lighting
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"

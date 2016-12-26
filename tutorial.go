@@ -149,7 +149,8 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
 		&sections.TitleSlide{Name: "Section 2: Lighting"},
-		new(sketches.LightingColors),
+		new(lighting.LightingColors),
+		new(lighting.BasicSpecular),
 	}
 }
 
