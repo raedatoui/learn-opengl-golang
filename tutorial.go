@@ -51,6 +51,10 @@ func init() {
 }
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+	if k == glfw.KeyEscape && a== glfw.Press {
+		window.SetShouldClose(true)
+	}
+
 	if currentSketch != nil {
 		currentSketch.HandleKeyboard(k, s, a, mk)
 	}

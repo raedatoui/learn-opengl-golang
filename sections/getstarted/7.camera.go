@@ -266,14 +266,11 @@ func (hc *HelloCamera) Close() {
 	gl.UseProgram(0)
 }
 
-func (hc *HelloCamera) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hc.Window.SetShouldClose(true)
-	}
-	if action == glfw.Press {
-		keys[key] = true
-	} else if action == glfw.Release {
-		keys[key] = false
+func (hc *HelloCamera) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+	if a == glfw.Press {
+		keys[k] = true
+	} else if a == glfw.Release {
+		keys[k] = false
 	}
 }
 

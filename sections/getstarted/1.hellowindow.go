@@ -34,10 +34,8 @@ func (hw *HelloWindow) Close() {
 
 }
 
-func (hw *HelloWindow) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hw.Window.SetShouldClose(true)
-	}
+func (hc *HelloWindow) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (hw *HelloWindow) HandleMousePosition(xpos, ypos float64) {

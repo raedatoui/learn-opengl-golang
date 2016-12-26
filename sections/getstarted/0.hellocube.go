@@ -211,10 +211,8 @@ func (hc *HelloCube) Close() {
 }
 
 // HandleKeyboard implements the draw meth
-func (hc *HelloCube) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hc.Window.SetShouldClose(true)
-	}
+func (hc *HelloCube) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (hc *HelloCube) HandleMousePosition(xpos, ypos float64) {

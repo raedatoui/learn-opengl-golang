@@ -79,10 +79,8 @@ func (hs *HelloShaders) Close() {
 	gl.UseProgram(0)
 }
 
-func (hs *HelloShaders) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hs.Window.SetShouldClose(true)
-	}
+func (hc *HelloShaders) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (hs *HelloShaders) HandleMousePosition(xpos, ypos float64) {

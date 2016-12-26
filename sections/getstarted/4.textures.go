@@ -159,10 +159,8 @@ func (ht *HelloTextures) Close() {
 	gl.UseProgram(0)
 }
 
-func (ht *HelloTextures) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		ht.Window.SetShouldClose(true)
-	}
+func (hc *HelloTextures) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (ht *HelloTextures) HandleMousePosition(xpos, ypos float64) {

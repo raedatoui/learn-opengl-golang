@@ -230,10 +230,8 @@ func (hc *HelloCoordinates) Close() {
 	gl.UseProgram(0)
 }
 
-func (hc *HelloCoordinates) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		hc.Window.SetShouldClose(true)
-	}
+func (hc *HelloCoordinates) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (hc *HelloCoordinates) HandleMousePosition(xpos, ypos float64) {

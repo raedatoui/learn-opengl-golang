@@ -91,10 +91,8 @@ func (ht *HelloTriangle) Close() {
 	gl.UseProgram(0)
 }
 
-func (ht *HelloTriangle) HandleKeyboard(key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
-	if key == glfw.KeyEscape && action == glfw.Press {
-		ht.Window.SetShouldClose(true)
-	}
+func (hc *HelloTriangle) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
+
 }
 
 func (ht *HelloTriangle) HandleMousePosition(xpos, ypos float64) {
