@@ -20,7 +20,7 @@ func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
 	ht.Window = w
 	ht.Font = f
 	ht.Name = "5. Transformations"
-	ht.Color = utils.RandColor()
+	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 6)
 
 	var err error
 	ht.shader, err = utils.Shader("_assets/5.transformations/transform.vs",

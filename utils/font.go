@@ -24,10 +24,10 @@ type Font struct {
 	vbo      uint32
 	program  uint32
 	texture  uint32 // Holds the glyph texture id.
-	color    color
+	color    fcolor
 }
 
-type color struct {
+type fcolor struct {
 	r float32
 	g float32
 	b float32

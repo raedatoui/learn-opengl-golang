@@ -17,7 +17,7 @@ type HelloTextures struct {
 func (ht *HelloTextures) Setup(w *glfw.Window, f *utils.Font) error {
 	ht.Window = w
 	ht.Font = f
-	ht.Color = utils.RandColor()
+	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 5)
 	ht.Name = "4. Textures"
 
 	var err error

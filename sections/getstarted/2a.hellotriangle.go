@@ -16,7 +16,7 @@ type HelloTriangle struct {
 func (ht *HelloTriangle) Setup(w *glfw.Window, f *utils.Font) error {
 	ht.Window = w
 	ht.Font = f
-	ht.Color = utils.RandColor()
+	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 3)
 	ht.Name = "2. Hello Triangles"
 
 	var vertexShader = `

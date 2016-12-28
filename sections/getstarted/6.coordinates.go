@@ -21,7 +21,7 @@ func (hc *HelloCoordinates) Setup(w *glfw.Window, f *utils.Font) error {
 	hc.Name = "6. Coordinate Systems"
 	hc.Window = w
 	hc.Font = f
-	hc.Color = utils.RandColor()
+	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 7)
 
 	var err error
 	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",

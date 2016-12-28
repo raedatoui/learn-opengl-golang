@@ -16,7 +16,7 @@ type HelloSquare struct {
 func (hs *HelloSquare) Setup(w *glfw.Window, f *utils.Font) error {
 	hs.Window = w
 	hs.Font = f
-	hs.Color = utils.RandColor()
+	hs.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 3)
 	hs.Name = "2a. Hello Square"
 
 	var vertexShader2 = `

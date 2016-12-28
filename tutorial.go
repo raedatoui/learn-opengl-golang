@@ -168,6 +168,7 @@ func getSketch(o interface{}) sections.Sketch {
 }
 
 func main() {
+
 	// init GLFW
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to initialize glfw:", err)

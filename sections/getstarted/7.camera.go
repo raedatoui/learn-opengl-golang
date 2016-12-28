@@ -28,7 +28,7 @@ type HelloCamera struct {
 
 func (hc *HelloCamera) Setup(w *glfw.Window, f *utils.Font) error {
 	hc.Name = "7. Camera (use WSDA and mouse)"
-	hc.Color = utils.RandColor()
+	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 8)
 	hc.Window = w
 	hc.Font = f
 

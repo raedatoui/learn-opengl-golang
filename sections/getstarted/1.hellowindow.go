@@ -14,7 +14,7 @@ type HelloWindow struct {
 func (hw *HelloWindow) Setup(w *glfw.Window, f *utils.Font) error {
 	hw.Window = w
 	hw.Font = f
-	hw.Color = utils.RandColor()
+	hw.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 2)
 	hw.Name = "1. Hello Window"
 	return nil
 }

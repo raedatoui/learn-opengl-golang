@@ -16,7 +16,7 @@ type HelloShaders struct {
 func (hs *HelloShaders) Setup(w *glfw.Window, f *utils.Font) error {
 	hs.Window = w
 	hs.Font = f
-	hs.Color = utils.RandColor()
+	hs.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 4)
 	hs.Name = "3. Shaders"
 
 	var err error

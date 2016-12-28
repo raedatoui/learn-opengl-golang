@@ -30,7 +30,7 @@ func (hc *HelloCube) Setup(w *glfw.Window, f *utils.Font) error {
 	hc.Window = w
 	hc.Font = f
 	hc.angle = 0.0
-	hc.Color = utils.RandColor()
+	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 1)
 	hc.Name = "0. Test Cube From github.com/go-gl/examples"
 
 	var cubeVertices = []float32{
@@ -209,7 +209,7 @@ func (hc *HelloCube) Close() {
 	gl.UseProgram(0)
 }
 
-// HandleKeyboard implements the draw meth
+// HandleKeyboard implements the draw math
 func (hc *HelloCube) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
 
 }
