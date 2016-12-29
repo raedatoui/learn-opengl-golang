@@ -14,9 +14,8 @@ import (
 	"reflect"
 
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/utils"
-	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
+	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 )
 
 var (
@@ -74,7 +73,7 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			currentSlide.Close()
 			currentSlide = slides[newIndex]
 			currentSketch = getSketch(currentSlide)
-			currentSlide.Setup(window, font)
+			currentSlide.InitGL()
 		}
 		switching = false
 	}
@@ -137,20 +136,20 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
-		&sections.TitleSlide{Name: "Test Installation of gl,\nglfw, glow"},
+		new(sections.TitleSlide),
 		new(getstarted.HelloCube),
-		&sections.TitleSlide{Name: "Section 1: Getting Started"},
-		new(getstarted.HelloWindow),
-		new(getstarted.HelloTriangle),
-		new(getstarted.HelloSquare),
-		new(getstarted.HelloShaders),
-		new(getstarted.HelloTextures),
-		new(getstarted.HelloTransformations),
-		new(getstarted.HelloCoordinates),
-		new(getstarted.HelloCamera),
-		&sections.TitleSlide{Name: "Section 2: Lighting"},
-		new(lighting.LightingColors),
-		new(lighting.BasicSpecular),
+		//&sections.TitleSlide{Name: "Section 1: Getting Started"},
+		//new(getstarted.HelloWindow),
+		//new(getstarted.HelloTriangle),
+		//new(getstarted.HelloSquare),
+		//new(getstarted.HelloShaders),
+		//new(getstarted.HelloTextures),
+		//new(getstarted.HelloTransformations),
+		//new(getstarted.HelloCoordinates),
+		//new(getstarted.HelloCamera),
+		//&sections.TitleSlide{Name: "Section 2: Lighting"},
+		//new(lighting.LightingColors),
+		//new(lighting.BasicSpecular),
 	}
 }
 
@@ -168,7 +167,6 @@ func getSketch(o interface{}) sections.Sketch {
 }
 
 func main() {
-
 	// init GLFW
 	if err := glfw.Init(); err != nil {
 		log.Fatalln("failed to initialize glfw:", err)
@@ -188,13 +186,24 @@ func main() {
 		log.Fatalf("LoadFont: %v", err)
 	}
 	font = f
+	c := utils.WHITE.To32()
+	font.SetColor(c.R, c.G, c.B, 1.0)
 
 	slides = setupSlides()
+
+	l := len(slides)
+	for x, slide := range slides {
+		c := utils.StepColor(utils.MAG, utils.BLACK, l, x+1)
+		if err := slide.Init(f, c, "Test Installation of gl,\nglfw, glow"); err != nil {
+			log.Fatalf("Failed setting up sketch: %v", err)
+		}
+	}
+
 	currentSlide = slides[0]
 	currentSketch = getSketch(currentSlide)
 
-	if err := currentSlide.Setup(window, font); err != nil {
-		log.Fatalf("Failed setting up sketch: %v", err)
+	if err := currentSlide.InitGL(); err != nil {
+		log.Fatalf("Failed initializing GL for slide: %v", err)
 	}
 
 	// loop
@@ -205,6 +214,7 @@ func main() {
 
 		//Render
 		currentSlide.Draw()
+		font.Printf(30, 30, 0.5, currentSlide.GetName())
 
 		window.SwapBuffers()
 		// Poll Events

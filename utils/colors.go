@@ -15,6 +15,13 @@ type Color struct {
 	R, G, B float64
 }
 
+type Color32 struct {
+	R, G, B float32
+}
+
+func(c *Color) To32() Color32 {
+	return Color32{R: float32(c.R), G: float32(c.G), B: float32(c.B)}
+}
 
 type HSL [3]float64
 

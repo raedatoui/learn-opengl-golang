@@ -21,10 +21,8 @@ type BasicSpecular struct {
 	lightPos                    mgl32.Vec3
 }
 
-func (bc *BasicSpecular) Setup(w *glfw.Window, f *utils.Font) error {
-	bc.Window = w
-	bc.Font = f
-	bc.Color = utils.RandColor()
+func (bc *BasicSpecular) Setup(c utils.ColorA) error {
+	bc.Color = c
 	bc.Name = "2. Basic Specular Lighting"
 
 	// Camera
@@ -205,9 +203,6 @@ func (bc *BasicSpecular) Draw() {
 	gl.BindVertexArray(bc.lightVAO)
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
-
-	bc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	bc.Font.Printf(30, 30, 0.5, bc.Name)
 }
 
 func (bc *BasicSpecular) Close() {

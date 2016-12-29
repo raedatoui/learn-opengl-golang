@@ -16,11 +16,9 @@ type HelloTransformations struct {
 	transform          mgl32.Mat4
 }
 
-func (ht *HelloTransformations) Setup(w *glfw.Window, f *utils.Font) error {
-	ht.Window = w
-	ht.Font = f
+func (ht *HelloTransformations) Setup(c utils.ColorA) error {
 	ht.Name = "5. Transformations"
-	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 6)
+	ht.Color = c
 
 	var err error
 	ht.shader, err = utils.Shader("_assets/5.transformations/transform.vs",
@@ -160,8 +158,6 @@ func (ht *HelloTransformations) Draw() {
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 
-	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTransformations) Close() {

@@ -26,11 +26,8 @@ type HelloCube struct {
 }
 
 // Setup is inherited
-func (hc *HelloCube) Setup(w *glfw.Window, f *utils.Font) error {
-	hc.Window = w
-	hc.Font = f
+func (hc *HelloCube) InitGL() error {
 	hc.angle = 0.0
-	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 1)
 	hc.Name = "0. Test Cube From github.com/go-gl/examples"
 
 	var cubeVertices = []float32{
@@ -196,9 +193,6 @@ func (hc *HelloCube) Draw() {
 	gl.BindTexture(gl.TEXTURE_2D, hc.texture)
 
 	gl.DrawArrays(gl.TRIANGLES, 0, 6*2*3)
-
-	hc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hc.Font.Printf(30, 30, 0.5, hc.Name)
 
 }
 

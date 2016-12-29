@@ -13,10 +13,8 @@ type HelloTriangle struct {
 	vao, vbo uint32
 }
 
-func (ht *HelloTriangle) Setup(w *glfw.Window, f *utils.Font) error {
-	ht.Window = w
-	ht.Font = f
-	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 3)
+func (ht *HelloTriangle) Setup(c utils.ColorA) error {
+	ht.Color = c
 	ht.Name = "2. Hello Triangles"
 
 	var vertexShader = `
@@ -81,8 +79,6 @@ func (ht *HelloTriangle) Draw() {
 	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 
-	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTriangle) Close() {

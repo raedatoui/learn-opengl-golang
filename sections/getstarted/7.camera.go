@@ -26,11 +26,9 @@ type HelloCamera struct {
 	deltaTime, lastFrame float64
 }
 
-func (hc *HelloCamera) Setup(w *glfw.Window, f *utils.Font) error {
+func (hc *HelloCamera) Setup(c utils.ColorA) error {
 	hc.Name = "7. Camera (use WSDA and mouse)"
-	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 8)
-	hc.Window = w
-	hc.Font = f
+	hc.Color = c
 
 	var err error
 	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",
@@ -254,9 +252,6 @@ func (hc *HelloCamera) Draw() {
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	}
 	gl.BindVertexArray(0)
-
-	hc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hc.Font.Printf(30, 30, 0.5, hc.Name)
 }
 
 func (hc *HelloCamera) Close() {

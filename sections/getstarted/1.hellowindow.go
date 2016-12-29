@@ -11,9 +11,7 @@ type HelloWindow struct {
 	sections.BaseSketch
 }
 
-func (hw *HelloWindow) Setup(w *glfw.Window, f *utils.Font) error {
-	hw.Window = w
-	hw.Font = f
+func (hw *HelloWindow) InitGL() error {
 	hw.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 2)
 	hw.Name = "1. Hello Window"
 	return nil
@@ -26,8 +24,6 @@ func (hw *HelloWindow) Update() {
 func (hw *HelloWindow) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(hw.Color.R, hw.Color.G, hw.Color.B, hw.Color.A)
-	hw.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hw.Font.Printf(30, 30, 0.5, hw.Name)
 }
 
 func (hw *HelloWindow) Close() {

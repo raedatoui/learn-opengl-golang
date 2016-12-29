@@ -17,11 +17,9 @@ type HelloCoordinates struct {
 	cubePositions      []mgl32.Vec3
 }
 
-func (hc *HelloCoordinates) Setup(w *glfw.Window, f *utils.Font) error {
+func (hc *HelloCoordinates) Setup(c utils.ColorA) error {
 	hc.Name = "6. Coordinate Systems"
-	hc.Window = w
-	hc.Font = f
-	hc.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 7)
+	hc.Color = c
 
 	var err error
 	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",
@@ -218,9 +216,6 @@ func (hc *HelloCoordinates) Draw() {
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	}
 	gl.BindVertexArray(0)
-
-	hc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hc.Font.Printf(30, 30, 0.5, hc.Name)
 }
 
 func (hc *HelloCoordinates) Close() {

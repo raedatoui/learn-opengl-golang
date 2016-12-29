@@ -21,10 +21,8 @@ type LightingColors struct {
 	lightPos                    mgl32.Vec3
 }
 
-func (lc *LightingColors) Setup(w *glfw.Window, f *utils.Font) error {
-	lc.Window = w
-	lc.Font = f
-	lc.Color = utils.RandColor()
+func (lc *LightingColors) Setup(c utils.ColorA) error {
+	lc.Color = c
 	lc.Name = "1. Colors"
 
 	// Camera
@@ -200,8 +198,6 @@ func (lc *LightingColors) Draw() {
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
 
-	lc.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	lc.Font.Printf(30, 30, 0.5, lc.Name)
 }
 
 func (lc *LightingColors) Close() {

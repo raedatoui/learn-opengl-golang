@@ -14,10 +14,8 @@ type HelloTextures struct {
 	texture1, texture2 uint32
 }
 
-func (ht *HelloTextures) Setup(w *glfw.Window, f *utils.Font) error {
-	ht.Window = w
-	ht.Font = f
-	ht.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 5)
+func (ht *HelloTextures) Setup(c utils.ColorA) error {
+	ht.Color = c
 	ht.Name = "4. Textures"
 
 	var err error
@@ -147,9 +145,6 @@ func (ht *HelloTextures) Draw() {
 	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
-
-	ht.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	ht.Font.Printf(30, 30, 0.5, ht.Name)
 }
 
 func (ht *HelloTextures) Close() {

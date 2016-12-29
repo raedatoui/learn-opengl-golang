@@ -13,10 +13,8 @@ type HelloSquare struct {
 	vao, vbo, ebo uint32
 }
 
-func (hs *HelloSquare) Setup(w *glfw.Window, f *utils.Font) error {
-	hs.Window = w
-	hs.Font = f
-	hs.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 3)
+func (hs *HelloSquare) Setup(c utils.ColorA) error {
+	hs.Color = c
 	hs.Name = "2a. Hello Square"
 
 	var vertexShader2 = `
@@ -86,9 +84,6 @@ func (hs *HelloSquare) Draw() {
 	gl.BindVertexArray(hs.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
-
-	hs.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hs.Font.Printf(30, 30, 0.5, hs.Name)
 }
 
 func (hs *HelloSquare) Close() {

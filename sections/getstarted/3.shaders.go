@@ -13,10 +13,8 @@ type HelloShaders struct {
 	shader   uint32
 }
 
-func (hs *HelloShaders) Setup(w *glfw.Window, f *utils.Font) error {
-	hs.Window = w
-	hs.Font = f
-	hs.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 4)
+func (hs *HelloShaders) Setup(c utils.ColorA) error {
+	hs.Color = c
 	hs.Name = "3. Shaders"
 
 	var err error
@@ -68,9 +66,6 @@ func (hs *HelloShaders) Draw() {
 	gl.BindVertexArray(hs.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
-
-	hs.Font.SetColor(0.0, 0.0, 0.0, 1.0)
-	hs.Font.Printf(30, 30, 0.5, hs.Name)
 }
 
 func (hs *HelloShaders) Close() {

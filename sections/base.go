@@ -3,14 +3,17 @@ package sections
 import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"errors"
 )
 
 // Slide is the most basic slide. it has to setup, update, draw and cloae
 type Slide interface {
-	Setup(w *glfw.Window, f *utils.Font) error
+	Init(a ...interface{}) error
+	InitGL() error
 	Update()
 	Draw()
 	Close()
+	GetName() string
 }
 
 // Sketch is an interactive Slide and process user interactions
@@ -24,12 +27,28 @@ type Sketch interface {
 // BaseSlide is the base implementation of Slide with the min required fields
 type BaseSlide struct {
 	Slide
-	Window *glfw.Window
-	Font   *utils.Font
 	Name   string
 	Color  utils.ColorA
 }
+
+func (s *BaseSlide) GetName() string {
+	return s.Name
+}
+
+
 type BaseSketch struct {
 	Sketch
 	BaseSlide
+}
+
+func (b *BaseSketch) Init(a ...interface{}) error {
+	c, ok := a[0].(utils.ColorA)
+	if  ok == false {
+		return errors.New("first argument isnt a color")
+	}
+	b.Color = c
+	return nil
+}
+func (s *BaseSketch) GetName() string {
+	return s.Name
 }
