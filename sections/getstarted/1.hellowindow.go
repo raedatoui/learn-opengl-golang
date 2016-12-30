@@ -4,7 +4,6 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 type HelloWindow struct {
@@ -12,7 +11,6 @@ type HelloWindow struct {
 }
 
 func (hw *HelloWindow) InitGL() error {
-	hw.Color = utils.StepColor(utils.MAG, utils.BLACK, 10, 2)
 	hw.Name = "1. Hello Window"
 	return nil
 }

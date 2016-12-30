@@ -1,12 +1,12 @@
 package sections
 
 import (
+	"errors"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
-	"errors"
 )
 
-// Slide is the most basic slide. it has to setup, update, draw and cloae
+// Slide is the most basic slide. it has to setup, update, draw and close
 type Slide interface {
 	Init(a ...interface{}) error
 	InitGL() error
@@ -27,14 +27,13 @@ type Sketch interface {
 // BaseSlide is the base implementation of Slide with the min required fields
 type BaseSlide struct {
 	Slide
-	Name   string
-	Color  utils.ColorA
+	Name  string
+	Color utils.ColorA
 }
 
 func (s *BaseSlide) GetName() string {
 	return s.Name
 }
-
 
 type BaseSketch struct {
 	Sketch
@@ -43,7 +42,7 @@ type BaseSketch struct {
 
 func (b *BaseSketch) Init(a ...interface{}) error {
 	c, ok := a[0].(utils.ColorA)
-	if  ok == false {
+	if ok == false {
 		return errors.New("first argument isnt a color")
 	}
 	b.Color = c

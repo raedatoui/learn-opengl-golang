@@ -17,9 +17,8 @@ type HelloCoordinates struct {
 	cubePositions      []mgl32.Vec3
 }
 
-func (hc *HelloCoordinates) Setup(c utils.ColorA) error {
+func (hc *HelloCoordinates) InitGL() error {
 	hc.Name = "6. Coordinate Systems"
-	hc.Color = c
 
 	var err error
 	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",

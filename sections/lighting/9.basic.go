@@ -21,8 +21,7 @@ type BasicSpecular struct {
 	lightPos                    mgl32.Vec3
 }
 
-func (bc *BasicSpecular) Setup(c utils.ColorA) error {
-	bc.Color = c
+func (bc *BasicSpecular) InitGL() error {
 	bc.Name = "2. Basic Specular Lighting"
 
 	// Camera

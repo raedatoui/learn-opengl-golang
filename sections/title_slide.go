@@ -1,34 +1,34 @@
 package sections
 
 import (
+	"errors"
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	"strings"
-	"errors"
 )
 
 type TitleSlide struct {
 	BaseSlide
-	font *utils.Font
+	font  *utils.Font
 	Name  string
 	lines []string
 }
 
 func (s *TitleSlide) Init(a ...interface{}) error {
 	f, ok := a[0].(*utils.Font)
-	if  ok == false {
+	if ok == false {
 		return errors.New("first argument isnt a font")
 	}
 	s.font = f
 
 	c, ok := a[1].(utils.ColorA)
-	if  ok == false {
+	if ok == false {
 		return errors.New("second argument isnt a ColorA")
 	}
 	s.Color = c
 
 	n, ok := a[2].(string)
-	if  ok == false {
+	if ok == false {
 		return errors.New("second argument isnt a ColorA")
 	}
 	s.Name = n

@@ -16,9 +16,8 @@ type HelloTransformations struct {
 	transform          mgl32.Mat4
 }
 
-func (ht *HelloTransformations) Setup(c utils.ColorA) error {
+func (ht *HelloTransformations) InitGL() error {
 	ht.Name = "5. Transformations"
-	ht.Color = c
 
 	var err error
 	ht.shader, err = utils.Shader("_assets/5.transformations/transform.vs",

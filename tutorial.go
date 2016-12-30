@@ -14,8 +14,9 @@ import (
 	"reflect"
 
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
+	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
+	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
 var (
@@ -73,7 +74,9 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			currentSlide.Close()
 			currentSlide = slides[newIndex]
 			currentSketch = getSketch(currentSlide)
-			currentSlide.InitGL()
+			if err := currentSlide.InitGL(); err != nil {
+				log.Fatalf("slide failed %v: ", err)
+			}
 		}
 		switching = false
 	}
@@ -133,23 +136,70 @@ func setup() (*glfw.Window, error) {
 	return window, nil
 }
 
-func setupSlides() []sections.Slide {
+type SlideItem struct {
+	slide sections.Slide
+	name  string
+}
+
+func setupSlides() []SlideItem {
 	// make a slice of pointers to sketch instances
-	return []sections.Slide{
-		new(sections.TitleSlide),
-		new(getstarted.HelloCube),
-		//&sections.TitleSlide{Name: "Section 1: Getting Started"},
-		//new(getstarted.HelloWindow),
-		//new(getstarted.HelloTriangle),
-		//new(getstarted.HelloSquare),
-		//new(getstarted.HelloShaders),
-		//new(getstarted.HelloTextures),
-		//new(getstarted.HelloTransformations),
-		//new(getstarted.HelloCoordinates),
-		//new(getstarted.HelloCamera),
-		//&sections.TitleSlide{Name: "Section 2: Lighting"},
-		//new(lighting.LightingColors),
-		//new(lighting.BasicSpecular),
+	return []SlideItem{
+		SlideItem{
+			slide: new(sections.TitleSlide),
+			name:  "Test Installation of gl,\nglfw, glow",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloCube),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(sections.TitleSlide),
+			name:  "Section 1: Getting Started",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloWindow),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloTriangle),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloSquare),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloShaders),
+			name:  "",
+		},
+
+		SlideItem{
+			slide: new(getstarted.HelloTextures),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloTransformations),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloSquare),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(getstarted.HelloCamera),
+			name:  "",
+		},
+		SlideItem{
+			slide: new(sections.TitleSlide),
+			name:  "Section 2: Lighting",
+		},
+		SlideItem{
+			slide: new(lighting.LightingColors),
+		},
+		SlideItem{
+			slide: new(lighting.BasicSpecular),
+			name:  "",
+		},
 	}
 }
 
@@ -186,17 +236,23 @@ func main() {
 		log.Fatalf("LoadFont: %v", err)
 	}
 	font = f
-	c := utils.WHITE.To32()
+	c := utils.White.To32()
 	font.SetColor(c.R, c.G, c.B, 1.0)
 
-	slides = setupSlides()
-
-	l := len(slides)
-	for x, slide := range slides {
-		c := utils.StepColor(utils.MAG, utils.BLACK, l, x+1)
-		if err := slide.Init(f, c, "Test Installation of gl,\nglfw, glow"); err != nil {
-			log.Fatalf("Failed setting up sketch: %v", err)
+	temp := setupSlides()
+	l := len(temp)
+	for x, item := range temp {
+		c := utils.StepColor(utils.Magenta, utils.Black, l, x+1)
+		if implements(item.slide, (*sections.Sketch)(nil)) {
+			if err := item.slide.(sections.Sketch).Init(c); err != nil {
+				log.Fatalf("Failed setting up sketch: %v", err)
+			}
+		} else {
+			if err := item.slide.(sections.Slide).Init(f, c, item.name); err != nil {
+				log.Fatalf("Failed setting up sketch: %v", err)
+			}
 		}
+		slides = append(slides, item.slide)
 	}
 
 	currentSlide = slides[0]
@@ -221,4 +277,10 @@ func main() {
 		glfw.PollEvents()
 	}
 	currentSlide.Close()
+}
+
+func implements(o, i interface{}) bool {
+	ot := reflect.ValueOf(o).Type()
+	s := reflect.TypeOf(i).Elem()
+	return ot.Implements(s)
 }

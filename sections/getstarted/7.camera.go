@@ -26,9 +26,8 @@ type HelloCamera struct {
 	deltaTime, lastFrame float64
 }
 
-func (hc *HelloCamera) Setup(c utils.ColorA) error {
+func (hc *HelloCamera) InitGL() error {
 	hc.Name = "7. Camera (use WSDA and mouse)"
-	hc.Color = c
 
 	var err error
 	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",

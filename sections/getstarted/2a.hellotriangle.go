@@ -13,8 +13,7 @@ type HelloTriangle struct {
 	vao, vbo uint32
 }
 
-func (ht *HelloTriangle) Setup(c utils.ColorA) error {
-	ht.Color = c
+func (ht *HelloTriangle) InitGL() error {
 	ht.Name = "2. Hello Triangles"
 
 	var vertexShader = `

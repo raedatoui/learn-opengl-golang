@@ -13,8 +13,7 @@ type HelloSquare struct {
 	vao, vbo, ebo uint32
 }
 
-func (hs *HelloSquare) Setup(c utils.ColorA) error {
-	hs.Color = c
+func (hs *HelloSquare) InitGL() error {
 	hs.Name = "2a. Hello Square"
 
 	var vertexShader2 = `

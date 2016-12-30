@@ -14,8 +14,7 @@ type HelloTextures struct {
 	texture1, texture2 uint32
 }
 
-func (ht *HelloTextures) Setup(c utils.ColorA) error {
-	ht.Color = c
+func (ht *HelloTextures) InitGL() error {
 	ht.Name = "4. Textures"
 
 	var err error

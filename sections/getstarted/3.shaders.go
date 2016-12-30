@@ -13,8 +13,7 @@ type HelloShaders struct {
 	shader   uint32
 }
 
-func (hs *HelloShaders) Setup(c utils.ColorA) error {
-	hs.Color = c
+func (hs *HelloShaders) InitGL() error {
 	hs.Name = "3. Shaders"
 
 	var err error

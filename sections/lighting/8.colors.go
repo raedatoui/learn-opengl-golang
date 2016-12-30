@@ -21,8 +21,7 @@ type LightingColors struct {
 	lightPos                    mgl32.Vec3
 }
 
-func (lc *LightingColors) Setup(c utils.ColorA) error {
-	lc.Color = c
+func (lc *LightingColors) InitGL() error {
 	lc.Name = "1. Colors"
 
 	// Camera
