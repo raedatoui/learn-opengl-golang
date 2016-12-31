@@ -27,7 +27,7 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	}
 	s.Color = c
 	s.Color32 = c.To32()
-
+	s.ColorHex = utils.Rgb2Hex(c)
 
 	if strings.Contains(s.Name, "\n") {
 		s.lines = strings.Split(s.Name, "\n")

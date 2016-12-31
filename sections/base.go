@@ -2,6 +2,7 @@ package sections
 
 import (
 	"errors"
+
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
@@ -14,7 +15,7 @@ type Slide interface {
 	Draw()
 	Close()
 	GetName() string
-	GetColor() utils.Color
+	GetColorHex() string
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
@@ -23,17 +24,18 @@ type Slide interface {
 // BaseSlide is the base implementation of Slide with the min required fields
 type BaseSlide struct {
 	Slide
-	Name    string
-	Color   utils.Color
-	Color32 utils.Color32
+	Name     string
+	Color    utils.Color
+	Color32  utils.Color32
+	ColorHex string
 }
 
 func (s *BaseSlide) GetName() string {
 	return s.Name
 }
 
-func (s *BaseSlide) GeColor() utils.Color {
-	return s.Color
+func (s *BaseSlide) GetColorHex() string {
+	return s.ColorHex
 }
 
 func (s *BaseSlide) InitGL() error {
@@ -75,5 +77,6 @@ func (b *BaseSketch) Init(a ...interface{}) error {
 	}
 	b.Color = c
 	b.Color32 = c.To32()
+	b.ColorHex = utils.Rgb2Hex(c)
 	return nil
 }

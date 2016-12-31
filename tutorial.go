@@ -179,8 +179,8 @@ func main() {
 	fmt.Println(len(slides))
 	l := len(slides)
 	for x, slide := range slides {
-		c := utils.StepColor(utils.Magenta, utils.Black, l, x+1)
-		if err := slide.Init(f, c,) ; err != nil {
+		c := utils.StepColor(utils.Magenta, utils.Black, l, x)
+		if err := slide.Init(f, c) ; err != nil {
 			log.Fatalf("Failed setting up sketch: %v", err)
 		}
 	}
@@ -199,8 +199,9 @@ func main() {
 
 		//Render
 		currentSlide.Draw()
+
 		font.Printf(30, 30, 0.5, currentSlide.GetName())
-		font.Printf(30, utils.HEIGHT-20, 0.2, "boo")
+		font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 
 		window.SwapBuffers()
 		// Poll Events
