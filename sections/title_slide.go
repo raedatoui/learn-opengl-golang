@@ -28,11 +28,6 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	s.Color = c
 	s.Color32 = c.To32()
 
-	n, ok := a[2].(string)
-	if ok == false {
-		return errors.New("second argument isnt a ColorA")
-	}
-	s.Name = n
 
 	if strings.Contains(s.Name, "\n") {
 		s.lines = strings.Split(s.Name, "\n")
@@ -41,14 +36,6 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	}
 
 	return nil
-}
-
-func (s *TitleSlide) InitGL() error {
-	return nil
-}
-
-func (s *TitleSlide) Update() {
-
 }
 
 func (s *TitleSlide) Draw() {
@@ -60,8 +47,4 @@ func (s *TitleSlide) Draw() {
 		s.font.Printf(30, 200+60*float32(i), 1, s.lines[i])
 
 	}
-}
-
-func (s *TitleSlide) Close() {
-
 }

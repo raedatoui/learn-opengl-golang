@@ -202,16 +202,3 @@ func (hc *HelloCube) Close() {
 	gl.DeleteBuffers(1, &hc.vao)
 	gl.UseProgram(0)
 }
-
-// HandleKeyboard implements the draw math
-func (hc *HelloCube) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (hc *HelloCube) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (hc *HelloCube) HandleScroll(xoff, yoff float64) {
-
-}

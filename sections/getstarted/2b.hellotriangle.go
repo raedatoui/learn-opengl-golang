@@ -2,7 +2,6 @@ package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
@@ -71,10 +70,6 @@ func (hs *HelloSquare) InitGL() error {
 	return nil
 }
 
-func (hs *HelloSquare) Update() {
-
-}
-
 func (hs *HelloSquare) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
@@ -90,16 +85,4 @@ func (hs *HelloSquare) Close() {
 	gl.DeleteBuffers(1, &hs.vbo)
 	gl.DeleteBuffers(1, &hs.ebo)
 	gl.UseProgram(0)
-}
-
-func (hc *HelloSquare) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (hs *HelloSquare) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (hs *HelloSquare) HandleScroll(xoff, yoff float64) {
-
 }

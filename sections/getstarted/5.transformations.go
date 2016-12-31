@@ -121,10 +121,6 @@ func (ht *HelloTransformations) InitGL() error {
 	return nil
 }
 
-func (ht *HelloTransformations) Update() {
-
-}
-
 func (ht *HelloTransformations) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
@@ -164,16 +160,4 @@ func (ht *HelloTransformations) Close() {
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.DeleteBuffers(1, &ht.ebo)
 	gl.UseProgram(0)
-}
-
-func (hc *HelloTransformations) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (ht *HelloTransformations) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (ht *HelloTransformations) HandleScroll(xoff, yoff float64) {
-
 }

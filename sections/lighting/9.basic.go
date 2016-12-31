@@ -231,7 +231,3 @@ func (bc *BasicSpecular) HandleMousePosition(xpos, ypos float64) {
 
 	bc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
-
-func (bc *BasicSpecular) HandleScroll(xoff, yoff float64) {
-
-}

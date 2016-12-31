@@ -161,10 +161,6 @@ func (hc *HelloCoordinates) InitGL() error {
 	return nil
 }
 
-func (hc *HelloCoordinates) Update() {
-
-}
-
 func (hc *HelloCoordinates) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(hc.Color32.R, hc.Color32.G, hc.Color32.B, hc.Color32.A)
@@ -222,16 +218,4 @@ func (hc *HelloCoordinates) Close() {
 	gl.DeleteBuffers(1, &hc.vbo)
 	gl.DeleteBuffers(1, &hc.ebo)
 	gl.UseProgram(0)
-}
-
-func (hc *HelloCoordinates) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (hc *HelloCoordinates) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (hc *HelloCoordinates) HandleScroll(xoff, yoff float64) {
-
 }

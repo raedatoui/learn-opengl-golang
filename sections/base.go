@@ -15,11 +15,6 @@ type Slide interface {
 	Close()
 	GetName() string
 	GetColor() utils.Color
-}
-
-// Sketch is an interactive Slide and process user interactions
-type Sketch interface {
-	Slide
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
@@ -28,8 +23,8 @@ type Sketch interface {
 // BaseSlide is the base implementation of Slide with the min required fields
 type BaseSlide struct {
 	Slide
-	Name  string
-	Color utils.Color
+	Name    string
+	Color   utils.Color
 	Color32 utils.Color32
 }
 
@@ -41,25 +36,44 @@ func (s *BaseSlide) GeColor() utils.Color {
 	return s.Color
 }
 
+func (s *BaseSlide) InitGL() error {
+	return nil
+}
+
+func (s *BaseSlide) Update() {
+
+}
+
+func (s *BaseSlide) Draw() {
+
+}
+
+func (s *BaseSlide) Close() {
+
+}
+
+func (s *BaseSlide) HandleKeyboard(k glfw.Key, sc int, a glfw.Action, mk glfw.ModifierKey) {
+
+}
+
+func (s *BaseSlide) HandleMousePosition(xpos, ypos float64) {
+
+}
+
+func (s *BaseSlide) HandleScroll(xoff, yoff float64) {
+
+}
+
 type BaseSketch struct {
-	Sketch
 	BaseSlide
 }
 
 func (b *BaseSketch) Init(a ...interface{}) error {
-	c, ok := a[0].(utils.Color)
+	c, ok := a[1].(utils.Color)
 	if ok == false {
 		return errors.New("first argument isnt a color")
 	}
 	b.Color = c
 	b.Color32 = c.To32()
 	return nil
-}
-
-func (b *BaseSketch) GetName() string {
-	return b.Name
-}
-
-func (b *BaseSketch) GeColor() utils.Color {
-	return b.Color
 }

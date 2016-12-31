@@ -2,7 +2,6 @@ package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
@@ -62,10 +61,6 @@ func (ht *HelloTriangle) InitGL() error {
 	return nil
 }
 
-func (ht *HelloTriangle) Update() {
-
-}
-
 func (ht *HelloTriangle) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
@@ -77,23 +72,10 @@ func (ht *HelloTriangle) Draw() {
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
-
 }
 
 func (ht *HelloTriangle) Close() {
 	gl.DeleteVertexArrays(1, &ht.vao)
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.UseProgram(0)
-}
-
-func (hc *HelloTriangle) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (ht *HelloTriangle) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (ht *HelloTriangle) HandleScroll(xoff, yoff float64) {
-
 }

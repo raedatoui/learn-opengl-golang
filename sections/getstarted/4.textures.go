@@ -118,10 +118,6 @@ func (ht *HelloTextures) InitGL() error {
 	return nil
 }
 
-func (ht *HelloTextures) Update() {
-
-}
-
 func (ht *HelloTextures) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)

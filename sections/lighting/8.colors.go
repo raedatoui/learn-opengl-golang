@@ -226,7 +226,3 @@ func (lc *LightingColors) HandleMousePosition(xpos, ypos float64) {
 
 	lc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
-
-func (lc *LightingColors) HandleScroll(xoff, yoff float64) {
-
-}

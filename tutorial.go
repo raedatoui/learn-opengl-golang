@@ -11,8 +11,6 @@ import (
 
 	"fmt"
 
-	"reflect"
-
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
@@ -21,7 +19,6 @@ import (
 
 var (
 	currentSlide  sections.Slide
-	currentSketch sections.Sketch // polymorphic
 	slides        []sections.Slide
 	slideIndex    = 0
 	switching     bool
@@ -50,8 +47,8 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 		window.SetShouldClose(true)
 	}
 
-	if currentSketch != nil {
-		currentSketch.HandleKeyboard(k, s, a, mk)
+	if currentSlide != nil {
+		currentSlide.HandleKeyboard(k, s, a, mk)
 	}
 
 	if !switching && a == glfw.Press {
@@ -73,7 +70,6 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			slideIndex = newIndex
 			currentSlide.Close()
 			currentSlide = slides[newIndex]
-			currentSketch = getSketch(currentSlide)
 			if err := currentSlide.InitGL(); err != nil {
 				log.Fatalf("slide failed %v: ", err)
 			}
@@ -83,14 +79,14 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 }
 
 func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
-	if currentSketch != nil {
-		currentSketch.HandleMousePosition(xpos, ypos)
+	if currentSlide != nil {
+		currentSlide.HandleMousePosition(xpos, ypos)
 	}
 }
 
 func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
-	if currentSketch != nil {
-		currentSketch.HandleScroll(xoff, yoff)
+	if currentSlide != nil {
+		currentSlide.HandleScroll(xoff, yoff)
 	}
 }
 
@@ -136,84 +132,24 @@ func setup() (*glfw.Window, error) {
 	return window, nil
 }
 
-type SlideItem struct {
-	slide sections.Slide
-	name  string
-}
-
-func setupSlides() []SlideItem {
+func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
-	return []SlideItem{
-		SlideItem{
-			slide: new(sections.TitleSlide),
-			name:  "Test Installation of gl,\nglfw, glow",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloCube),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(sections.TitleSlide),
-			name:  "Section 1: Getting Started",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloWindow),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloTriangle),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloSquare),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloShaders),
-			name:  "",
-		},
-
-		SlideItem{
-			slide: new(getstarted.HelloTextures),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloTransformations),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloSquare),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(getstarted.HelloCamera),
-			name:  "",
-		},
-		SlideItem{
-			slide: new(sections.TitleSlide),
-			name:  "Section 2: Lighting",
-		},
-		SlideItem{
-			slide: new(lighting.LightingColors),
-		},
-		SlideItem{
-			slide: new(lighting.BasicSpecular),
-			name:  "",
-		},
+	return []sections.Slide{
+		&sections.TitleSlide{Name: "Test Installation of gl,\nglfw, glow",},
+		new(getstarted.HelloCube),
+		&sections.TitleSlide{Name: "Section 1: Getting Started",},
+		new(getstarted.HelloWindow),
+		new(getstarted.HelloTriangle),
+		new(getstarted.HelloSquare),
+		new(getstarted.HelloShaders),
+		new(getstarted.HelloTextures),
+		new(getstarted.HelloTransformations),
+		new(getstarted.HelloSquare),
+		new(getstarted.HelloCamera),
+		&sections.TitleSlide{Name: "Section 2: Lighting",},
+		new(lighting.LightingColors),
+		new(lighting.BasicSpecular),
 	}
-}
-
-func getSketch(o interface{}) sections.Sketch {
-	i := reflect.ValueOf(o).Type()
-	s := reflect.TypeOf((*sections.Sketch)(nil)).Elem()
-	if i.Implements(s) {
-		s, ok := currentSlide.(sections.Sketch)
-		if !ok {
-			log.Fatalf("cant convert Slide to Sketch. Bravo!")
-		}
-		return s
-	}
-	return nil
 }
 
 func main() {
@@ -239,29 +175,21 @@ func main() {
 	c := utils.White.To32()
 	font.SetColor(c.R, c.G, c.B, 1.0)
 
-	temp := setupSlides()
-	l := len(temp)
-	for x, item := range temp {
+	slides = setupSlides()
+	fmt.Println(len(slides))
+	l := len(slides)
+	for x, slide := range slides {
 		c := utils.StepColor(utils.Magenta, utils.Black, l, x+1)
-		if implements(item.slide, (*sections.Sketch)(nil)) {
-			if err := item.slide.(sections.Sketch).Init(c); err != nil {
-				log.Fatalf("Failed setting up sketch: %v", err)
-			}
-		} else {
-			if err := item.slide.(*sections.TitleSlide).Init(f, c, item.name); err != nil {
-				log.Fatalf("Failed setting up sketch: %v", err)
-			}
+		if err := slide.Init(f, c,) ; err != nil {
+			log.Fatalf("Failed setting up sketch: %v", err)
 		}
-		slides = append(slides, item.slide)
 	}
 
 	currentSlide = slides[0]
-	currentSketch = getSketch(currentSlide)
 
 	if err := currentSlide.InitGL(); err != nil {
 		log.Fatalf("Failed initializing GL for slide: %v", err)
 	}
-	fmt.Printf("OK %v", &slides[1])
 
 	// loop
 	for !window.ShouldClose() {
@@ -281,8 +209,17 @@ func main() {
 	currentSlide.Close()
 }
 
-func implements(o, i interface{}) bool {
-	ot := reflect.ValueOf(o).Type()
-	s := reflect.TypeOf(i).Elem()
-	return ot.Implements(s)
-}
+//func getSketch(o interface{}) sections.Sketch {
+//	i := reflect.ValueOf(o).Type()
+//	s := reflect.TypeOf((*sections.Sketch)(nil)).Elem()
+//	if i.Implements(s) {
+//		s, ok := currentSlide.(sections.Sketch)
+//		fmt.Println(&currentSlide)
+//		fmt.Println(&s)
+//		if !ok {
+//			log.Fatalf("cant convert Slide to Sketch. Bravo!")
+//		}
+//		return s
+//	}
+//	return nil
+//}
