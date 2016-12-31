@@ -248,7 +248,7 @@ func main() {
 				log.Fatalf("Failed setting up sketch: %v", err)
 			}
 		} else {
-			if err := item.slide.(sections.Slide).Init(f, c, item.name); err != nil {
+			if err := item.slide.(*sections.TitleSlide).Init(f, c, item.name); err != nil {
 				log.Fatalf("Failed setting up sketch: %v", err)
 			}
 		}
@@ -261,6 +261,7 @@ func main() {
 	if err := currentSlide.InitGL(); err != nil {
 		log.Fatalf("Failed initializing GL for slide: %v", err)
 	}
+	fmt.Printf("OK %v", &slides[1])
 
 	// loop
 	for !window.ShouldClose() {
@@ -271,6 +272,7 @@ func main() {
 		//Render
 		currentSlide.Draw()
 		font.Printf(30, 30, 0.5, currentSlide.GetName())
+		font.Printf(30, utils.HEIGHT-20, 0.2, "boo")
 
 		window.SwapBuffers()
 		// Poll Events

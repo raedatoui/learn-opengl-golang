@@ -21,7 +21,7 @@ func (hw *HelloWindow) Update() {
 
 func (hw *HelloWindow) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(hw.Color.R, hw.Color.G, hw.Color.B, hw.Color.A)
+	gl.ClearColor(hw.Color32.R, hw.Color32.G, hw.Color32.B, hw.Color32.A)
 }
 
 func (hw *HelloWindow) Close() {

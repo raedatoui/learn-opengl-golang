@@ -58,7 +58,7 @@ func (hs *HelloShaders) Update() {
 
 func (hs *HelloShaders) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(hs.Color.R, hs.Color.G, hs.Color.B, hs.Color.A)
+	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
 
 	// Draw the triangle
 	gl.UseProgram(hs.shader)

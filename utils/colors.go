@@ -6,34 +6,31 @@ import (
 	"math/rand"
 )
 
-type ColorA struct {
-	R, G, B, A float32
-}
-
 type Color struct {
-	R, G, B float64
+	R, G, B, A float64
 }
 
 type Color32 struct {
-	R, G, B float32
+	R, G, B, A float32
 }
 
 func (c *Color) To32() Color32 {
-	return Color32{R: float32(c.R), G: float32(c.G), B: float32(c.B)}
+	return Color32{
+		R: float32(c.R), G: float32(c.G),
+		B: float32(c.B), A: float32(c.A)}
 }
 
-func RandColor() ColorA {
-	return ColorA{rand.Float32(), rand.Float32(), rand.Float32(), 1.0}
+func RandColor() Color {
+	return Color{rand.Float64(), rand.Float64(), rand.Float64(), 1.0}
 }
 
-// returns float32 colorA for sketches
-func StepColor(c1, c2 Color, t, i int) ColorA {
+func StepColor(c1, c2 Color, t, i int) Color {
 	factorStep := 1 / (float64(t) - 1.0)
 	c := interpolateColor(c1, c2, factorStep*float64(i))
-	return ColorA{
-		R: float32(c.R),
-		G: float32(c.G),
-		B: float32(c.B),
+	return Color{
+		R: float64(c.R),
+		G: float64(c.G),
+		B: float64(c.B),
 	}
 }
 
@@ -45,7 +42,7 @@ func interpolateColor(c1, c2 Color, factor float64) Color {
 	return *result
 }
 
-func r2h(c Color) string {
+func Rgb2Hex(c Color) string {
 	rgb := []int{
 		int(round(c.R*255, 0.5, 0)),
 		int(round(c.G*255, 0.5, 0)),

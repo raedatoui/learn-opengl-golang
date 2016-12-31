@@ -167,7 +167,7 @@ func (hc *HelloCoordinates) Update() {
 
 func (hc *HelloCoordinates) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(hc.Color.R, hc.Color.G, hc.Color.B, hc.Color.A)
+	gl.ClearColor(hc.Color32.R, hc.Color32.G, hc.Color32.B, hc.Color32.A)
 
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)

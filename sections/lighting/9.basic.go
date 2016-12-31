@@ -150,7 +150,7 @@ func (bc *BasicSpecular) Update() {
 
 func (bc *BasicSpecular) Draw() {
 	// Clear the colorbuffer
-	gl.ClearColor(bc.Color.R, bc.Color.G, bc.Color.B, bc.Color.A)
+	gl.ClearColor(bc.Color32.R, bc.Color32.G, bc.Color32.B, bc.Color32.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 	// Use corresponding shader when setting uniforms/drawing objects

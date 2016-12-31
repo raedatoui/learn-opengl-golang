@@ -14,6 +14,7 @@ type Slide interface {
 	Draw()
 	Close()
 	GetName() string
+	GetColor() utils.Color
 }
 
 // Sketch is an interactive Slide and process user interactions
@@ -28,11 +29,16 @@ type Sketch interface {
 type BaseSlide struct {
 	Slide
 	Name  string
-	Color utils.ColorA
+	Color utils.Color
+	Color32 utils.Color32
 }
 
 func (s *BaseSlide) GetName() string {
 	return s.Name
+}
+
+func (s *BaseSlide) GeColor() utils.Color {
+	return s.Color
 }
 
 type BaseSketch struct {
@@ -41,13 +47,19 @@ type BaseSketch struct {
 }
 
 func (b *BaseSketch) Init(a ...interface{}) error {
-	c, ok := a[0].(utils.ColorA)
+	c, ok := a[0].(utils.Color)
 	if ok == false {
 		return errors.New("first argument isnt a color")
 	}
 	b.Color = c
+	b.Color32 = c.To32()
 	return nil
 }
-func (s *BaseSketch) GetName() string {
-	return s.Name
+
+func (b *BaseSketch) GetName() string {
+	return b.Name
+}
+
+func (b *BaseSketch) GeColor() utils.Color {
+	return b.Color
 }

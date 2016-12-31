@@ -182,7 +182,7 @@ func (hc *HelloCube) Update() {
 // Draw implements the draw method
 func (hc *HelloCube) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(hc.Color.R, hc.Color.G, hc.Color.B, hc.Color.A)
+	gl.ClearColor(hc.Color32.R, hc.Color32.G, hc.Color32.B, hc.Color32.A)
 
 	gl.UseProgram(hc.program)
 	gl.UniformMatrix4fv(hc.modelUniform, 1, false, &hc.model[0])

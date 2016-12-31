@@ -147,7 +147,7 @@ func (lc *LightingColors) Update() {
 
 func (lc *LightingColors) Draw() {
 	// Clear the colorbuffer
-	gl.ClearColor(lc.Color.R, lc.Color.G, lc.Color.B, lc.Color.A)
+	gl.ClearColor(lc.Color32.R, lc.Color32.G, lc.Color32.B, lc.Color32.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 	// Use cooresponding shader when setting uniforms/drawing objects

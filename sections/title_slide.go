@@ -21,11 +21,12 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	}
 	s.font = f
 
-	c, ok := a[1].(utils.ColorA)
+	c, ok := a[1].(utils.Color)
 	if ok == false {
 		return errors.New("second argument isnt a ColorA")
 	}
 	s.Color = c
+	s.Color32 = c.To32()
 
 	n, ok := a[2].(string)
 	if ok == false {
@@ -52,7 +53,7 @@ func (s *TitleSlide) Update() {
 
 func (s *TitleSlide) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(s.Color.R, s.Color.G, s.Color.B, s.Color.A)
+	gl.ClearColor(s.Color32.R, s.Color32.G, s.Color32.B, s.Color32.A)
 
 	s.font.SetColor(1.0, 1.0, 1.0, 1.0)
 	for i := 0; i < len(s.lines); i++ {

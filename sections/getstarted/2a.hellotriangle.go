@@ -68,7 +68,7 @@ func (ht *HelloTriangle) Update() {
 
 func (ht *HelloTriangle) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.ClearColor(ht.Color.R, ht.Color.G, ht.Color.B, ht.Color.A)
+	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
 	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	// Draw our first triangle
