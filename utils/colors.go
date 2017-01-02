@@ -44,13 +44,13 @@ func interpolateColor(c1, c2 Color, factor float64) Color {
 
 func Rgb2Hex(c Color) string {
 	rgb := []uint32{
-		uint32(round(c.R*255, 0.5, 0)),
-		uint32(round(c.G*255, 0.5, 0)),
-		uint32(round(c.B*255, 0.5, 0)),
+		uint32(round(c.R*255, 0.5, 8)),
+		uint32(round(c.G*255, 0.5, 8)),
+		uint32(round(c.B*255, 0.5, 8)),
 	}
 	t := (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]
-	s := fmt.Sprintf("%x", t)
-	return "#" + s
+	return "#" + fmt.Sprintf("%x", t)
+
 }
 
 func round(val float64, roundOn float64, places int) (newVal float64) {

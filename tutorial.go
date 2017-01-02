@@ -176,7 +176,6 @@ func main() {
 	font.SetColor(c.R, c.G, c.B, 1.0)
 
 	slides = setupSlides()
-	fmt.Println(len(slides))
 	l := len(slides)
 	for x, slide := range slides {
 		c := utils.StepColor(utils.Magenta, utils.Black, l, x)
