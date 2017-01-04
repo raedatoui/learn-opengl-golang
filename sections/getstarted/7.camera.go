@@ -8,12 +8,6 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
 
-var (
-	lastX      float64 = 400
-	lastY      float64 = 300
-	firstMouse bool    = true
-)
-
 type HelloCamera struct {
 	sections.BaseSketch
 	shader               uint32
@@ -24,6 +18,8 @@ type HelloCamera struct {
 	camera               utils.Camera
 	deltaTime, lastFrame float64
 	w, a, s, d           bool
+	lastX, lastY         float64
+	firstMouse           bool
 }
 
 func (hc *HelloCamera) InitGL() error {
@@ -103,6 +99,9 @@ func (hc *HelloCamera) InitGL() error {
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		utils.YAW, utils.PITCH,
 	)
+	hc.lastX = 400
+	hc.lastY = 300
+	hc.firstMouse = true
 
 	gl.GenVertexArrays(1, &hc.vao)
 	gl.GenBuffers(1, &hc.vbo)
@@ -267,17 +266,17 @@ func (hc *HelloCamera) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.
 }
 
 func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {
-	if firstMouse {
-		lastX = xpos
-		lastY = ypos
-		firstMouse = false
+	if hc.firstMouse {
+		hc.lastX = xpos
+		hc.lastY = ypos
+		hc.firstMouse = false
 	}
 
-	xoffset := xpos - lastX
-	yoffset := lastY - ypos // Reversed since y-coordinates go from bottom to left
+	xoffset := xpos - hc.lastX
+	yoffset := hc.lastY - ypos // Reversed since y-coordinates go from bottom to left
 
-	lastX = xpos
-	lastY = ypos
+	hc.lastX = xpos
+	hc.lastY = ypos
 
 	hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
 }
