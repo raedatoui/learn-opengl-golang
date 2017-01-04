@@ -9,7 +9,6 @@ import (
 )
 
 var (
-	keys       map[glfw.Key]bool
 	lastX      float64 = 400
 	lastY      float64 = 300
 	firstMouse bool    = true
@@ -24,6 +23,7 @@ type HelloCamera struct {
 	cubePositions        []mgl32.Vec3
 	camera               utils.Camera
 	deltaTime, lastFrame float64
+	w, a, s, d           bool
 }
 
 func (hc *HelloCamera) InitGL() error {
@@ -177,7 +177,6 @@ func (hc *HelloCamera) InitGL() error {
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
-	keys = make(map[glfw.Key]bool)
 	return nil
 }
 
@@ -186,16 +185,16 @@ func (hc *HelloCamera) Update() {
 	currentFrame := glfw.GetTime()
 	hc.deltaTime = currentFrame - hc.lastFrame
 	hc.lastFrame = currentFrame
-	if keys[glfw.KeyW] {
+	if hc.w {
 		hc.camera.ProcessKeyboard(utils.FORWARD, float32(hc.deltaTime))
 	}
-	if keys[glfw.KeyS] {
+	if hc.s {
 		hc.camera.ProcessKeyboard(utils.BACKWARD, float32(hc.deltaTime))
 	}
-	if keys[glfw.KeyA] {
+	if hc.a {
 		hc.camera.ProcessKeyboard(utils.LEFT, float32(hc.deltaTime))
 	}
-	if keys[glfw.KeyD] {
+	if hc.d {
 		hc.camera.ProcessKeyboard(utils.RIGHT, float32(hc.deltaTime))
 	}
 }
@@ -260,12 +259,11 @@ func (hc *HelloCamera) Close() {
 	gl.UseProgram(0)
 }
 
-func (hc *HelloCamera) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-	if a == glfw.Press {
-		keys[k] = true
-	} else if a == glfw.Release {
-		keys[k] = false
-	}
+func (hc *HelloCamera) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
+	hc.w = keys[glfw.KeyW]
+	hc.a = keys[glfw.KeyA]
+	hc.s = keys[glfw.KeyS]
+	hc.d = keys[glfw.KeyD]
 }
 
 func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {

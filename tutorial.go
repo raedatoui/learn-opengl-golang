@@ -22,9 +22,9 @@ var (
 	slides       []sections.Slide
 	covers       map[int]sections.Slide
 	slideIndex   = 0
-	switching    bool
 	window       *glfw.Window
 	font         *utils.Font
+	keys         map[glfw.Key]bool
 )
 
 func init() {
@@ -44,11 +44,12 @@ func init() {
 }
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
 	if a == glfw.Press {
+
 		if k == glfw.KeyEscape {
 			window.SetShouldClose(true)
 		}
+
 		c := int(k) - 49
 		if c < len(covers) {
 			slideIndex = sections.SlidePosition(slides, covers[c])
@@ -60,37 +61,38 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			return
 		}
 
-	}
-
-	if currentSlide != nil {
-		currentSlide.HandleKeyboard(k, s, a, mk)
-	}
-
-	if !switching && a == glfw.Press {
-		switching = true
 		newIndex := slideIndex
-		if a == glfw.Press && s == 124 {
+		if s == 124 {
 			newIndex = slideIndex + 1
 			if newIndex > len(slides)-1 {
 				newIndex = len(slides) - 1
 			}
 		}
-		if a == glfw.Press && s == 123 {
+		if s == 123 {
 			newIndex = slideIndex - 1
 			if newIndex < 0 {
 				newIndex = 0
 			}
 		}
-		if a == glfw.Press && newIndex != slideIndex {
+		if newIndex != slideIndex {
 			slideIndex = newIndex
 			currentSlide.Close()
 			currentSlide = slides[newIndex]
 			if err := currentSlide.InitGL(); err != nil {
 				log.Fatalf("slide failed %v: ", err)
 			}
+			return
 		}
-		switching = false
+		keys[k] = true
+
+	} else if a == glfw.Release {
+		keys[k] = false
 	}
+
+	if currentSlide != nil {
+		currentSlide.HandleKeyboard(k, s, a, mk, keys)
+	}
+
 }
 
 func mouseCallback(w *glfw.Window, xpos float64, ypos float64) {
@@ -159,7 +161,7 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloShaders),
 		new(getstarted.HelloTextures),
 		new(getstarted.HelloTransformations),
-		new(getstarted.HelloSquare),
+		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
 		new(sections.TitleSlide),
 		new(lighting.LightingColors),
@@ -178,6 +180,8 @@ func main() {
 		log.Fatalln("failed to initialize glfw:", err)
 	}
 	defer glfw.Terminate()
+
+	keys = make(map[glfw.Key]bool)
 
 	// create window
 	w, err := setup()
@@ -247,11 +251,10 @@ func main() {
 
 		//Render
 		currentSlide.Draw()
-		if (currentSlide.DrawText()) {
+		if currentSlide.DrawText() {
 			font.Printf(30, 30, 0.5, currentSlide.GetName())
 			font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 		}
-
 
 		window.SwapBuffers()
 		// Poll Events

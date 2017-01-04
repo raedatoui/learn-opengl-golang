@@ -2,7 +2,6 @@ package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
@@ -147,16 +146,4 @@ func (ht *HelloTextures) Close() {
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.DeleteBuffers(1, &ht.ebo)
 	gl.UseProgram(0)
-}
-
-func (hc *HelloTextures) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-
-}
-
-func (ht *HelloTextures) HandleMousePosition(xpos, ypos float64) {
-
-}
-
-func (ht *HelloTextures) HandleScroll(xoff, yoff float64) {
-
 }

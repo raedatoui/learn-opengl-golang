@@ -12,13 +12,13 @@ type LightingColors struct {
 	sections.BaseSketch
 	lightingShader, lampShader  uint32
 	vbo, containerVAO, lightVAO uint32
-	keys                        map[glfw.Key]bool // TODO: this map should be global
 	lastX                       float64
 	lastY                       float64
 	firstMouse                  bool
 	deltaTime, lastFrame        float64
 	camera                      utils.Camera
 	lightPos                    mgl32.Vec3
+	w, a, s, d                  bool
 }
 
 func (lc *LightingColors) InitGL() error {
@@ -32,7 +32,6 @@ func (lc *LightingColors) InitGL() error {
 	)
 	lc.lastX = utils.WIDTH / 2.0
 	lc.lastY = utils.HEIGHT / 2.0
-	lc.keys = make(map[glfw.Key]bool)
 
 	// Light attributes
 	lc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
@@ -131,16 +130,16 @@ func (lc *LightingColors) Update() {
 	currentFrame := glfw.GetTime()
 	lc.deltaTime = currentFrame - lc.lastFrame
 	lc.lastFrame = currentFrame
-	if lc.keys[glfw.KeyW] {
+	if lc.w {
 		lc.camera.ProcessKeyboard(utils.FORWARD, float32(lc.deltaTime))
 	}
-	if lc.keys[glfw.KeyS] {
+	if lc.s {
 		lc.camera.ProcessKeyboard(utils.BACKWARD, float32(lc.deltaTime))
 	}
-	if lc.keys[glfw.KeyA] {
+	if lc.a {
 		lc.camera.ProcessKeyboard(utils.LEFT, float32(lc.deltaTime))
 	}
-	if lc.keys[glfw.KeyD] {
+	if lc.d {
 		lc.camera.ProcessKeyboard(utils.RIGHT, float32(lc.deltaTime))
 	}
 }
@@ -203,12 +202,11 @@ func (lc *LightingColors) Close() {
 
 }
 
-func (lc *LightingColors) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-	if a == glfw.Press {
-		lc.keys[k] = true
-	} else if a == glfw.Release {
-		lc.keys[k] = false
-	}
+func (lc *LightingColors) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
+	lc.w = keys[glfw.KeyW]
+	lc.a = keys[glfw.KeyA]
+	lc.s = keys[glfw.KeyS]
+	lc.d = keys[glfw.KeyD]
 }
 
 func (lc *LightingColors) HandleMousePosition(xpos, ypos float64) {

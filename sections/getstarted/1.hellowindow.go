@@ -22,6 +22,3 @@ func (hw *HelloWindow) Draw() {
 func (hw *HelloWindow) Close() {
 
 }
-
-
-

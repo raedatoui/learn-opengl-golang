@@ -29,7 +29,7 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	s.ColorHex = utils.Rgb2Hex(c)
 
 	n, ok := a[2].(string)
-	if  ok == false {
+	if ok == false {
 		return errors.New("third argument isnt a string")
 	}
 	s.Name = n

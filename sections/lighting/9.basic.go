@@ -12,13 +12,13 @@ type BasicSpecular struct {
 	sections.BaseSketch
 	lightingShader, lampShader  uint32
 	vbo, containerVAO, lightVAO uint32
-	keys                        map[glfw.Key]bool // TODO: this map should be global
 	lastX                       float64
 	lastY                       float64
 	firstMouse                  bool
 	deltaTime, lastFrame        float64
 	camera                      utils.Camera
 	lightPos                    mgl32.Vec3
+	w, a, s, d                  bool
 }
 
 func (bc *BasicSpecular) InitGL() error {
@@ -32,8 +32,6 @@ func (bc *BasicSpecular) InitGL() error {
 	)
 	bc.lastX = utils.WIDTH / 2.0
 	bc.lastY = utils.HEIGHT / 2.0
-	bc.keys = make(map[glfw.Key]bool)
-
 	// Light attributes
 	bc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
 
@@ -134,16 +132,16 @@ func (bc *BasicSpecular) Update() {
 	currentFrame := glfw.GetTime()
 	bc.deltaTime = currentFrame - bc.lastFrame
 	bc.lastFrame = currentFrame
-	if bc.keys[glfw.KeyW] {
+	if bc.w {
 		bc.camera.ProcessKeyboard(utils.FORWARD, float32(bc.deltaTime))
 	}
-	if bc.keys[glfw.KeyS] {
+	if bc.s {
 		bc.camera.ProcessKeyboard(utils.BACKWARD, float32(bc.deltaTime))
 	}
-	if bc.keys[glfw.KeyA] {
+	if bc.a {
 		bc.camera.ProcessKeyboard(utils.LEFT, float32(bc.deltaTime))
 	}
-	if bc.keys[glfw.KeyD] {
+	if bc.d {
 		bc.camera.ProcessKeyboard(utils.RIGHT, float32(bc.deltaTime))
 	}
 }
@@ -208,12 +206,11 @@ func (bc *BasicSpecular) Close() {
 
 }
 
-func (bc *BasicSpecular) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
-	if a == glfw.Press {
-		bc.keys[k] = true
-	} else if a == glfw.Release {
-		bc.keys[k] = false
-	}
+func (lc *BasicSpecular) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
+	lc.w = keys[glfw.KeyW]
+	lc.a = keys[glfw.KeyA]
+	lc.s = keys[glfw.KeyS]
+	lc.d = keys[glfw.KeyD]
 }
 
 func (bc *BasicSpecular) HandleMousePosition(xpos, ypos float64) {

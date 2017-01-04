@@ -17,7 +17,7 @@ type Slide interface {
 	GetName() string
 	SetName(s string)
 	GetColorHex() string
-	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
+	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey, keys map[glfw.Key]bool)
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
 	DrawText() bool
@@ -60,7 +60,7 @@ func (s *BaseSlide) Close() {
 
 }
 
-func (s *BaseSlide) HandleKeyboard(k glfw.Key, sc int, a glfw.Action, mk glfw.ModifierKey) {
+func (s *BaseSlide) HandleKeyboard(k glfw.Key, sc int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
 
 }
 
