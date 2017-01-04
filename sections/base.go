@@ -20,6 +20,7 @@ type Slide interface {
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
+	DrawText() bool
 }
 
 // BaseSlide is the base implementation of Slide with the min required fields
@@ -84,6 +85,10 @@ func (b *BaseSketch) Init(a ...interface{}) error {
 	b.Color32 = c.To32()
 	b.ColorHex = utils.Rgb2Hex(c)
 	return nil
+}
+
+func (b *BaseSketch) DrawText() bool {
+	return true
 }
 
 // returns the index of an object within a slice. returns -1 if it doesnt exist.

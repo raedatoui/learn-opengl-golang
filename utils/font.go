@@ -100,7 +100,6 @@ func (f *Font) Printf(x, y float32, scale float32, fs string, argv ...interface{
 
 		//skip runes that are not in font chacter range
 		if int(runeIndex)-int(lowChar) > len(f.fontChar) || runeIndex < lowChar {
-			fmt.Printf("%c %d\n", runeIndex, runeIndex)
 			continue
 		}
 

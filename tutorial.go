@@ -247,9 +247,11 @@ func main() {
 
 		//Render
 		currentSlide.Draw()
+		if (currentSlide.DrawText()) {
+			font.Printf(30, 30, 0.5, currentSlide.GetName())
+			font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
+		}
 
-		font.Printf(30, 30, 0.5, currentSlide.GetName())
-		font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 
 		window.SwapBuffers()
 		// Poll Events

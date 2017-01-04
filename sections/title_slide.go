@@ -10,7 +10,6 @@ import (
 type TitleSlide struct {
 	BaseSlide
 	font  *utils.Font
-	Name  string
 	lines []string
 }
 
@@ -51,6 +50,9 @@ func (s *TitleSlide) Draw() {
 	s.font.SetColor(1.0, 1.0, 1.0, 1.0)
 	for i := 0; i < len(s.lines); i++ {
 		s.font.Printf(30, 100+60*float32(i), 0.85, s.lines[i])
-
 	}
+}
+
+func (b *TitleSlide) DrawText() bool {
+	return false
 }
