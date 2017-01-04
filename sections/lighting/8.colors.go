@@ -131,16 +131,16 @@ func (lc *LightingColors) Update() {
 	lc.deltaTime = currentFrame - lc.lastFrame
 	lc.lastFrame = currentFrame
 	if lc.w {
-		lc.camera.ProcessKeyboard(utils.FORWARD, float32(lc.deltaTime))
+		lc.camera.ProcessKeyboard(utils.FORWARD, lc.deltaTime)
 	}
 	if lc.s {
-		lc.camera.ProcessKeyboard(utils.BACKWARD, float32(lc.deltaTime))
+		lc.camera.ProcessKeyboard(utils.BACKWARD, lc.deltaTime)
 	}
 	if lc.a {
-		lc.camera.ProcessKeyboard(utils.LEFT, float32(lc.deltaTime))
+		lc.camera.ProcessKeyboard(utils.LEFT, lc.deltaTime)
 	}
 	if lc.d {
-		lc.camera.ProcessKeyboard(utils.RIGHT, float32(lc.deltaTime))
+		lc.camera.ProcessKeyboard(utils.RIGHT, lc.deltaTime)
 	}
 }
 
@@ -158,7 +158,7 @@ func (lc *LightingColors) Draw() {
 
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(lc.camera.Zoom, float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
+	projection := mgl32.Perspective(float32(lc.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
 
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("model\x00"))
@@ -222,5 +222,9 @@ func (lc *LightingColors) HandleMousePosition(xpos, ypos float64) {
 	lc.lastX = xpos
 	lc.lastY = ypos
 
-	lc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+	lc.camera.ProcessMouseMovement(xoffset, yoffset, true)
+}
+
+func (lc *LightingColors) HandleScroll(xoff, yoff float64) {
+	lc.camera.ProcessMouseScroll(yoff)
 }

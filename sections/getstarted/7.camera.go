@@ -185,16 +185,16 @@ func (hc *HelloCamera) Update() {
 	hc.deltaTime = currentFrame - hc.lastFrame
 	hc.lastFrame = currentFrame
 	if hc.w {
-		hc.camera.ProcessKeyboard(utils.FORWARD, float32(hc.deltaTime))
+		hc.camera.ProcessKeyboard(utils.FORWARD, hc.deltaTime)
 	}
 	if hc.s {
-		hc.camera.ProcessKeyboard(utils.BACKWARD, float32(hc.deltaTime))
+		hc.camera.ProcessKeyboard(utils.BACKWARD, hc.deltaTime)
 	}
 	if hc.a {
-		hc.camera.ProcessKeyboard(utils.LEFT, float32(hc.deltaTime))
+		hc.camera.ProcessKeyboard(utils.LEFT, hc.deltaTime)
 	}
 	if hc.d {
-		hc.camera.ProcessKeyboard(utils.RIGHT, float32(hc.deltaTime))
+		hc.camera.ProcessKeyboard(utils.RIGHT, hc.deltaTime)
 	}
 }
 
@@ -218,7 +218,7 @@ func (hc *HelloCamera) Draw() {
 
 	// Create camera transformations
 	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(hc.camera.Zoom, 800.0/600.0, 0.1, 1000.0)
+	projection := mgl32.Perspective(float32(hc.camera.Zoom), 800.0/600.0, 0.1, 1000.0)
 
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
@@ -278,9 +278,9 @@ func (hc *HelloCamera) HandleMousePosition(xpos, ypos float64) {
 	hc.lastX = xpos
 	hc.lastY = ypos
 
-	hc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+	hc.camera.ProcessMouseMovement(xoffset, yoffset, true)
 }
 
 func (hc *HelloCamera) HandleScroll(xoff, yoff float64) {
-	hc.camera.ProcessMouseScroll(float32(yoff))
+	hc.camera.ProcessMouseScroll(yoff)
 }

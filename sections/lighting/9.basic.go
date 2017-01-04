@@ -133,16 +133,16 @@ func (bc *BasicSpecular) Update() {
 	bc.deltaTime = currentFrame - bc.lastFrame
 	bc.lastFrame = currentFrame
 	if bc.w {
-		bc.camera.ProcessKeyboard(utils.FORWARD, float32(bc.deltaTime))
+		bc.camera.ProcessKeyboard(utils.FORWARD, bc.deltaTime)
 	}
 	if bc.s {
-		bc.camera.ProcessKeyboard(utils.BACKWARD, float32(bc.deltaTime))
+		bc.camera.ProcessKeyboard(utils.BACKWARD, bc.deltaTime)
 	}
 	if bc.a {
-		bc.camera.ProcessKeyboard(utils.LEFT, float32(bc.deltaTime))
+		bc.camera.ProcessKeyboard(utils.LEFT, bc.deltaTime)
 	}
 	if bc.d {
-		bc.camera.ProcessKeyboard(utils.RIGHT, float32(bc.deltaTime))
+		bc.camera.ProcessKeyboard(utils.RIGHT, bc.deltaTime)
 	}
 }
 
@@ -164,7 +164,7 @@ func (bc *BasicSpecular) Draw() {
 
 	// Create camera transformations
 	view := bc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(bc.camera.Zoom, float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
+	projection := mgl32.Perspective(float32(bc.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("view\x00"))
@@ -226,5 +226,9 @@ func (bc *BasicSpecular) HandleMousePosition(xpos, ypos float64) {
 	bc.lastX = xpos
 	bc.lastY = ypos
 
-	bc.camera.ProcessMouseMovement(float32(xoffset), float32(yoffset), true)
+	bc.camera.ProcessMouseMovement(xoffset, yoffset, true)
+}
+
+func (bs *BasicSpecular) HandleScroll(xoff, yoff float64) {
+	bs.camera.ProcessMouseScroll(yoff)
 }
