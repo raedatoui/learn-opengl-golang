@@ -15,6 +15,7 @@ type Slide interface {
 	Draw()
 	Close()
 	GetName() string
+	SetName(s string)
 	GetColorHex() string
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey)
 	HandleMousePosition(xpos, ypos float64)
@@ -32,6 +33,10 @@ type BaseSlide struct {
 
 func (s *BaseSlide) GetName() string {
 	return s.Name
+}
+
+func (s *BaseSlide) SetName(n string) {
+	s.Name = n
 }
 
 func (s *BaseSlide) GetColorHex() string {
@@ -79,4 +84,14 @@ func (b *BaseSketch) Init(a ...interface{}) error {
 	b.Color32 = c.To32()
 	b.ColorHex = utils.Rgb2Hex(c)
 	return nil
+}
+
+// returns the index of an object within a slice. returns -1 if it doesnt exist.
+func SlidePosition(slice []Slide, value Slide) int {
+	for p, v := range slice {
+		if v == value {
+			return p
+		}
+	}
+	return -1
 }

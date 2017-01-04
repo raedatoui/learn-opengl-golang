@@ -29,6 +29,12 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	s.Color32 = c.To32()
 	s.ColorHex = utils.Rgb2Hex(c)
 
+	n, ok := a[2].(string)
+	if  ok == false {
+		return errors.New("third argument isnt a string")
+	}
+	s.Name = n
+
 	if strings.Contains(s.Name, "\n") {
 		s.lines = strings.Split(s.Name, "\n")
 	} else {
@@ -44,7 +50,7 @@ func (s *TitleSlide) Draw() {
 
 	s.font.SetColor(1.0, 1.0, 1.0, 1.0)
 	for i := 0; i < len(s.lines); i++ {
-		s.font.Printf(30, 200+60*float32(i), 1, s.lines[i])
+		s.font.Printf(30, 100+60*float32(i), 0.85, s.lines[i])
 
 	}
 }
