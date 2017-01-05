@@ -50,7 +50,7 @@ func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.Modif
 			window.SetShouldClose(true)
 		}
 
-		c := int(k) - 49
+		c := int(k) - 48
 		if c < len(covers) {
 			slideIndex = sections.SlidePosition(slides, covers[c])
 			currentSlide.Close()
