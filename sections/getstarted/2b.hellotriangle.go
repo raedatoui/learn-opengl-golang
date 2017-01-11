@@ -14,7 +14,7 @@ type HelloSquare struct {
 }
 
 func (hs *HelloSquare) InitGL() error {
-	hs.Name = "2a. Hello Square"
+	hs.Name = "2b. Hello Square"
 
 	var vertexShader2 = `
 	#version 330 core

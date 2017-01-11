@@ -162,10 +162,6 @@ func (hc *HelloCube) InitGL() error {
 
 	hc.previousTime = glfw.GetTime()
 
-	// TODO: move this later - or address it. do we always need to enabled the depth test?
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-
 	return nil
 }
 

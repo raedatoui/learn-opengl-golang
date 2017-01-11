@@ -172,6 +172,7 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloWindow),
 		new(getstarted.HelloTriangle),
 		new(getstarted.HelloSquare),
+		new(getstarted.HelloTriangleC),
 		new(getstarted.HelloShaders),
 		new(getstarted.HelloTextures),
 		new(getstarted.HelloTransformations),
@@ -257,9 +258,15 @@ func main() {
 		log.Fatalf("Failed initializing GL for slide: %v", err)
 	}
 
+	// TODO: do we always need to enabled the depth test?
+	gl.Enable(gl.DEPTH_TEST)
+	gl.DepthFunc(gl.LESS)
+
+
 	// loop
 	for !window.ShouldClose() {
-
+		gl.Enable(gl.BLEND)
+		gl.BlendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 		// Update
 		currentSlide.Update()
 
