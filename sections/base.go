@@ -14,7 +14,8 @@ type Slide interface {
 	Update()
 	Draw()
 	Close()
-	GetName() string
+	GetHeader() string
+	GetSubHeader() string
 	SetName(s string)
 	GetColorHex() string
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey, keys map[glfw.Key]bool)
@@ -32,8 +33,12 @@ type BaseSlide struct {
 	ColorHex string
 }
 
-func (s *BaseSlide) GetName() string {
+func (s *BaseSlide) GetHeader() string {
 	return s.Name
+}
+
+func (s *BaseSlide) GetSubHeader() string {
+	return ""
 }
 
 func (s *BaseSlide) SetName(n string) {

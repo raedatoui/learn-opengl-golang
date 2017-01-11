@@ -25,6 +25,7 @@ var (
 	window       *glfw.Window
 	font         *utils.Font
 	keys         map[glfw.Key]bool
+	wireframe    int32
 )
 
 func init() {
@@ -45,20 +46,33 @@ func init() {
 
 func keyCallBack(w *glfw.Window, k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey) {
 	if a == glfw.Press {
-
 		if k == glfw.KeyEscape {
 			window.SetShouldClose(true)
 		}
-
-		c := int(k) - 48
-		if c < len(covers) {
-			slideIndex = sections.SlidePosition(slides, covers[c])
-			currentSlide.Close()
-			currentSlide = slides[slideIndex]
-			if err := currentSlide.InitGL(); err != nil {
-				log.Fatalf("slide failed %v: ", err)
+		if k == glfw.KeySpace {
+			gl.GetIntegerv(gl.POLYGON_MODE, &wireframe)
+			switch wireframe {
+			case gl.FILL:
+				gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
+			case gl.LINE:
+				gl.PolygonMode(gl.FRONT_AND_BACK, gl.POINT)
+				gl.PointSize(20.0)
+			case gl.POINT:
+				gl.PolygonMode(gl.FRONT_AND_BACK, gl.FILL)
 			}
-			return
+		}
+
+		if k >= glfw.Key0 && k <= glfw.Key9 {
+			c := int(k) - 48
+			if c < len(covers) {
+				slideIndex = sections.SlidePosition(slides, covers[c])
+				currentSlide.Close()
+				currentSlide = slides[slideIndex]
+				if err := currentSlide.InitGL(); err != nil {
+					log.Fatalf("slide failed %v: ", err)
+				}
+				return
+			}
 		}
 
 		newIndex := slideIndex
@@ -252,8 +266,11 @@ func main() {
 		//Render
 		currentSlide.Draw()
 		if currentSlide.DrawText() {
-			font.Printf(30, 30, 0.5, currentSlide.GetName())
+			font.Printf(30, 30, 0.5, currentSlide.GetHeader())
 			font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
+			if currentSlide.GetSubHeader() != "" {
+				font.Printf(30, 50, 0.3, currentSlide.GetSubHeader())
+			}
 		}
 
 		window.SwapBuffers()

@@ -10,6 +10,7 @@ type HelloSquare struct {
 	sections.BaseSketch
 	program       uint32
 	vao, vbo, ebo uint32
+	currentMode   int32
 }
 
 func (hs *HelloSquare) InitGL() error {
@@ -64,13 +65,15 @@ func (hs *HelloSquare) InitGL() error {
 	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(vertAttrib)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
 
 	return nil
 }
 
 func (hs *HelloSquare) Draw() {
+	gl.GetIntegerv(gl.POLYGON_MODE, &hs.currentMode)
+
+	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
 
@@ -78,6 +81,7 @@ func (hs *HelloSquare) Draw() {
 	gl.BindVertexArray(hs.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
+	gl.PolygonMode(gl.FRONT_AND_BACK, uint32(hs.currentMode))
 }
 
 func (hs *HelloSquare) Close() {
@@ -85,4 +89,8 @@ func (hs *HelloSquare) Close() {
 	gl.DeleteBuffers(1, &hs.vbo)
 	gl.DeleteBuffers(1, &hs.ebo)
 	gl.UseProgram(0)
+}
+
+func (hs *HelloSquare) GetSubHeader() string {
+	return "the square always uses GL_LINE for the polygon mode"
 }

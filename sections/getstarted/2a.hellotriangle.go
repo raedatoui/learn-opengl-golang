@@ -55,7 +55,6 @@ func (ht *HelloTriangle) InitGL() error {
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
 	gl.BindVertexArray(0)
 
 	return nil
@@ -64,13 +63,11 @@ func (ht *HelloTriangle) InitGL() error {
 func (ht *HelloTriangle) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
-	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 
 	// Draw our first triangle
 	gl.UseProgram(ht.program)
 	gl.BindVertexArray(ht.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
-	gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
