@@ -236,10 +236,11 @@ func main() {
 		"Section 7: In Practice",
 	}
 	count := 0
+	titleSlideType := &sections.TitleSlide{}
 	for x, slide := range slides {
 		c := utils.StepColor(utils.Magenta, utils.Black, l, x)
 
-		if utils.IsType(slide, slides[0]) {
+		if utils.IsType(slide, titleSlideType) {
 			covers[count] = slide
 			if err := slide.Init(f, c, titles[count]); err != nil {
 				log.Fatalf("Failed setting up sketch: %v", err)
