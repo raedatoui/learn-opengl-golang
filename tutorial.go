@@ -262,11 +262,14 @@ func main() {
 	gl.Enable(gl.DEPTH_TEST)
 	gl.DepthFunc(gl.LESS)
 
+	// TODO: how to effectively blend shapes that use a frag shader with
+	// TODO: transparency
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	// loop
 	for !window.ShouldClose() {
-		gl.Enable(gl.BLEND)
-		gl.BlendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
 		// Update
 		currentSlide.Update()
 
