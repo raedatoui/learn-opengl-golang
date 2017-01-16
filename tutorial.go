@@ -170,11 +170,17 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloCube),
 		new(sections.TitleSlide),
 		new(getstarted.HelloWindow),
+
 		new(getstarted.HelloTriangle),
-		new(getstarted.HelloSquare),
-		new(getstarted.HelloTriangleC),
+		new(getstarted.TriangleEx1),
+		new(getstarted.TriangleEx2),
+
 		new(getstarted.HelloShaders),
-		new(getstarted.HelloShaderUniform),
+		new(getstarted.ShaderEx1),
+		new(getstarted.ShaderEx2),
+		new(getstarted.ShaderEx3),
+		new(getstarted.ShaderEx4),
+
 		new(getstarted.HelloTextures),
 		new(getstarted.HelloTransformations),
 		new(getstarted.HelloCoordinates),

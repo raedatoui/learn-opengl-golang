@@ -12,6 +12,26 @@ type HelloTriangle struct {
 	vao, vbo uint32
 }
 
+func (ht *HelloTriangle) createBuffers(vertices []float32) (uint32, uint32){
+	var vao, vbo uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.GenBuffers(1, &vbo)
+
+	gl.BindVertexArray(vao)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+
+	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
+	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
+	// the uniform
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.EnableVertexAttribArray(0)
+
+	gl.BindVertexArray(0)
+	return vao, vbo
+}
+
 func (ht *HelloTriangle) InitGL() error {
 	ht.Name = "2a. Hello Triangle"
 
@@ -29,34 +49,18 @@ func (ht *HelloTriangle) InitGL() error {
 	  color = vec4(1.0f, 1.0f, 0.2f, 1.0f);
 	}` + "\x00"
 
+	var err error
+	ht.program, err =  utils.BasicProgram(vertexShader, fragShader)
+	if err != nil {
+		return err
+	}
+
 	var vertices = []float32{
 		-0.5, -0.5, 0.0, // Left
 		0.5, -0.5, 0.0, // Right
 		0.0, 0.5, 0.0, // Top
 	}
-	var err error
-	ht.program, err = utils.BasicProgram(vertexShader, fragShader)
-	if err != nil {
-		return err
-	}
-	gl.UseProgram(ht.program)
-
-	gl.GenVertexArrays(1, &ht.vao)
-	gl.GenBuffers(1, &ht.vbo)
-
-	gl.BindVertexArray(ht.vao)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
-
-	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
-	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
-	// the uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-
-	gl.BindVertexArray(0)
-
+	ht.vao, ht.vbo = ht.createBuffers(vertices)
 	return nil
 }
 
@@ -77,29 +81,34 @@ func (ht *HelloTriangle) Close() {
 	gl.UseProgram(0)
 }
 
-type HelloSquare struct {
-	sections.BaseSketch
-	program       uint32
-	vao, vbo, ebo uint32
+
+type TriangleEx1 struct {
+	HelloTriangle
+	ebo uint32
 	currentMode   int32
 }
 
-func (hs *HelloSquare) InitGL() error {
-	hs.Name = "2b. Hello Square"
-
-	var vertexShader2 = `
+func (hs *TriangleEx1) InitGL() error {
+	hs.Name = "2b. Triangle Ex1"
+	var vertexShader = `
 	#version 330 core
 	in vec3 vert;
 	void main() {
 		gl_Position = vec4(vert.x, vert.y, vert.z, 1.0);
 	}` + "\x00"
 
-	var fragShader2 = `
+	var fragShader = `
 	#version 330 core
 	out vec4 color;
 	void main() {
 		color = vec4(1.0f, 1.0f, 0.2f, 1.0f);
 	}` + "\x00"
+
+	var err error
+	hs.program, err = utils.BasicProgram(vertexShader, fragShader)
+	if err != nil {
+		return err
+	}
 
 	var vertices = []float32{
 		0.5, 0.5, 0.0, // Top Right
@@ -112,13 +121,6 @@ func (hs *HelloSquare) InitGL() error {
 		0, 1, 3, // First Triangle
 		1, 2, 3, // Second Triangle
 	}
-
-	var err error
-	hs.program, err = utils.BasicProgram(vertexShader2, fragShader2)
-	if err != nil {
-		return err
-	}
-	gl.UseProgram(hs.program)
 
 	gl.GenVertexArrays(1, &hs.vao)
 	gl.BindVertexArray(hs.vao)
@@ -141,7 +143,7 @@ func (hs *HelloSquare) InitGL() error {
 	return nil
 }
 
-func (hs *HelloSquare) Draw() {
+func (hs *TriangleEx1) Draw() {
 	gl.GetIntegerv(gl.POLYGON_MODE, &hs.currentMode)
 
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
@@ -155,27 +157,26 @@ func (hs *HelloSquare) Draw() {
 	gl.PolygonMode(gl.FRONT_AND_BACK, uint32(hs.currentMode))
 }
 
-func (hs *HelloSquare) Close() {
+func (hs *TriangleEx1) Close() {
 	gl.DeleteVertexArrays(1, &hs.vao)
 	gl.DeleteBuffers(1, &hs.vbo)
 	gl.DeleteBuffers(1, &hs.ebo)
 	gl.UseProgram(0)
 }
 
-func (hs *HelloSquare) GetSubHeader() string {
+func (hs *TriangleEx1) GetSubHeader() string {
 	return "the square always uses GL_LINE for the polygon mode"
 }
 
-type HelloTriangleC struct {
-	sections.BaseSketch
-	program  uint32
-	vao, vbo uint32
+
+type TriangleEx2 struct {
+	HelloTriangle
 	program2  uint32
 	vao2, vbo2 uint32
 }
 
-func (ht *HelloTriangleC) InitGL() error {
-	ht.Name = "2c. Hello 2 Triangles"
+func (ht *TriangleEx2) InitGL() error {
+	ht.Name = "2c. Triangle Ex2"
 
 	var vertexShader = `
 	#version 330 core
@@ -206,6 +207,16 @@ func (ht *HelloTriangleC) InitGL() error {
 	}` + "\x00"
 
 
+	var err error
+	ht.program, err = utils.BasicProgram(vertexShader, fragShader)
+	if err != nil {
+		return err
+	}
+
+	ht.program2, err = utils.BasicProgram(vertexShader2, fragShader2)
+	if err != nil {
+		return err
+	}
 
 	var vertices = []float32{
 		0.5, -0.5, 0.0, // Right
@@ -220,50 +231,13 @@ func (ht *HelloTriangleC) InitGL() error {
 	}
 
 
-	var err error
-	ht.program, err = utils.BasicProgram(vertexShader, fragShader)
-	if err != nil {
-		return err
-	}
-
-	ht.program2, err = utils.BasicProgram(vertexShader2, fragShader2)
-	if err != nil {
-		return err
-	}
-
-	gl.GenVertexArrays(1, &ht.vao)
-	gl.GenVertexArrays(1, &ht.vao2)
-
-	gl.GenBuffers(1, &ht.vbo)
-	gl.GenBuffers(1, &ht.vbo2)
-
-	gl.BindVertexArray(ht.vao)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
-
-	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
-	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
-	// the uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-
-	gl.BindVertexArray(0)
-
-	gl.BindVertexArray(ht.vao2)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo2)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices2)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices2), gl.STATIC_DRAW)
-
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-
-	gl.BindVertexArray(0)
+	ht.vao, ht.vbo = ht.createBuffers(vertices)
+	ht.vao2, ht.vbo2 = ht.createBuffers(vertices2)
 
 	return nil
 }
 
-func (ht *HelloTriangleC) Draw() {
+func (ht *TriangleEx2) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
 
@@ -279,8 +253,3 @@ func (ht *HelloTriangleC) Draw() {
 	gl.BindVertexArray(0)
 }
 
-func (ht *HelloTriangleC) Close() {
-	gl.DeleteVertexArrays(1, &ht.vao)
-	gl.DeleteBuffers(1, &ht.vbo)
-	gl.UseProgram(0)
-}
