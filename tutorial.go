@@ -174,6 +174,7 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloSquare),
 		new(getstarted.HelloTriangleC),
 		new(getstarted.HelloShaders),
+		new(getstarted.HelloShaderUniform),
 		new(getstarted.HelloTextures),
 		new(getstarted.HelloTransformations),
 		new(getstarted.HelloCoordinates),
@@ -267,6 +268,10 @@ func main() {
 	// TODO: transparency
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+	var maxAttrib int32
+	gl.GetIntegerv(gl.MAX_VERTEX_ATTRIBS, &maxAttrib)
+	fmt.Println(maxAttrib)
 
 	// loop
 	for !window.ShouldClose() {

@@ -4,6 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"math"
+	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 type HelloShaders struct {
@@ -13,7 +15,7 @@ type HelloShaders struct {
 }
 
 func (hs *HelloShaders) InitGL() error {
-	hs.Name = "3. Shaders"
+	hs.Name = "3a. Shaders"
 
 	var err error
 	hs.shader, err = utils.Shader(
@@ -72,10 +74,13 @@ type HelloShaderUniform struct {
 	sections.BaseSketch
 	vao, vbo uint32
 	shader   uint32
+	timeValue float64
+	greenValue float32
+	vertexColorLocation int32 //=
 }
 
 func (hs *HelloShaderUniform) InitGL() error {
-	hs.Name = "3. Shaders"
+	hs.Name = "3b. Shaders"
 
 	var err error
 	hs.shader, err = utils.Shader(
@@ -85,6 +90,7 @@ func (hs *HelloShaderUniform) InitGL() error {
 	if err != nil {
 		return err
 	}
+	hs.vertexColorLocation = gl.GetUniformLocation(hs.shader, gl.Str("ourColor\x00"))
 
 	var vertices = []float32{
 		// Positions      // Colors
@@ -113,12 +119,17 @@ func (hs *HelloShaderUniform) InitGL() error {
 	return nil
 }
 
+func (hs *HelloShaderUniform) Update() {
+	hs.timeValue = glfw.GetTime()
+	hs.greenValue = float32(math.Sin(hs.timeValue) / 2) + 0.5
+}
 func (hs *HelloShaderUniform) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
 
 	// Draw the triangle
 	gl.UseProgram(hs.shader)
+	gl.Uniform4f(hs.vertexColorLocation, 0.0, hs.greenValue, 0.0, 1.0)
 	gl.BindVertexArray(hs.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
@@ -128,4 +139,8 @@ func (hs *HelloShaderUniform) Close() {
 	gl.DeleteVertexArrays(1, &hs.vao)
 	gl.DeleteBuffers(1, &hs.vbo)
 	gl.UseProgram(0)
+}
+
+func (hs *HelloShaderUniform) GetSubHeader() string {
+	return "with a uniform updated by gl.Uniform4f"
 }
