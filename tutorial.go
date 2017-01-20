@@ -15,6 +15,7 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
 	"github.com/raedatoui/learn-opengl-golang/utils"
+	"strconv"
 )
 
 var (
@@ -279,6 +280,7 @@ func main() {
 	gl.GetIntegerv(gl.MAX_VERTEX_ATTRIBS, &maxAttrib)
 	fmt.Println(maxAttrib)
 
+	utils.InitFPS()
 	// loop
 	for !window.ShouldClose() {
 
@@ -294,6 +296,9 @@ func main() {
 				font.Printf(30, 50, 0.3, currentSlide.GetSubHeader())
 			}
 		}
+
+		fps := "FPS: " + strconv.FormatFloat(utils.CalcFPS(1.0), 'f', 2, 64)
+		font.Printf(utils.WIDTH-80, utils.HEIGHT-20, 0.25, fps)
 
 		window.SwapBuffers()
 		// Poll Events
