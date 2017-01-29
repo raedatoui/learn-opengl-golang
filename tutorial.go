@@ -13,7 +13,7 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	"strconv"
-	"github.com/raedatoui/assimp"
+	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
 )
 
 var (
@@ -165,6 +165,7 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
+		new(modelloading.ModelLoading),
 		new(sections.TitleSlide),
 		new(getstarted.HelloCube),
 		new(sections.TitleSlide),
