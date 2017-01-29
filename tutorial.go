@@ -182,7 +182,6 @@ func setupSlides() []sections.Slide {
 
 		new(getstarted.HelloTextures),
 
-
 		new(getstarted.HelloTransformations),
 		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
@@ -281,36 +280,6 @@ func main() {
 	fmt.Println(maxAttrib)
 
 	utils.InitFPS()
-
-	cScene := assimp.ImportFile("_assets/objects/cyborg/cyborg.obj", uint(
-		assimp.Process_JoinIdenticalVertices|
-		assimp.Process_Triangulate|
-		assimp.Process_GenSmoothNormals|
-		assimp.Process_CalcTangentSpace|
-		assimp.Process_FindInvalidData|
-		assimp.Process_LimitBoneWeights|
-		assimp.Process_ImproveCacheLocality|
-		assimp.Process_FixInfacingNormals|
-		assimp.Process_OptimizeMeshes|
-		assimp.Process_ValidateDataStructure))
-
-	defer cScene.ReleaseImport()
-
-	fmt.Printf("\tMesh count: %d\n", len(cScene.Meshes()))
-	fmt.Printf("\tTexture count: %d\n", len(cScene.Textures()))
-	fmt.Printf("\tAnimations count: %d\n", len(cScene.Animations()))
-	fmt.Printf("\tLights count: %d\n", len(cScene.Lights()))
-	fmt.Printf("\tMaterials count: %d\n", len(cScene.Materials()))
-	fmt.Printf("\tCameras count: %d\n", len(cScene.Cameras()))
-	fmt.Printf("\tFlags: %d\n", cScene.Flags())
-	fmt.Printf("\trootNode Name: %s\n", cScene.RootNode().Name())
-	fmt.Printf("\troot mesh vertices: %d\n", len(cScene.Meshes()[0].Vertices()))
-	fmt.Printf("\troot mesh normals: %d\n", len(cScene.Meshes()[0].Normals()))
-	fmt.Printf("\troot mesh tangents: %d\n", len(cScene.Meshes()[0].Tangents()))
-	fmt.Printf("\troot tex coords: %d\n", len(cScene.Meshes()[0].TextureCoords(0)))
-	mat := cScene.Materials()[cScene.Meshes()[0].MaterialIndex()]
-	diffuse := assimp.TextureType(assimp.TextureMapping_Diffuse)
-	fmt.Printf("\troot mesh material diffuse tex: %v\n", mat.GetMaterialTexture(diffuse, 0))
 
 
 	// loop
