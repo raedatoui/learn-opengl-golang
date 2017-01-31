@@ -64,6 +64,7 @@ func (ml *ModelLoading) Draw() {
 	// Transformation matrices
 	projection := mgl32.Perspective(float32(ml.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
+
 	projLoc := gl.GetUniformLocation(ml.shader, gl.Str("projection\x00"))
 	viewLoc := gl.GetUniformLocation(ml.shader, gl.Str("view\x00"))
 	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
@@ -72,6 +73,7 @@ func (ml *ModelLoading) Draw() {
 	// Draw the loaded model
 	model := mgl32.Translate3D(0, -1.75, 0.0)            // Translate it down a bit so it's at the center of the scene
 	model = model.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // It's a bit too big for our scene, so scale it down
+
 	modelLoc := gl.GetUniformLocation(ml.shader, gl.Str("model\x00"))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 	ml.model.Draw(ml.shader)

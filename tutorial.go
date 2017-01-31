@@ -165,7 +165,6 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
-		new(modelloading.ModelLoading),
 		new(sections.TitleSlide),
 		new(getstarted.HelloCube),
 		new(sections.TitleSlide),
@@ -186,10 +185,14 @@ func setupSlides() []sections.Slide {
 		new(getstarted.HelloTransformations),
 		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
+
 		new(sections.TitleSlide),
 		new(lighting.LightingColors),
 		new(lighting.BasicSpecular),
+
 		new(sections.TitleSlide),
+		new(modelloading.ModelLoading),
+
 		new(sections.TitleSlide),
 		new(sections.TitleSlide),
 		new(sections.TitleSlide),
