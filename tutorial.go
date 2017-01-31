@@ -269,7 +269,7 @@ func main() {
 
 	// TODO: do we always need to enabled the depth test?
 	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
+	//gl.DepthFunc(gl.LESS)
 
 	// TODO: how to effectively blend shapes that use a frag shader with
 	// TODO: transparency
@@ -281,7 +281,6 @@ func main() {
 	fmt.Println(maxAttrib)
 
 	utils.InitFPS()
-
 
 	// loop
 	for !window.ShouldClose() {

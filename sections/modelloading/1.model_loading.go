@@ -71,11 +71,12 @@ func (ml *ModelLoading) Draw() {
 
 	// Draw the loaded model
 	model := mgl32.Translate3D(0, -1.75, 0.0)            // Translate it down a bit so it's at the center of the scene
-	model = model.Mul4(mgl32.Translate3D(0.2, 0.2, 0.2)) // It's a bit too big for our scene, so scale it down
+	model = model.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // It's a bit too big for our scene, so scale it down
 	modelLoc := gl.GetUniformLocation(ml.shader, gl.Str("model\x00"))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 	ml.model.Draw(ml.shader)
 }
+
 func (lc *ModelLoading) HandleMousePosition(xpos, ypos float64) {
 	if lc.firstMouse {
 		lc.lastX = xpos
@@ -102,3 +103,4 @@ func (hc *ModelLoading) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw
 func (lc *ModelLoading) HandleScroll(xoff, yoff float64) {
 	lc.camera.ProcessMouseScroll(yoff)
 }
+

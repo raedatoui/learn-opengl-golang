@@ -99,7 +99,7 @@ func (c *Camera) ProcessKeyboard(direction int, deltaTime float64) {
 }
 
 // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-func (c *Camera) ProcessMouseMovement(xoffset, yoffset float64, constrainPitch bool) {
+func (c *Camera) ProcessMouseMovement(xoffset, yoffset float64, constrainPitch bool)  {
 	xoffset *= c.MouseSensitivity
 	yoffset *= c.MouseSensitivity
 

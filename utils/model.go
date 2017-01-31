@@ -8,6 +8,9 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/raedatoui/assimp"
 	"strconv"
+	"os"
+	"github.com/go-gl/mathgl/mgl32"
+	"unsafe"
 )
 
 type Model struct {
@@ -37,6 +40,7 @@ func (m *Model) Draw(shader uint32) {
 }
 
 type Mesh struct {
+	id       int
 	vertices []Vertex
 	indices  []uint32
 	textures []Texture
@@ -56,11 +60,9 @@ func NewMesh(v []Vertex, i []uint32, t []Texture) Mesh {
 
 func (m *Mesh) setup() {
 	// size of the Vertex struct
-	//dummy := m.vertices[0]
-	//fmt.Println(dummy)
-	//structSize := int(unsafe.Sizeof(dummy))
-	//fmt.Println(structSize)
-	//structSize := int32(4 * structSize1)
+	dummy := m.vertices[0]
+	structSize := int(unsafe.Sizeof(dummy))
+	structSize32 := int32(structSize)
 
 	// Create buffers/arrays
 	gl.GenVertexArrays(1, &m.Vao)
@@ -73,30 +75,30 @@ func (m *Mesh) setup() {
 	// A great thing about structs is that their memory layout is sequential for all its items.
 	// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a gl.m::vec3/2 array which
 	// again translates to 3/2 floats which translates to a byte array.
-	gl.BufferData(gl.ARRAY_BUFFER, len(m.vertices) * GL_FLOAT32_SIZE , gl.Ptr(m.vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(m.vertices)* structSize, gl.Ptr(m.vertices), gl.STATIC_DRAW)
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.ebo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(m.indices) * GL_FLOAT32_SIZE, gl.Ptr(m.indices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(m.indices)*GL_FLOAT32_SIZE, gl.Ptr(m.indices), gl.STATIC_DRAW)
 
 	// Set the vertex attribute pointers
 	// Vertex Positions
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, structSize32, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	// Vertex Normals
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*GL_FLOAT32_SIZE, gl.PtrOffset(3 * GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, structSize32, unsafe.Pointer((unsafe.Offsetof(dummy.Normal))))
 	gl.EnableVertexAttribArray(1)
 
 	// Vertex Texture Coords
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*GL_FLOAT32_SIZE, gl.PtrOffset(6 * GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, structSize32, unsafe.Pointer((unsafe.Offsetof(dummy.TexCoords))))
 	gl.EnableVertexAttribArray(2)
 
-	//// Vertex Tangent
-	//gl.EnableVertexAttribArray(3)
-	//gl.VertexAttribPointer(3, 3, gl.FLOAT, false, 56, unsafe.Pointer(unsafe.Offsetof(dummy.Tangent)))
-	//// Vertex Bitangent
-	//gl.EnableVertexAttribArray(4)
-	//gl.VertexAttribPointer(4, 3, gl.FLOAT, false, 56, unsafe.Pointer(unsafe.Offsetof(dummy.Bitangent)))
+	// Vertex Tangent
+	gl.EnableVertexAttribArray(3)
+	gl.VertexAttribPointer(3, 3, gl.FLOAT, false, structSize32, unsafe.Pointer(unsafe.Offsetof(dummy.Tangent)))
+	// Vertex Bitangent
+	gl.EnableVertexAttribArray(4)
+	gl.VertexAttribPointer(4, 3, gl.FLOAT, false, structSize32, unsafe.Pointer(unsafe.Offsetof(dummy.Bitangent)))
 
 	gl.BindVertexArray(0)
 }
@@ -116,7 +118,7 @@ func (m *Mesh) Draw(program uint32) {
 	heightNr = 1
 	i = 0
 	for i = 0; i < uint32(len(m.textures)); i++ {
-		gl.ActiveTexture(gl.TEXTURE0 + i) // Active proper texture unit before binding
+		gl.ActiveTexture(m.textures[i].Id) // Active proper texture unit before binding
 		// Retrieve texture number (the N in diffuse_textureN)
 		ss := ""
 		switch m.textures[i].TextureType {
@@ -154,23 +156,14 @@ func (m *Mesh) Draw(program uint32) {
 	}
 }
 
-type Vertex [8]float32
-//{
-//	Position  mgl32.Vec3
-//	Normal    mgl32.Vec3
-//	TexCoords mgl32.Vec2
-//	Tangent   mgl32.Vec3
-//	Bitangent mgl32.Vec3
-//}
-func (v *Vertex) Position() []float32 {
-	return v[0:4]
+type Vertex struct {
+	Position  mgl32.Vec3
+	Normal    mgl32.Vec3
+	TexCoords mgl32.Vec2
+	Tangent   mgl32.Vec3
+	Bitangent mgl32.Vec3
 }
-func (v *Vertex) Normal() []float32 {
-	return v[4:7]
-}
-func (v *Vertex) TexCoords() []float32 {
-	return v[6:8]
-}
+
 type Texture struct {
 	Id          uint32
 	TextureType string
@@ -182,18 +175,18 @@ func (m *Model) loadModel() error {
 	// Read file via ASSIMP
 	path := m.basePath + m.fileName
 	scene := assimp.ImportFile(path, uint(
-		assimp.Process_Triangulate|assimp.Process_FlipUVs|assimp.Process_CalcTangentSpace))
-	fmt.Printf("meshes: %d\t mats: %d\t children: %d\n", scene.NumMeshes(), scene.NumMaterials(), scene.RootNode().NumChildren())
+		assimp.Process_Triangulate|assimp.Process_FlipUVs))
+
 	// Check for errors
 	if scene.Flags()&assimp.SceneFlags_Incomplete != 0 { // if is Not Zero
 		fmt.Println("ERROR::ASSIMP:: %s\n", scene.Flags())
 		return errors.New("shit failed")
 	}
 	// Retrieve the directory path of the filepath
-	//m.directory = path.substr(0, path.find_last_of('/'))
 
 	// Process ASSIMP's root node recursively
 	m.processNode(scene.RootNode(), scene)
+
 	return nil
 }
 
@@ -203,14 +196,15 @@ func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 		// The node object only contains indices to index the actual objects in the scene.
 		// The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
 		mesh := s.Meshes()[n.Meshes()[i]]
+		fmt.Printf("%s %s\n", n.Name() ,mesh.Name())
 		ms := m.processMesh(mesh, s)
-		fmt.Printf("mesh - id: %v\t verts: %d\tindices: %d\tfaces: %d\n",
-			mesh.Name(), len(ms.vertices), len(ms.indices), mesh.NumFaces())
+		ms.id = i
 		m.meshes = append(m.meshes, ms)
 	}
+
 	// After we've processed all of the meshes (if any) we then recursively process each of the children nodes
 	c := n.Children()
-	for j := 0; j < n.NumChildren(); j++ {
+	for j := 0; j < len(c); j++ {
 		m.processNode(c[j], s)
 	}
 }
@@ -218,74 +212,78 @@ func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 func (m *Model) processMeshVertices(mesh *assimp.Mesh) []Vertex {
 	// Walk through each of the mesh's vertices
 	vertices := []Vertex{}
+	//p, _ := os.Create("data/positions"+ mesh.Name()+ ".txt")
+	//n, _ := os.Create("data/normals"+ mesh.Name()+ ".txt")
+	//t, _ := os.Create("data/texcoords"+ mesh.Name()+ ".txt")
+	//
+	//defer p.Close()
+	//defer n.Close()
+	//defer t.Close()
+	//p.WriteString(mesh.Name() + "\n")
+	//n.WriteString(mesh.Name() + "\n")
+	//t.WriteString(mesh.Name() + "\n")
+
+	positions := mesh.Vertices()
+	normals := mesh.Normals()
+	tex :=  mesh.TextureCoords(0)
+	useTex := true
+	if tex == nil {
+		useTex = false
+	}
+	//tangents := mesh.Tangents()
+	//bitangents := mesh.Bitangents()
+
 	for i := 0; i < mesh.NumVertices(); i++ {
 		// We declare a placeholder vector since assimp uses its own vector class that
 		// doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
 		vertex := Vertex{}
-		var tmp []assimp.Vector3
 
 		// Positions
-		tmp = mesh.Vertices()
-		vertex[0] = tmp[i].X()
-		vertex[1] = tmp[i].Y()
-		vertex[2] = tmp[i].Z()
+		vertex.Position = mgl32.Vec3{positions[i].X(), positions[i].Y(), positions[i].Z()}
 
 		// Normals
-		tmp = mesh.Normals()
-		vertex[3] = tmp[i].X()
-		vertex[4] = tmp[i].Y()
-		vertex[5] = tmp[i].Z()
+		vertex.Normal = mgl32.Vec3{normals[i].X(), normals[i].Y(), normals[i].Z()}
+		//n.WriteString(fmt.Sprintf("[%f, %f, %f]\n", tmp[i].X(), tmp[i].Y(), tmp[i].Z()))
 
 		// Texture Coordinates
-		if mesh.TextureCoords(0) != nil { // Does the mesh contain texture coordinates?
+		if useTex {
+			// Does the mesh contain texture coordinates?
 			// A vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't
 			// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-			tex := mesh.TextureCoords(0)
-			vertex[6] = tex[i].X()
-			vertex[7] = tex[i].Y()
-
+			vertex.TexCoords = mgl32.Vec2{tex[i].X(),  tex[i].Y()}
 		} else {
-			vertex[6] = 0.0
-			vertex[7] = 0.0
+			vertex.TexCoords = mgl32.Vec2{0.0, 0.0}
 		}
 
 		//// Tangent
-		//vector = *new(mgl32.Vec3)
-		//tmp = mesh.Tangents()
-		//vector[0] = tmp[i].X()
-		//vector[1] = tmp[i].Y()
-		//vector[2] = tmp[i].Z()
-		//vertex.Tangent = vector
+		//vertex.Tangent = mgl32.Vec3{tangents[i].X(), tangents[i].Y(), tangents[i].Z()}
 		//
 		//// Bitangent
-		//vector = *new(mgl32.Vec3)
-		//tmp = mesh.Bitangents()
-		//vector[0] = tmp[i].X()
-		//vector[1] = tmp[i].Y()
-		//vector[2] = tmp[i].Z()
-		//vertex.Bitangent = vector
+		//vertex.Bitangent = mgl32.Vec3{bitangents[i].X(), bitangents[i].Y(), bitangents[i].Z()}
 
 		vertices = append(vertices, vertex)
 	}
+
 	return vertices
 }
 
 func (m *Model) processMeshIndices(mesh *assimp.Mesh) []uint32 {
 	indices := []uint32{}
-
+	ind, _ := os.Create("data/indices"+ mesh.Name()+ ".txt")
 	// Now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
 	for i := 0; i < mesh.NumFaces(); i++ {
 		face := mesh.Faces()[i]
+		t := face.CopyIndices()
+		ind.WriteString(fmt.Sprintf("[%d, %d, %d]\n", t[0], t[1], t[2]))
 		// Retrieve all indices of the face and store them in the indices vector
-		findices := face.CopyIndices()
-		indices = append(indices, findices...)
+		indices = append(indices,t ...)
 	}
+	ind.WriteString("\n--------")
 	return indices
 }
 
-func (m *Model) processMesh(mesh *assimp.Mesh, s *assimp.Scene) Mesh {
+func (m *Model) processMeshTextures(mesh *assimp.Mesh, s *assimp.Scene) []Texture {
 	textures := []Texture{}
-
 	// Process materials
 	if mesh.MaterialIndex() >= 0 {
 		material := s.Materials()[mesh.MaterialIndex()]
@@ -309,11 +307,16 @@ func (m *Model) processMesh(mesh *assimp.Mesh, s *assimp.Scene) Mesh {
 		// 4. Height maps
 		heightMaps := m.loadMaterialTextures(material, assimp.TextureMapping_Ambient, "texture_height")
 		textures = append(textures, heightMaps...)
-
 	}
+	return textures
+}
 
+func (ml *Model) processMesh(m *assimp.Mesh, s *assimp.Scene) Mesh {
 	// Return a mesh object created from the extracted mesh data
-	return NewMesh(m.processMeshVertices(mesh), m.processMeshIndices(mesh), textures)
+	return NewMesh(
+		ml.processMeshVertices(m),
+		ml.processMeshIndices(m),
+		ml.processMeshTextures(m, s))
 }
 
 func (m *Model) loadMaterialTextures(ms *assimp.Material, tm assimp.TextureMapping, tt string) []Texture {
@@ -349,7 +352,7 @@ func textureFromFile(f string) uint32 {
 	}
 	// Assign texture to ID
 	gl.BindTexture(gl.TEXTURE_2D, textureID)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.Ptr(rgba.Pix))
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, width, height, 0, gl.RGB, gl.UNSIGNED_BYTE, gl.Ptr(rgba.Pix))
 	gl.GenerateMipmap(gl.TEXTURE_2D)
 
 	// Parameters
@@ -361,4 +364,13 @@ func textureFromFile(f string) uint32 {
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	return textureID
+}
+
+func pos(slice []assimp.Mesh, value assimp.Mesh) int {
+	for p, v := range slice {
+		if v == value {
+			return p
+		}
+	}
+	return -1
 }
