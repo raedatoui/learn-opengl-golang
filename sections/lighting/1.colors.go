@@ -123,9 +123,6 @@ func (lc *LightingColors) InitGL() error {
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
 
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
-
 	return nil
 }
 

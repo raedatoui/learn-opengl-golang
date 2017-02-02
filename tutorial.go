@@ -189,6 +189,7 @@ func setupSlides() []sections.Slide {
 		new(sections.TitleSlide),
 		new(lighting.LightingColors),
 		new(lighting.BasicSpecular),
+		new(lighting.Materials),
 
 		new(sections.TitleSlide),
 		new(modelloading.ModelLoading),

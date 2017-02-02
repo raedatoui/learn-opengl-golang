@@ -24,6 +24,8 @@ type BasicSpecular struct {
 func (bc *BasicSpecular) InitGL() error {
 	bc.Name = "2. Basic Specular Lighting"
 
+	bc.firstMouse = true
+
 	// Camera
 	bc.camera = utils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
@@ -120,9 +122,6 @@ func (bc *BasicSpecular) InitGL() error {
 	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
-
-	gl.Enable(gl.DEPTH_TEST)
-	gl.DepthFunc(gl.LESS)
 
 	return nil
 }
