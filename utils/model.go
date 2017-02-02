@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"unsafe"
+	"sync"
 )
 
 type Mesh struct {
@@ -30,7 +31,7 @@ func NewMesh(v []Vertex, i []uint32, t []Texture) Mesh {
 		Indices:  i,
 		Textures: t,
 	}
-	m.setup()
+	//m.setup()
 	return m
 }
 
@@ -149,6 +150,7 @@ type Texture struct {
 
 type Model struct {
 	texturesLoaded  map[string]Texture
+	wg	sync.WaitGroup
 	Meshes          []Mesh
 	GammaCorrection bool
 	BasePath        string
@@ -233,10 +235,9 @@ func (m *Model) Import() error {
 
 func (m *Model) Dispose() {
 	for i := 0; i < len(m.Meshes); i++ {
-		mesh := m.Meshes[i]
-		gl.DeleteVertexArrays(1, &mesh.vao)
-		gl.DeleteBuffers(1, &mesh.vbo)
-		gl.DeleteBuffers(1, &mesh.ebo)
+		gl.DeleteVertexArrays(1, &m.Meshes[i].vao)
+		gl.DeleteBuffers(1, &m.Meshes[i].vbo)
+		gl.DeleteBuffers(1, &m.Meshes[i].ebo)
 	}
 }
 
@@ -255,27 +256,47 @@ func (m *Model) loadModel() error {
 
 	// Process ASSIMP's root node recursively
 	m.processNode(scene.RootNode(), scene)
+	m.wg.Wait()
 
+	// using a for loop with a range doesnt work here?!
+	// also making a temp var inside the loop doesnt work either?!
+	for i := 0; i < len(m.Meshes); i++ {
+		for j := 0; j < len(m.Meshes[i].Textures); j++ {
+			if val, ok := m.texturesLoaded[m.Meshes[i].Textures[j].Path]; ok {
+				m.Meshes[i].Textures[j].id = val.id
+			} else {
+				m.Meshes[i].Textures[j].id = m.textureFromFile(m.Meshes[i].Textures[j].Path)
+				m.texturesLoaded[m.Meshes[i].Textures[j].Path] = m.Meshes[i].Textures[j]
+			}
+		}
+		m.Meshes[i].setup()
+	}
 	return nil
 }
 
 func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 	// Process each mesh located at the current node
+	m.wg.Add(n.NumMeshes() + n.NumChildren())
+
 	for i := 0; i < n.NumMeshes(); i++ {
 		// The node object only contains indices to index the actual objects in the scene.
 		// The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-		mesh := s.Meshes()[n.Meshes()[i]]
-		ms := m.processMesh(mesh, s)
-		ms.Id = i
-		m.Meshes = append(m.Meshes, ms)
+		go func(index int) {
+			defer m.wg.Done()
+			mesh := s.Meshes()[n.Meshes()[index]]
+			ms := m.processMesh(mesh, s)
+			m.Meshes = append(m.Meshes, ms)
+		} (i)
+
 	}
 
 	// After we've processed all of the meshes (if any) we then recursively process each of the children nodes
 	c := n.Children()
 	for j := 0; j < len(c); j++ {
-		//go func(n *assimp.Node, s *assimp.Scene) {
-		m.processNode(c[j], s)
-		//}(c[j], s)
+		go func(n *assimp.Node, s *assimp.Scene) {
+			defer m.wg.Done()
+			m.processNode(n, s)
+		}(c[j], s)
 	}
 }
 
@@ -396,14 +417,17 @@ func (m *Model) loadMaterialTextures(ms *assimp.Material, tm assimp.TextureMappi
 	for i := 0; i < textureCount; i++ {
 		file, _, _, _, _, _, _, _ := ms.GetMaterialTexture(textureType, 0)
 		filename := m.BasePath + file
-		if val, ok := m.texturesLoaded[filename]; ok {
-			result = append(result, val)
-		} else {
-			texId := m.textureFromFile(filename)
-			texture := Texture{id: texId, TextureType: tt, Path: filename}
-			result = append(result, texture)
-			m.texturesLoaded[filename] = texture
-		}
+		texture := Texture{id: 0, TextureType: tt, Path: filename}
+		result = append(result, texture)
+
+		//if val, ok := m.texturesLoaded[filename]; ok {
+		//	result = append(result, val)
+		//} else {
+		//	texId := m.textureFromFile(filename)
+		//	texture := Texture{id: texId, TextureType: tt, Path: filename}
+		//	result = append(result, texture)
+		//	m.texturesLoaded[filename] = texture
+		//}
 	}
 	return result
 }
