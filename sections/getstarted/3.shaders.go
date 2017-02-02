@@ -53,7 +53,7 @@ func (hs *HelloShaders) createBuffers() {
 func (hs *HelloShaders) InitGL() error {
 	hs.Name = "3a. Shaders"
 
-	if err := hs.createShader("_assets/3.shaders/basic.vs", "_assets/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader("_assets/getting_started/3.shaders/basic.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
@@ -89,7 +89,7 @@ type ShaderEx1 struct {
 
 func (hs *ShaderEx1) InitGL() error {
 	hs.Name = "3b. Shaders Ex1"
-	if err := hs.createShader("_assets/3.shaders/basic.vs", "_assets/3.shaders/uniform.frag"); err != nil {
+	if err := hs.createShader("_assets/getting_started/3.shaders/basic.vs", "_assets/getting_started/3.shaders/uniform.frag"); err != nil {
 		return err
 	}
 	hs.vertexColorLocation = gl.GetUniformLocation(hs.shader, gl.Str("ourColor\x00"))
@@ -127,7 +127,7 @@ type ShaderEx2 struct {
 
 func (hs *ShaderEx2) InitGL() error {
 	hs.Name = "3c. Shaders Ex2"
-	if err := hs.createShader("_assets/3.shaders/reverse.vs", "_assets/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader("_assets/getting_started/3.shaders/reverse.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
@@ -143,7 +143,7 @@ type ShaderEx3 struct {
 
 func (hs *ShaderEx3) InitGL() error {
 	hs.Name = "3b. Shaders Ex3"
-	if err := hs.createShader("_assets/3.shaders/offset.vs", "_assets/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader("_assets/getting_started/3.shaders/offset.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
@@ -162,7 +162,7 @@ type ShaderEx4 struct {
 
 func (hs *ShaderEx4) InitGL() error {
 	hs.Name = "3c. Shaders Ex4"
-	if err := hs.createShader("_assets/3.shaders/ex4.vs", "_assets/3.shaders/ex4.frag"); err != nil {
+	if err := hs.createShader("_assets/getting_started/3.shaders/ex4.vs", "_assets/getting_started/3.shaders/ex4.frag"); err != nil {
 		return err
 	}
 

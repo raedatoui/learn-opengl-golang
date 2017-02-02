@@ -28,10 +28,11 @@ func (ml *ModelLoading) InitGL() error {
 	)
 	ml.Name = "3. Model Loading"
 	// Setup and compile our shaders
-	ml.shader, _ = utils.Shader("_assets/3.model_loading/shader.vs",
-		"_assets/3.model_loading/shader.frag", "")
+	ml.shader, _ = utils.Shader("_assets/model_loading/shader.vs",
+		"_assets/model_loading/shader.frag", "")
 	// Load models
 	ml.model, _ = utils.NewModel("_assets/objects/nanosuit/", "nanosuit.obj", false)
+
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	return nil
 }
@@ -95,14 +96,18 @@ func (lc *ModelLoading) HandleMousePosition(xpos, ypos float64) {
 	lc.camera.ProcessMouseMovement(xoffset, yoffset, true)
 }
 
-func (hc *ModelLoading) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
-	hc.w = keys[glfw.KeyW]
-	hc.a = keys[glfw.KeyA]
-	hc.s = keys[glfw.KeyS]
-	hc.d = keys[glfw.KeyD]
+func (ml *ModelLoading) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
+	ml.w = keys[glfw.KeyW]
+	ml.a = keys[glfw.KeyA]
+	ml.s = keys[glfw.KeyS]
+	ml.d = keys[glfw.KeyD]
 }
 
-func (lc *ModelLoading) HandleScroll(xoff, yoff float64) {
-	lc.camera.ProcessMouseScroll(yoff)
+func (ml *ModelLoading) HandleScroll(xoff, yoff float64) {
+	ml.camera.ProcessMouseScroll(yoff)
 }
 
+func (ml *ModelLoading) Close() {
+	ml.model.Dispose()
+	gl.UseProgram(0)
+}

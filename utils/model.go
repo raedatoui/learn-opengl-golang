@@ -231,6 +231,15 @@ func (m *Model) Import() error {
 	return nil
 }
 
+func (m *Model) Dispose() {
+	for i := 0; i < len(m.Meshes); i++ {
+		mesh := m.Meshes[i]
+		gl.DeleteVertexArrays(1, &mesh.vao)
+		gl.DeleteBuffers(1, &mesh.vbo)
+		gl.DeleteBuffers(1, &mesh.ebo)
+	}
+}
+
 // Loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 func (m *Model) loadModel() error {
 	// Read file via ASSIMP
@@ -258,7 +267,6 @@ func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 		mesh := s.Meshes()[n.Meshes()[i]]
 		ms := m.processMesh(mesh, s)
 		ms.Id = i
-		fmt.Printf("vertices: %d, indices: %d, textures: %d\n", len(ms.Vertices), len(ms.Indices), len(ms.Textures))
 		m.Meshes = append(m.Meshes, ms)
 	}
 

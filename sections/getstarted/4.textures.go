@@ -17,8 +17,8 @@ func (ht *HelloTextures) InitGL() error {
 	ht.Name = "4. Textures"
 
 	var err error
-	ht.shader, err = utils.Shader("_assets/4.textures/texture.vs",
-		"_assets/4.textures/texture.frag", "")
+	ht.shader, err = utils.Shader("_assets/getting_started/4.textures/texture.vs",
+		"_assets/getting_started/4.textures/texture.frag", "")
 	if err != nil {
 		panic(err)
 	}

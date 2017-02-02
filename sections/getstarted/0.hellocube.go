@@ -139,7 +139,7 @@ func (hc *HelloCube) InitGL() error {
 	gl.BindFragDataLocation(hc.program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	hc.texture, err = utils.NewTexture("_assets/0.cube/square.png")
+	hc.texture, err = utils.NewTexture("_assets/getting_started/0.cube/square.png")
 	if err != nil {
 		return err
 	}

@@ -21,8 +21,8 @@ func (hc *HelloCoordinates) InitGL() error {
 	hc.Name = "6. Coordinate Systems"
 
 	var err error
-	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",
-		"_assets/6.coordinates/coordinate.frag", "")
+	hc.shader, err = utils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
+		"_assets/getting_started/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
 	}

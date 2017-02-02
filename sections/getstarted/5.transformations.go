@@ -20,8 +20,8 @@ func (ht *HelloTransformations) InitGL() error {
 	ht.Name = "5. Transformations"
 
 	var err error
-	ht.shader, err = utils.Shader("_assets/5.transformations/transform.vs",
-		"_assets/5.transformations/transform.frag", "")
+	ht.shader, err = utils.Shader("_assets/getting_started/5.transformations/transform.vs",
+		"_assets/getting_started/5.transformations/transform.frag", "")
 	if err != nil {
 		return err
 	}

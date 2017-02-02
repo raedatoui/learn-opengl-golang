@@ -26,8 +26,8 @@ func (hc *HelloCamera) InitGL() error {
 	hc.Name = "7. Camera (use WSDA and mouse)"
 
 	var err error
-	hc.shader, err = utils.Shader("_assets/6.coordinates/coordinate.vs",
-		"_assets/6.coordinates/coordinate.frag", "")
+	hc.shader, err = utils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
+		"_assets/getting_started/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
 	}
