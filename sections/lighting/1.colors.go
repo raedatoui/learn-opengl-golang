@@ -40,12 +40,16 @@ func (lc *LightingColors) InitGL() error {
 	lc.deltaTime = 0.0 // Time between current frame and last frame
 	lc.lastFrame = 0.0 // Time of last frame
 
-	if sh, err := utils.Shader("_assets/lighting/8.lighting_colors/colors.vs", "_assets/lighting/8.lighting_colors/colors.frag", ""); err != nil {
+	if sh, err := utils.Shader(
+		"_assets/lighting/1.colors/colors.vs",
+		"_assets/lighting/1.colors/colors.frag", ""); err != nil {
 		return err
 	} else {
 		lc.lightingShader = sh
 	}
-	if sh, err := utils.Shader("_assets/lighting/8.lighting_colors/lamp.vs", "_assets/lighting/8.lighting_colors/lamp.frag", ""); err != nil {
+	if sh, err := utils.Shader(
+		"_assets/lighting/1.colors/lamp.vs",
+		"_assets/lighting/1.colors/lamp.frag", ""); err != nil {
 		return err
 	} else {
 		lc.lampShader = sh

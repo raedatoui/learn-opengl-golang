@@ -39,12 +39,12 @@ func (bc *BasicSpecular) InitGL() error {
 	bc.deltaTime = 0.0 // Time between current frame and last frame
 	bc.lastFrame = 0.0 // Time of last frame
 
-	if sh, err := utils.Shader("_assets/lighting/9.basic_lighting/lighting.vs", "_assets/lighting/9.basic_lighting/lighting.frag", ""); err != nil {
+	if sh, err := utils.Shader("_assets/lighting/2.basic/lighting.vs", "_assets/lighting/2.basic/lighting.frag", ""); err != nil {
 		return err
 	} else {
 		bc.lightingShader = sh
 	}
-	if sh, err := utils.Shader("_assets/lighting/9.basic_lighting/lamp.vs", "_assets/lighting/9.basic_lighting/lamp.frag", ""); err != nil {
+	if sh, err := utils.Shader("_assets/lighting/2.basic/lamp.vs", "_assets/lighting/2.basic/lamp.frag", ""); err != nil {
 		return err
 	} else {
 		bc.lampShader = sh
