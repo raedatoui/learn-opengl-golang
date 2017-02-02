@@ -171,7 +171,7 @@ func NewModel(b, f string, g bool) (Model, error) {
 	gobFile := b + gf
 	if _, err := os.Stat(gobFile); os.IsNotExist(err) {
 		err := m.loadModel()
-		//m.Export()
+		m.Export()
 		return m, err
 	}
 	err := m.Import()
@@ -210,26 +210,12 @@ func (m *Model) Import() error {
 	defer dataFile.Close()
 
  	dataDecoder := gob.NewDecoder(dataFile)
- 	err = dataDecoder.Decode(&m)
-
- 	if err != nil {
-		return nil
- 	}
-	for _, mesh := range m.Meshes {
-		mesh.setup()
-
-		fmt.Printf("vertices: %d, indices: %d, textures: %d\n", len(mesh.Vertices), len(mesh.Indices), len(mesh.Textures))
-
-		for _, tex := range mesh.Textures {
-			if val, ok := m.texturesLoaded[tex.Path]; ok {
-				fmt.Println( val)
-			} else {
-
-				tex.id = m.textureFromFile(tex.Path)
-				m.texturesLoaded[tex.Path] = tex
-			}
-		}
+ 	if err := dataDecoder.Decode(&m); err != nil {
+		return err
 	}
+
+	fmt.Printf("Creating model from gob file: %s\n", f)
+	m.initGL()
 	return nil
 }
 
@@ -257,7 +243,11 @@ func (m *Model) loadModel() error {
 	// Process ASSIMP's root node recursively
 	m.processNode(scene.RootNode(), scene)
 	m.wg.Wait()
+	m.initGL()
+	return nil
+}
 
+func (m *Model) initGL() {
 	// using a for loop with a range doesnt work here?!
 	// also making a temp var inside the loop doesnt work either?!
 	for i := 0; i < len(m.Meshes); i++ {
@@ -271,9 +261,7 @@ func (m *Model) loadModel() error {
 		}
 		m.Meshes[i].setup()
 	}
-	return nil
 }
-
 func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 	// Process each mesh located at the current node
 	m.wg.Add(n.NumMeshes() + n.NumChildren())
