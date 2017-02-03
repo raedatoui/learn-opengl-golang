@@ -255,7 +255,7 @@ func (hc *HelloCamera) Close() {
 	gl.DeleteVertexArrays(1, &hc.vao)
 	gl.DeleteBuffers(1, &hc.vbo)
 	gl.DeleteBuffers(1, &hc.ebo)
-	gl.UseProgram(0)
+	gl.DeleteProgram(hc.shader)
 }
 
 func (hc *HelloCamera) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {

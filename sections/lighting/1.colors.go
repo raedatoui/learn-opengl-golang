@@ -200,7 +200,11 @@ func (lc *LightingColors) Draw() {
 }
 
 func (lc *LightingColors) Close() {
-
+	gl.DeleteVertexArrays(1, &lc.lightVAO)
+	gl.DeleteVertexArrays(1, &lc.containerVAO)
+	gl.DeleteBuffers(1, &lc.vbo)
+	gl.DeleteProgram(lc.lightingShader)
+	gl.DeleteProgram(lc.lampShader)
 }
 
 func (lc *LightingColors) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {

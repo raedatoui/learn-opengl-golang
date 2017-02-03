@@ -202,7 +202,11 @@ func (bc *BasicSpecular) Draw() {
 }
 
 func (bc *BasicSpecular) Close() {
-
+	gl.DeleteVertexArrays(1, &bc.lightVAO)
+	gl.DeleteVertexArrays(1, &bc.containerVAO)
+	gl.DeleteBuffers(1, &bc.vbo)
+	gl.DeleteProgram(bc.lightingShader)
+	gl.DeleteProgram(bc.lampShader)
 }
 
 func (lc *BasicSpecular) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {

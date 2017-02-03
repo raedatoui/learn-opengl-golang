@@ -145,5 +145,5 @@ func (ht *HelloTextures) Close() {
 	gl.DeleteVertexArrays(1, &ht.vao)
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.DeleteBuffers(1, &ht.ebo)
-	gl.UseProgram(0)
+	gl.DeleteProgram(ht.shader)
 }

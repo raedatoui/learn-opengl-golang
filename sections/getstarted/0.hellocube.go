@@ -196,5 +196,5 @@ func (hc *HelloCube) Close() {
 	gl.DeleteVertexArrays(1, &hc.vao)
 	gl.DeleteBuffers(1, &hc.vbo)
 	gl.DeleteBuffers(1, &hc.vao)
-	gl.UseProgram(0)
+	gl.DeleteProgram(hc.program)
 }

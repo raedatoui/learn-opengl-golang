@@ -78,7 +78,7 @@ func (ht *HelloTriangle) Draw() {
 func (ht *HelloTriangle) Close() {
 	gl.DeleteVertexArrays(1, &ht.vao)
 	gl.DeleteBuffers(1, &ht.vbo)
-	gl.UseProgram(0)
+	gl.DeleteProgram(ht.program)
 }
 
 

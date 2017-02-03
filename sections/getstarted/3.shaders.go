@@ -76,7 +76,7 @@ func (hs *HelloShaders) Draw() {
 func (hs *HelloShaders) Close() {
 	gl.DeleteVertexArrays(1, &hs.vao)
 	gl.DeleteBuffers(1, &hs.vbo)
-	gl.UseProgram(0)
+	gl.DeleteProgram(hs.shader)
 }
 
 

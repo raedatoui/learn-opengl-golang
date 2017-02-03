@@ -269,3 +269,11 @@ func (m *Materials) HandleMousePosition(xpos, ypos float64) {
 func (m *Materials) HandleScroll(xoff, yoff float64) {
 	m.camera.ProcessMouseScroll(yoff)
 }
+
+func (m *Materials) Close() {
+	gl.DeleteVertexArrays(1, &m.lightVAO)
+	gl.DeleteVertexArrays(1, &m.containerVAO)
+	gl.DeleteBuffers(1, &m.vbo)
+	gl.DeleteProgram(m.lightingShader)
+	gl.DeleteProgram(m.lampShader)
+}
