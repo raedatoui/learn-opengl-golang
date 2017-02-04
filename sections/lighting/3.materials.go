@@ -204,7 +204,7 @@ func (m *Materials) Draw() {
 
 	// Create camera transformations
 	view := m.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(m.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
+	projection := mgl32.Perspective(float32(m.camera.Zoom), utils.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("view\x00"))

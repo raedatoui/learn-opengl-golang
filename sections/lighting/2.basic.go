@@ -163,7 +163,7 @@ func (bc *BasicSpecular) Draw() {
 
 	// Create camera transformations
 	view := bc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(bc.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
+	projection := mgl32.Perspective(float32(bc.camera.Zoom), utils.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("view\x00"))

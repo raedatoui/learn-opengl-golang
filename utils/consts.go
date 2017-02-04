@@ -7,3 +7,5 @@ const WIDTH = 1280
 
 // HEIGHT is the height of the window
 const HEIGHT = 1024
+
+const RATIO = 1280.0 / 1024.0

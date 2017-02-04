@@ -262,6 +262,7 @@ func (m *Model) initGL() {
 		m.Meshes[i].setup()
 	}
 }
+
 func (m *Model) processNode(n *assimp.Node, s *assimp.Scene) {
 	// Process each mesh located at the current node
 	m.wg.Add(n.NumMeshes() + n.NumChildren())

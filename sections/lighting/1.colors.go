@@ -159,7 +159,7 @@ func (lc *LightingColors) Draw() {
 
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(lc.camera.Zoom), float32(utils.WIDTH)/float32(utils.HEIGHT), 0.1, 100.0)
+	projection := mgl32.Perspective(float32(lc.camera.Zoom), utils.RATIO, 0.1, 100.0)
 
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("model\x00"))

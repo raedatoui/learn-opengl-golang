@@ -218,7 +218,7 @@ func (hc *HelloCamera) Draw() {
 
 	// Create camera transformations
 	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(hc.camera.Zoom), 800.0/600.0, 0.1, 1000.0)
+	projection := mgl32.Perspective(float32(hc.camera.Zoom), utils.RATIO, 0.1, 1000.0)
 
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))

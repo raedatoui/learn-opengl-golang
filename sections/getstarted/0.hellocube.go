@@ -121,7 +121,7 @@ func (hc *HelloCube) InitGL() error {
 
 	gl.UseProgram(hc.program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), float32(800.0)/600.0, 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), utils.RATIO, 0.1, 10.0)
 	projectionUniform := gl.GetUniformLocation(hc.program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 

@@ -181,7 +181,7 @@ func (hc *HelloCoordinates) Draw() {
 
 	// Create transformations
 	view := mgl32.Translate3D(0.0, 0.0, -3.0)
-	projection := mgl32.Perspective(45.0, 800.0/600.0, 0.1, 100.0)
+	projection := mgl32.Perspective(45.0, utils.RATIO, 0.1, 100.0)
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(hc.shader, gl.Str("view\x00"))
