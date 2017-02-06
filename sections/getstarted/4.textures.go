@@ -2,6 +2,7 @@ package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 )
@@ -11,27 +12,25 @@ type HelloTextures struct {
 	shader             uint32
 	vao, vbo, ebo      uint32
 	texture1, texture2 uint32
+	texLoc1, texLoc2   int32
 }
 
-func (ht *HelloTextures) InitGL() error {
-	ht.Name = "4. Textures"
+func (ht *HelloTextures) getShaders() []string {
+	return []string{"_assets/getting_started/4.textures/texture.vs",
+		"_assets/getting_started/4.textures/texture.frag"}
+}
 
-	var err error
-	ht.shader, err = utils.Shader("_assets/getting_started/4.textures/texture.vs",
-		"_assets/getting_started/4.textures/texture.frag", "")
-	if err != nil {
-		panic(err)
-	}
-	gl.UseProgram(ht.shader)
-
-	vertices := []float32{
+func (ht *HelloTextures) getVertices() []float32 {
+	return []float32{
 		// Positions      // Colors       // Texture Coords
 		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, // Top Right
 		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, // Bottom Right
 		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, // Bottom Left
 		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
 	}
+}
 
+func (ht *HelloTextures) createBuffers(vertices []float32) {
 	indices := []uint32{ // Note that we start from 0!
 		0, 1, 3, // First Triangle
 		1, 2, 3, // Second Triangle
@@ -60,60 +59,70 @@ func (ht *HelloTextures) InitGL() error {
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
+}
+
+func (ht *HelloTextures) createTexture(wrap_s, wrap_t, min_f, mag_f int32, f string) (uint32, error) {
+	var texture uint32
+	gl.GenTextures(1, &texture)
+	gl.BindTexture(gl.TEXTURE_2D, texture)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap_s)    //gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap_t)    //gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, min_f) //gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mag_f) //gl.LINEAR)
+
+	rgba, err := utils.ImageToPixelData(f)
+	if err != nil {
+		return 0, err
+	}
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGBA,
+		int32(rgba.Rect.Size().X),
+		int32(rgba.Rect.Size().Y),
+		0,
+		gl.RGBA,
+		gl.UNSIGNED_BYTE,
+		gl.Ptr(rgba.Pix))
+	gl.GenerateMipmap(gl.TEXTURE_2D)
+	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	return texture, nil
+}
+
+func (ht *HelloTextures) InitGL() error {
+	ht.Name = "4. Textures"
+
+	var err error
+	shaders := ht.getShaders()
+	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	if err != nil {
+		return err
+	}
+	gl.UseProgram(ht.shader)
+
+	ht.createBuffers(ht.getVertices())
 
 	// ====================
 	// Texture 1
 	// ====================
-	gl.GenTextures(1, &ht.texture1)
-	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	rgba, err := utils.ImageToPixelData("_assets/images/container.png")
-	if err != nil {
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
+	} else {
+		ht.texture1 = tex
+		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
 
 	// ====================
 	// Texture 2
 	// ====================
-	gl.GenTextures(1, &ht.texture2)
-	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	rgba, err = utils.ImageToPixelData("_assets/images/awesomeface.png")
-	if err != nil {
-		panic(err)
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		ht.texture2 = tex
+		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	}
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
+
 	return nil
 }
 
@@ -124,13 +133,11 @@ func (ht *HelloTextures) Draw() {
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
-	loc1 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
-	gl.Uniform1i(loc1, 0)
+	gl.Uniform1i(ht.texLoc1, 0)
 
 	gl.ActiveTexture(gl.TEXTURE1)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
-	loc2 := gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
-	gl.Uniform1i(loc2, 1)
+	gl.Uniform1i(ht.texLoc2, 1)
 
 	// Activate shader
 	gl.UseProgram(ht.shader)
@@ -146,4 +153,233 @@ func (ht *HelloTextures) Close() {
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.DeleteBuffers(1, &ht.ebo)
 	gl.DeleteProgram(ht.shader)
+}
+
+type TexturesEx1 struct {
+	HelloTextures
+}
+
+func (ht *TexturesEx1) getShaders() []string {
+	return []string{"_assets/getting_started/4.textures/texture.vs",
+		"_assets/getting_started/4.textures/textureex1.frag"}
+}
+
+func (ht *TexturesEx1) InitGL() error {
+	ht.Name = "4a. Textures Ex1"
+
+	var err error
+	shaders := ht.getShaders()
+	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	if err != nil {
+		return err
+	}
+	gl.UseProgram(ht.shader)
+	ht.createBuffers(ht.getVertices())
+
+	// ====================
+	// Texture 1
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+		return err
+	} else {
+		ht.texture1 = tex
+		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
+	}
+
+	// ====================
+	// Texture 2
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		ht.texture2 = tex
+		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
+	}
+
+	return nil
+}
+
+type TexturesEx2 struct {
+	TexturesEx1
+}
+
+func (ht *TexturesEx2) getVertices() []float32 {
+	return []float32{
+		// Positions      // Colors       // Texture Coords
+		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 2.0, 2.0, // Top Right
+		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, // Bottom Right
+		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, // Bottom Left
+		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 2.0, // Top Left
+	}
+}
+
+func (ht *TexturesEx2) InitGL() error {
+	ht.Name = "4b. Textures Ex2"
+
+	var err error
+	shaders := ht.getShaders()
+	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	if err != nil {
+		return err
+	}
+	gl.UseProgram(ht.shader)
+	ht.createBuffers(ht.getVertices())
+
+	// ====================
+	// Texture 1
+	// ====================
+	if tex, err := ht.createTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+		return err
+	} else {
+		ht.texture1 = tex
+		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
+	}
+
+	// ====================
+	// Texture 2
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		ht.texture2 = tex
+		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
+	}
+
+	return nil
+}
+
+type TexturesEx3 struct {
+	TexturesEx1
+}
+
+func (ht *TexturesEx3) getVertices() []float32 {
+	return []float32{
+		// Positions     // Colors        // Texture Coords
+		0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 0.55, 0.55, // Top Right
+		0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 0.55, 0.45, // Bottom Right
+		-0.5, -0.5, 0.0, 0.0, 0.0, 1.0, 0.45, 0.45, // Bottom Left
+		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.45, 0.55, // Top Left
+	}
+}
+
+func (ht *TexturesEx3) InitGL() error {
+	ht.Name = "4c. Textures Ex3"
+
+	var err error
+	shaders := ht.getShaders()
+	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	if err != nil {
+		return err
+	}
+	gl.UseProgram(ht.shader)
+	ht.createBuffers(ht.getVertices())
+
+	// ====================
+	// Texture 1
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+		return err
+	} else {
+		ht.texture1 = tex
+		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
+	}
+
+	// ====================
+	// Texture 2
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		ht.texture2 = tex
+		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
+	}
+
+	// mixvalue uniform
+	return nil
+}
+
+type TexturesEx4 struct {
+	HelloTextures
+	mixLoc int32
+	mixValue float32
+}
+
+func (ht *TexturesEx4) getShaders() []string {
+	return []string{"_assets/getting_started/4.textures/texture.vs",
+		"_assets/getting_started/4.textures/textureex4.frag"}
+}
+
+func (ht *TexturesEx4) InitGL() error {
+	ht.Name = "4d. Textures Ex4"
+
+	var err error
+	shaders := ht.getShaders()
+	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	if err != nil {
+		return err
+	}
+	gl.UseProgram(ht.shader)
+	ht.createBuffers(ht.getVertices())
+
+	// ====================
+	// Texture 1
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+		return err
+	} else {
+		ht.texture1 = tex
+		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
+	}
+
+	// ====================
+	// Texture 2
+	// ====================
+	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		ht.texture2 = tex
+		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
+	}
+
+	ht.mixLoc = gl.GetUniformLocation(ht.shader, gl.Str("mixValue\x00"))
+	return nil
+}
+
+func (ht *TexturesEx4) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {
+	if keys[glfw.KeyUp] {
+		ht.mixValue += 0.1
+		if ht.mixValue >= 1.0 {
+			ht.mixValue = 1.0
+		}
+	}
+	if keys[glfw.KeyDown] {
+		ht.mixValue -= 0.1
+		if ht.mixValue <= 0.0 {
+			ht.mixValue = 0.0
+		}
+	}
+}
+
+func (ht *TexturesEx4) Draw() {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
+
+	// Activate shader
+	gl.UseProgram(ht.shader)
+
+	// Bind Textures using texture units
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
+	gl.Uniform1i(ht.texLoc1, 0)
+
+	gl.ActiveTexture(gl.TEXTURE1)
+	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
+	gl.Uniform1i(ht.texLoc2, 1)
+
+	gl.Uniform1f(ht.mixLoc, ht.mixValue)
+
+	// Draw container
+	gl.BindVertexArray(ht.vao)
+	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
+	gl.BindVertexArray(0)
 }

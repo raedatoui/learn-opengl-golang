@@ -181,6 +181,10 @@ func setupSlides() []sections.Slide {
 		new(getstarted.ShaderEx4),
 
 		new(getstarted.HelloTextures),
+		new(getstarted.TexturesEx1),
+		new(getstarted.TexturesEx2),
+		new(getstarted.TexturesEx3),
+		new(getstarted.TexturesEx4),
 
 		new(getstarted.HelloTransformations),
 		new(getstarted.HelloCoordinates),
