@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type HelloCoordinates struct {
@@ -21,7 +21,7 @@ func (hc *HelloCoordinates) InitGL() error {
 	hc.Name = "6. Coordinate Systems"
 
 	var err error
-	hc.shader, err = utils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
+	hc.shader, err = glutils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
 		"_assets/getting_started/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
@@ -92,27 +92,27 @@ func (hc *HelloCoordinates) InitGL() error {
 	gl.BindVertexArray(hc.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, hc.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
 
 	// Texture 1
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		hc.texture1 = tex
 	}
 
 	// Texture 2
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		hc.texture2 = tex
@@ -141,7 +141,7 @@ func (hc *HelloCoordinates) Draw() {
 
 	// Create transformations
 	view := mgl32.Translate3D(0.0, 0.0, -3.0)
-	projection := mgl32.Perspective(45.0, utils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(45.0, glutils.RATIO, 0.1, 100.0)
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(hc.shader, gl.Str("view\x00"))

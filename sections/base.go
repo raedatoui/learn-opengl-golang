@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 // Slide is the most basic slide. it has to setup, update, draw and close
@@ -28,8 +28,8 @@ type Slide interface {
 type BaseSlide struct {
 	Slide
 	Name     string
-	Color    utils.Color
-	Color32  utils.Color32
+	Color    glutils.Color
+	Color32  glutils.Color32
 	ColorHex string
 }
 
@@ -82,13 +82,13 @@ type BaseSketch struct {
 }
 
 func (b *BaseSketch) Init(a ...interface{}) error {
-	c, ok := a[1].(utils.Color)
+	c, ok := a[1].(glutils.Color)
 	if ok == false {
 		return errors.New("first argument isnt a color")
 	}
 	b.Color = c
 	b.Color32 = c.To32()
-	b.ColorHex = utils.Rgb2Hex(c)
+	b.ColorHex = glutils.Rgb2Hex(c)
 	return nil
 }
 

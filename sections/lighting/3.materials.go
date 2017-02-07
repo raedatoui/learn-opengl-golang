@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 	"math"
 )
 
@@ -17,7 +17,7 @@ type Materials struct {
 	lastY                       float64
 	firstMouse                  bool
 	deltaTime, lastFrame        float64
-	camera                      utils.Camera
+	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
 }
@@ -28,13 +28,13 @@ func (m *Materials) InitGL() error {
 	m.firstMouse = true
 
 	// Camera
-	m.camera = utils.NewCamera(
+	m.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
+		glutils.YAW, glutils.PITCH,
 	)
-	m.lastX = utils.WIDTH / 2.0
-	m.lastY = utils.HEIGHT / 2.0
+	m.lastX = glutils.WIDTH / 2.0
+	m.lastY = glutils.HEIGHT / 2.0
 	// Light attributes
 	m.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
 
@@ -42,14 +42,14 @@ func (m *Materials) InitGL() error {
 	m.deltaTime = 0.0 // Time between current frame and last frame
 	m.lastFrame = 0.0 // Time of last frame
 
-	if sh, err := utils.Shader(
+	if sh, err := glutils.Shader(
 		"_assets/lighting/3.materials/materials.vs",
 		"_assets/lighting/3.materials/materials.frag", ""); err != nil {
 		return err
 	} else {
 		m.lightingShader = sh
 	}
-	if sh, err := utils.Shader(
+	if sh, err := glutils.Shader(
 		"_assets/lighting/3.materials/lamp.vs",
 		"_assets/lighting/3.materials/lamp.frag", ""); err != nil {
 		return err
@@ -106,15 +106,15 @@ func (m *Materials) InitGL() error {
 	gl.GenBuffers(1, &m.vbo)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, m.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.BindVertexArray(m.containerVAO)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	// Normal attribute
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(1)
 	gl.BindVertexArray(0)
 
@@ -124,7 +124,7 @@ func (m *Materials) InitGL() error {
 	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
 	gl.BindBuffer(gl.ARRAY_BUFFER, m.vbo)
 	// Set the vertex attributes (only position data for the lamp))
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
 
@@ -137,16 +137,16 @@ func (m *Materials) Update() {
 	m.deltaTime = currentFrame - m.lastFrame
 	m.lastFrame = currentFrame
 	if m.w {
-		m.camera.ProcessKeyboard(utils.FORWARD, m.deltaTime)
+		m.camera.ProcessKeyboard(glutils.FORWARD, m.deltaTime)
 	}
 	if m.s {
-		m.camera.ProcessKeyboard(utils.BACKWARD, m.deltaTime)
+		m.camera.ProcessKeyboard(glutils.BACKWARD, m.deltaTime)
 	}
 	if m.a {
-		m.camera.ProcessKeyboard(utils.LEFT, m.deltaTime)
+		m.camera.ProcessKeyboard(glutils.LEFT, m.deltaTime)
 	}
 	if m.d {
-		m.camera.ProcessKeyboard(utils.RIGHT, m.deltaTime)
+		m.camera.ProcessKeyboard(glutils.RIGHT, m.deltaTime)
 	}
 }
 
@@ -204,7 +204,7 @@ func (m *Materials) Draw() {
 
 	// Create camera transformations
 	view := m.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(m.camera.Zoom), utils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(m.camera.Zoom), glutils.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("view\x00"))

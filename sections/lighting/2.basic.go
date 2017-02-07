@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type BasicSpecular struct {
@@ -16,7 +16,7 @@ type BasicSpecular struct {
 	lastY                       float64
 	firstMouse                  bool
 	deltaTime, lastFrame        float64
-	camera                      utils.Camera
+	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
 }
@@ -27,13 +27,13 @@ func (bc *BasicSpecular) InitGL() error {
 	bc.firstMouse = true
 
 	// Camera
-	bc.camera = utils.NewCamera(
+	bc.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
+		glutils.YAW, glutils.PITCH,
 	)
-	bc.lastX = utils.WIDTH / 2.0
-	bc.lastY = utils.HEIGHT / 2.0
+	bc.lastX = glutils.WIDTH / 2.0
+	bc.lastY = glutils.HEIGHT / 2.0
 	// Light attributes
 	bc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
 
@@ -41,12 +41,12 @@ func (bc *BasicSpecular) InitGL() error {
 	bc.deltaTime = 0.0 // Time between current frame and last frame
 	bc.lastFrame = 0.0 // Time of last frame
 
-	if sh, err := utils.Shader("_assets/lighting/2.basic/lighting.vs", "_assets/lighting/2.basic/lighting.frag", ""); err != nil {
+	if sh, err := glutils.Shader("_assets/lighting/2.basic/lighting.vs", "_assets/lighting/2.basic/lighting.frag", ""); err != nil {
 		return err
 	} else {
 		bc.lightingShader = sh
 	}
-	if sh, err := utils.Shader("_assets/lighting/2.basic/lamp.vs", "_assets/lighting/2.basic/lamp.frag", ""); err != nil {
+	if sh, err := glutils.Shader("_assets/lighting/2.basic/lamp.vs", "_assets/lighting/2.basic/lamp.frag", ""); err != nil {
 		return err
 	} else {
 		bc.lampShader = sh
@@ -101,15 +101,15 @@ func (bc *BasicSpecular) InitGL() error {
 	gl.GenBuffers(1, &bc.vbo)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, bc.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.BindVertexArray(bc.containerVAO)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	// Normal attribute
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(1)
 	gl.BindVertexArray(0)
 
@@ -119,7 +119,7 @@ func (bc *BasicSpecular) InitGL() error {
 	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
 	gl.BindBuffer(gl.ARRAY_BUFFER, bc.vbo)
 	// Set the vertex attributes (only position data for the lamp))
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
 
@@ -132,16 +132,16 @@ func (bc *BasicSpecular) Update() {
 	bc.deltaTime = currentFrame - bc.lastFrame
 	bc.lastFrame = currentFrame
 	if bc.w {
-		bc.camera.ProcessKeyboard(utils.FORWARD, bc.deltaTime)
+		bc.camera.ProcessKeyboard(glutils.FORWARD, bc.deltaTime)
 	}
 	if bc.s {
-		bc.camera.ProcessKeyboard(utils.BACKWARD, bc.deltaTime)
+		bc.camera.ProcessKeyboard(glutils.BACKWARD, bc.deltaTime)
 	}
 	if bc.a {
-		bc.camera.ProcessKeyboard(utils.LEFT, bc.deltaTime)
+		bc.camera.ProcessKeyboard(glutils.LEFT, bc.deltaTime)
 	}
 	if bc.d {
-		bc.camera.ProcessKeyboard(utils.RIGHT, bc.deltaTime)
+		bc.camera.ProcessKeyboard(glutils.RIGHT, bc.deltaTime)
 	}
 }
 
@@ -163,7 +163,7 @@ func (bc *BasicSpecular) Draw() {
 
 	// Create camera transformations
 	view := bc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(bc.camera.Zoom), utils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(bc.camera.Zoom), glutils.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("view\x00"))

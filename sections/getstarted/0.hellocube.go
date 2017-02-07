@@ -10,7 +10,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 	_ "image/png"
 )
 
@@ -114,14 +114,14 @@ func (hc *HelloCube) InitGL() error {
 	` + "\x00"
 	// Configure the vertex and fragment shaders
 	var err error
-	hc.program, err = utils.BasicProgram(vertexShader, fragmentShader)
+	hc.program, err = glutils.BasicProgram(vertexShader, fragmentShader)
 	if err != nil {
 		return err
 	}
 
 	gl.UseProgram(hc.program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), utils.RATIO, 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), glutils.RATIO, 0.1, 10.0)
 	projectionUniform := gl.GetUniformLocation(hc.program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
@@ -139,7 +139,7 @@ func (hc *HelloCube) InitGL() error {
 	gl.BindFragDataLocation(hc.program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	hc.texture, err = utils.NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.LINEAR, gl.LINEAR, "_assets/getting_started/0.cube/square.png")
+	hc.texture, err = glutils.NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.LINEAR, gl.LINEAR, "_assets/getting_started/0.cube/square.png")
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type LightingColors struct {
@@ -16,7 +16,7 @@ type LightingColors struct {
 	lastY                       float64
 	firstMouse                  bool
 	deltaTime, lastFrame        float64
-	camera                      utils.Camera
+	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
 }
@@ -25,13 +25,13 @@ func (lc *LightingColors) InitGL() error {
 	lc.Name = "1. Colors"
 
 	// Camera
-	lc.camera = utils.NewCamera(
+	lc.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
+		glutils.YAW, glutils.PITCH,
 	)
-	lc.lastX = utils.WIDTH / 2.0
-	lc.lastY = utils.HEIGHT / 2.0
+	lc.lastX = glutils.WIDTH / 2.0
+	lc.lastY = glutils.HEIGHT / 2.0
 
 	// Light attributes
 	lc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
@@ -40,14 +40,14 @@ func (lc *LightingColors) InitGL() error {
 	lc.deltaTime = 0.0 // Time between current frame and last frame
 	lc.lastFrame = 0.0 // Time of last frame
 
-	if sh, err := utils.Shader(
+	if sh, err := glutils.Shader(
 		"_assets/lighting/1.colors/colors.vs",
 		"_assets/lighting/1.colors/colors.frag", ""); err != nil {
 		return err
 	} else {
 		lc.lightingShader = sh
 	}
-	if sh, err := utils.Shader(
+	if sh, err := glutils.Shader(
 		"_assets/lighting/1.colors/lamp.vs",
 		"_assets/lighting/1.colors/lamp.frag", ""); err != nil {
 		return err
@@ -104,12 +104,12 @@ func (lc *LightingColors) InitGL() error {
 	gl.GenBuffers(1, &lc.vbo)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, lc.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.BindVertexArray(lc.containerVAO)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
 
@@ -119,7 +119,7 @@ func (lc *LightingColors) InitGL() error {
 	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
 	gl.BindBuffer(gl.ARRAY_BUFFER, lc.vbo)
 	// Set the vertex attributes (only position data for the lamp))
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(0)
 
@@ -132,16 +132,16 @@ func (lc *LightingColors) Update() {
 	lc.deltaTime = currentFrame - lc.lastFrame
 	lc.lastFrame = currentFrame
 	if lc.w {
-		lc.camera.ProcessKeyboard(utils.FORWARD, lc.deltaTime)
+		lc.camera.ProcessKeyboard(glutils.FORWARD, lc.deltaTime)
 	}
 	if lc.s {
-		lc.camera.ProcessKeyboard(utils.BACKWARD, lc.deltaTime)
+		lc.camera.ProcessKeyboard(glutils.BACKWARD, lc.deltaTime)
 	}
 	if lc.a {
-		lc.camera.ProcessKeyboard(utils.LEFT, lc.deltaTime)
+		lc.camera.ProcessKeyboard(glutils.LEFT, lc.deltaTime)
 	}
 	if lc.d {
-		lc.camera.ProcessKeyboard(utils.RIGHT, lc.deltaTime)
+		lc.camera.ProcessKeyboard(glutils.RIGHT, lc.deltaTime)
 	}
 }
 
@@ -159,7 +159,7 @@ func (lc *LightingColors) Draw() {
 
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(lc.camera.Zoom), utils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(lc.camera.Zoom), glutils.RATIO, 0.1, 100.0)
 
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("model\x00"))

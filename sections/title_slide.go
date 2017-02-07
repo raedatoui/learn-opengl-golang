@@ -3,7 +3,7 @@ package sections
 import (
 	"errors"
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 	"strings"
 	"github.com/raedatoui/glfont"
 )
@@ -21,13 +21,13 @@ func (s *TitleSlide) Init(a ...interface{}) error {
 	}
 	s.font = f
 
-	c, ok := a[1].(utils.Color)
+	c, ok := a[1].(glutils.Color)
 	if ok == false {
 		return errors.New("second argument isnt a ColorA")
 	}
 	s.Color = c
 	s.Color32 = c.To32()
-	s.ColorHex = utils.Rgb2Hex(c)
+	s.ColorHex = glutils.Rgb2Hex(c)
 
 	n, ok := a[2].(string)
 	if ok == false {

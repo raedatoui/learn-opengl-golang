@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type HelloCamera struct {
@@ -15,7 +15,7 @@ type HelloCamera struct {
 	texture1, texture2   uint32
 	transform            mgl32.Mat4
 	cubePositions        []mgl32.Vec3
-	camera               utils.Camera
+	camera               glutils.Camera
 	deltaTime, lastFrame float64
 	w, a, s, d           bool
 	lastX, lastY         float64
@@ -26,7 +26,7 @@ func (hc *HelloCamera) InitGL() error {
 	hc.Name = "7. Camera (use WSDA and mouse)"
 
 	var err error
-	hc.shader, err = utils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
+	hc.shader, err = glutils.Shader("_assets/getting_started/6.coordinates/coordinate.vs",
 		"_assets/getting_started/6.coordinates/coordinate.frag", "")
 	if err != nil {
 		return err
@@ -94,10 +94,10 @@ func (hc *HelloCamera) InitGL() error {
 	// ====================
 	// camera
 	// ====================
-	hc.camera = utils.NewCamera(
+	hc.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
+		glutils.YAW, glutils.PITCH,
 	)
 	hc.lastX = 400
 	hc.lastY = 300
@@ -110,27 +110,27 @@ func (hc *HelloCamera) InitGL() error {
 	gl.BindVertexArray(hc.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, hc.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 5*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 5*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
 
 	// Texture 1
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		hc.texture1 = tex
 	}
 
 	// Texture 2
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		hc.texture2 = tex
@@ -145,16 +145,16 @@ func (hc *HelloCamera) Update() {
 	hc.deltaTime = currentFrame - hc.lastFrame
 	hc.lastFrame = currentFrame
 	if hc.w {
-		hc.camera.ProcessKeyboard(utils.FORWARD, hc.deltaTime)
+		hc.camera.ProcessKeyboard(glutils.FORWARD, hc.deltaTime)
 	}
 	if hc.s {
-		hc.camera.ProcessKeyboard(utils.BACKWARD, hc.deltaTime)
+		hc.camera.ProcessKeyboard(glutils.BACKWARD, hc.deltaTime)
 	}
 	if hc.a {
-		hc.camera.ProcessKeyboard(utils.LEFT, hc.deltaTime)
+		hc.camera.ProcessKeyboard(glutils.LEFT, hc.deltaTime)
 	}
 	if hc.d {
-		hc.camera.ProcessKeyboard(utils.RIGHT, hc.deltaTime)
+		hc.camera.ProcessKeyboard(glutils.RIGHT, hc.deltaTime)
 	}
 }
 
@@ -178,7 +178,7 @@ func (hc *HelloCamera) Draw() {
 
 	// Create camera transformations
 	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(hc.camera.Zoom), utils.RATIO, 0.1, 1000.0)
+	projection := mgl32.Perspective(float32(hc.camera.Zoom), glutils.RATIO, 0.1, 1000.0)
 
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))

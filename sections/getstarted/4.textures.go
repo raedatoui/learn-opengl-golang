@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type HelloTextures struct {
@@ -43,19 +43,19 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 	gl.BindVertexArray(ht.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.ebo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*utils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	// Color attribute
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(1)
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(6*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(6*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
@@ -66,7 +66,7 @@ func (ht *HelloTextures) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (ht *HelloTextures) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -87,7 +87,7 @@ func (ht *HelloTextures) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -140,7 +140,7 @@ func (ht *TexturesEx1) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func (ht *TexturesEx1) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -160,7 +160,7 @@ func (ht *TexturesEx1) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -193,7 +193,7 @@ func (ht *TexturesEx2) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
@@ -203,7 +203,7 @@ func (ht *TexturesEx2) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := utils.NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -213,7 +213,7 @@ func (ht *TexturesEx2) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -246,7 +246,7 @@ func (ht *TexturesEx3) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
@@ -254,7 +254,7 @@ func (ht *TexturesEx3) InitGL() error {
 	ht.createBuffers(ht.getVertices())
 
 	// Texture 1
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -262,7 +262,7 @@ func (ht *TexturesEx3) InitGL() error {
 	}
 
 	// Texture 2
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -293,7 +293,7 @@ func (ht *TexturesEx4) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = utils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
@@ -301,7 +301,7 @@ func (ht *TexturesEx4) InitGL() error {
 	ht.createBuffers(ht.getVertices())
 
 	// Texture 1
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -309,7 +309,7 @@ func (ht *TexturesEx4) InitGL() error {
 	}
 
 	// Texture 2
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex

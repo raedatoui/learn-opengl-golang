@@ -5,14 +5,14 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type ModelLoading struct {
 	sections.BaseSketch
 	shader               uint32
-	model                utils.Model
-	camera               utils.Camera
+	model                glutils.Model
+	camera               glutils.Camera
 	deltaTime, lastFrame float64
 	lastX, lastY         float64
 	firstMouse           bool
@@ -21,17 +21,17 @@ type ModelLoading struct {
 
 func (ml *ModelLoading) InitGL() error {
 	ml.firstMouse = false
-	ml.camera = utils.NewCamera(
+	ml.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
 		mgl32.Vec3{0.0, 1.0, 3.0},
-		utils.YAW, utils.PITCH,
+		glutils.YAW, glutils.PITCH,
 	)
 	ml.Name = "3. Model Loading"
 	// Setup and compile our shaders
-	ml.shader, _ = utils.Shader("_assets/model_loading/shader.vs",
+	ml.shader, _ = glutils.Shader("_assets/model_loading/shader.vs",
 		"_assets/model_loading/shader.frag", "")
 	// Load models
-	ml.model, _ = utils.NewModel("_assets/objects/nanosuit/", "nanosuit.obj", false)
+	ml.model, _ = glutils.NewModel("_assets/objects/nanosuit/", "nanosuit.obj", false)
 
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	return nil
@@ -43,16 +43,16 @@ func (ml *ModelLoading) Update() {
 	ml.deltaTime = currentFrame - ml.lastFrame
 	ml.lastFrame = currentFrame
 	if ml.w {
-		ml.camera.ProcessKeyboard(utils.FORWARD, ml.deltaTime)
+		ml.camera.ProcessKeyboard(glutils.FORWARD, ml.deltaTime)
 	}
 	if ml.s {
-		ml.camera.ProcessKeyboard(utils.BACKWARD, ml.deltaTime)
+		ml.camera.ProcessKeyboard(glutils.BACKWARD, ml.deltaTime)
 	}
 	if ml.a {
-		ml.camera.ProcessKeyboard(utils.LEFT, ml.deltaTime)
+		ml.camera.ProcessKeyboard(glutils.LEFT, ml.deltaTime)
 	}
 	if ml.d {
-		ml.camera.ProcessKeyboard(utils.RIGHT, ml.deltaTime)
+		ml.camera.ProcessKeyboard(glutils.RIGHT, ml.deltaTime)
 	}
 }
 
@@ -63,7 +63,7 @@ func (ml *ModelLoading) Draw() {
 	gl.UseProgram(ml.shader) //  <-- Don't forget this one!
 
 	// Transformation matrices
-	projection := mgl32.Perspective(float32(ml.camera.Zoom), utils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(ml.camera.Zoom), glutils.RATIO, 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
 
 	projLoc := gl.GetUniformLocation(ml.shader, gl.Str("projection\x00"))

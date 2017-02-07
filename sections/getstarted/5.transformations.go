@@ -5,7 +5,7 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type HelloTransformations struct {
@@ -20,7 +20,7 @@ func (ht *HelloTransformations) InitGL() error {
 	ht.Name = "5. Transformations"
 
 	var err error
-	ht.shader, err = utils.Shader("_assets/getting_started/5.transformations/transform.vs",
+	ht.shader, err = glutils.Shader("_assets/getting_started/5.transformations/transform.vs",
 		"_assets/getting_started/5.transformations/transform.frag", "")
 	if err != nil {
 		return err
@@ -47,32 +47,32 @@ func (ht *HelloTransformations) InitGL() error {
 	gl.BindVertexArray(ht.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.ebo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*utils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 	// Color attribute
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(1)
 	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*utils.GL_FLOAT32_SIZE, gl.PtrOffset(6*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(6*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(2)
 
 	gl.BindVertexArray(0) // Unbind VAO
 
 	// Texture 1
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
 	}
 
 	// Texture 2
-	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex

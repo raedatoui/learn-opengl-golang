@@ -3,7 +3,7 @@ package getstarted
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 )
 
 type HelloTriangle struct {
@@ -20,12 +20,12 @@ func (ht *HelloTriangle) createBuffers(vertices []float32) (uint32, uint32){
 	gl.BindVertexArray(vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	//vertAttrib := uint32(gl.GetAttribLocation(ht.program, gl.Str("position\x00")))
 	// here we can skip computing the vertAttrib value and use 0 since our shader declares layout = 0 for
 	// the uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	gl.BindVertexArray(0)
@@ -50,7 +50,7 @@ func (ht *HelloTriangle) InitGL() error {
 	}` + "\x00"
 
 	var err error
-	ht.program, err =  utils.BasicProgram(vertexShader, fragShader)
+	ht.program, err =  glutils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (hs *TriangleEx1) InitGL() error {
 	}` + "\x00"
 
 	var err error
-	hs.program, err = utils.BasicProgram(vertexShader, fragShader)
+	hs.program, err = glutils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func (hs *TriangleEx1) InitGL() error {
 
 	gl.GenBuffers(1, &hs.vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, hs.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	gl.GenBuffers(1, &hs.ebo)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, hs.ebo)
@@ -135,7 +135,7 @@ func (hs *TriangleEx1) InitGL() error {
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*4, gl.Ptr(indices), gl.STATIC_DRAW)
 
 	vertAttrib := uint32(gl.GetAttribLocation(hs.program, gl.Str("vert\x00")))
-	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 3*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(vertAttrib, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(vertAttrib)
 
 	gl.BindVertexArray(0)
@@ -208,12 +208,12 @@ func (ht *TriangleEx2) InitGL() error {
 
 
 	var err error
-	ht.program, err = utils.BasicProgram(vertexShader, fragShader)
+	ht.program, err = glutils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
 
-	ht.program2, err = utils.BasicProgram(vertexShader2, fragShader2)
+	ht.program2, err = glutils.BasicProgram(vertexShader2, fragShader2)
 	if err != nil {
 		return err
 	}

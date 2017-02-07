@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/raedatoui/learn-opengl-golang/sections"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 	"math"
 )
 
@@ -16,7 +16,7 @@ type HelloShaders struct {
 
 func (hs *HelloShaders) createShader(v, f string) error {
 	var err error
-	hs.shader, err = utils.Shader(v, f, "")
+	hs.shader, err = glutils.Shader(v, f, "")
 
 	if err != nil {
 		return err
@@ -37,14 +37,14 @@ func (hs *HelloShaders) createBuffers() {
 	gl.BindVertexArray(hs.vao)
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, hs.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*utils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// position uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
 
 	//color uniform
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*utils.GL_FLOAT32_SIZE, gl.PtrOffset(3*utils.GL_FLOAT32_SIZE))
+	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
 	gl.EnableVertexAttribArray(1)
 
 	gl.BindVertexArray(0)

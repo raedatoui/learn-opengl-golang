@@ -11,7 +11,7 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
-	"github.com/raedatoui/learn-opengl-golang/utils"
+	"github.com/raedatoui/glutils"
 	"strconv"
 	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
 	"github.com/raedatoui/glfont"
@@ -35,7 +35,7 @@ func init() {
 }
 
 func init() {
-	dir, err := utils.ImportPathToDir("github.com/raedatoui/learn-opengl-golang")
+	dir, err := glutils.ImportPathToDir("github.com/raedatoui/learn-opengl-golang")
 	if err != nil {
 		log.Fatalln("Unable to find Go package in your GOPATH, it's needed to load assets:", err)
 	}
@@ -134,7 +134,7 @@ func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 
-	window, err := glfw.CreateWindow(utils.WIDTH, utils.HEIGHT, "learnopengl.com in Golang", nil, nil)
+	window, err := glfw.CreateWindow(glutils.WIDTH, glutils.HEIGHT, "learnopengl.com in Golang", nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -223,12 +223,12 @@ func main() {
 	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	f, err := glfont.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), utils.WIDTH, utils.HEIGHT)
+	f, err := glfont.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), glutils.WIDTH, glutils.HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}
 	font = f
-	c := utils.White.To32()
+	c := glutils.White.To32()
 	font.SetColor(c.R, c.G, c.B, 1.0)
 
 	slides = setupSlides()
@@ -255,9 +255,9 @@ func main() {
 	count := 0
 	titleSlideType := &sections.TitleSlide{}
 	for x, slide := range slides {
-		c := utils.StepColor(utils.Magenta, utils.Black, l, x)
+		c := glutils.StepColor(glutils.Magenta, glutils.Black, l, x)
 
-		if utils.IsType(slide, titleSlideType) {
+		if glutils.IsType(slide, titleSlideType) {
 			covers[count] = slide
 			if err := slide.Init(f, c, titles[count]); err != nil {
 				log.Fatalf("Failed setting up sketch: %v", err)
@@ -288,7 +288,7 @@ func main() {
 	var maxAttrib int32
 	gl.GetIntegerv(gl.MAX_VERTEX_ATTRIBS, &maxAttrib)
 
-	utils.InitFPS()
+	glutils.InitFPS()
 
 	// loop
 	for !window.ShouldClose() {
@@ -305,9 +305,9 @@ func main() {
 			}
 		}
 
-		font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
-		fps := "FPS: " + strconv.FormatFloat(utils.CalcFPS(1.0), 'f', 2, 64)
-		font.Printf(utils.WIDTH-80, utils.HEIGHT-20, 0.25, fps)
+		font.Printf(30, glutils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
+		fps := "FPS: " + strconv.FormatFloat(glutils.CalcFPS(1.0), 'f', 2, 64)
+		font.Printf(glutils.WIDTH-80, glutils.HEIGHT-20, 0.25, fps)
 
 		window.SwapBuffers()
 		// Poll Events
