@@ -14,6 +14,7 @@ import (
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	"strconv"
 	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
+	"github.com/raedatoui/glfont"
 )
 
 var (
@@ -22,7 +23,7 @@ var (
 	covers       map[int]sections.Slide
 	slideIndex   = 0
 	window       *glfw.Window
-	font         *utils.Font
+	font         *glfont.Font
 	keys         map[glfw.Key]bool
 	wireframe    int32
 )
@@ -222,7 +223,7 @@ func main() {
 	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	f, err := utils.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), utils.WIDTH, utils.HEIGHT)
+	f, err := glfont.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), utils.WIDTH, utils.HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}
@@ -299,12 +300,12 @@ func main() {
 		currentSlide.Draw()
 		if currentSlide.DrawText() {
 			font.Printf(30, 30, 0.5, currentSlide.GetHeader())
-			font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 			if currentSlide.GetSubHeader() != "" {
 				font.Printf(30, 50, 0.3, currentSlide.GetSubHeader())
 			}
 		}
 
+		font.Printf(30, utils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 		fps := "FPS: " + strconv.FormatFloat(utils.CalcFPS(1.0), 'f', 2, 64)
 		font.Printf(utils.WIDTH-80, utils.HEIGHT-20, 0.25, fps)
 

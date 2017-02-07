@@ -5,16 +5,17 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/raedatoui/learn-opengl-golang/utils"
 	"strings"
+	"github.com/raedatoui/glfont"
 )
 
 type TitleSlide struct {
 	BaseSlide
-	font  *utils.Font
+	font  *glfont.Font
 	lines []string
 }
 
 func (s *TitleSlide) Init(a ...interface{}) error {
-	f, ok := a[0].(*utils.Font)
+	f, ok := a[0].(*glfont.Font)
 	if ok == false {
 		return errors.New("first argument isnt a font")
 	}
