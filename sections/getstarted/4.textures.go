@@ -61,35 +61,6 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 	gl.BindVertexArray(0) // Unbind VAO
 }
 
-func (ht *HelloTextures) createTexture(wrap_s, wrap_t, min_f, mag_f int32, f string) (uint32, error) {
-	var texture uint32
-	gl.GenTextures(1, &texture)
-	gl.BindTexture(gl.TEXTURE_2D, texture)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap_s)    //gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap_t)    //gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, min_f) //gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, mag_f) //gl.LINEAR)
-
-	rgba, err := utils.ImageToPixelData(f)
-	if err != nil {
-		return 0, err
-	}
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
-
-	return texture, nil
-}
-
 func (ht *HelloTextures) InitGL() error {
 	ht.Name = "4. Textures"
 
@@ -106,7 +77,7 @@ func (ht *HelloTextures) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -116,7 +87,7 @@ func (ht *HelloTextures) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -179,7 +150,7 @@ func (ht *TexturesEx1) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -189,7 +160,7 @@ func (ht *TexturesEx1) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -228,7 +199,7 @@ func (ht *TexturesEx2) InitGL() error {
 	// ====================
 	// Texture 1
 	// ====================
-	if tex, err := ht.createTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.CLAMP_TO_EDGE, gl.CLAMP_TO_EDGE, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
@@ -238,7 +209,7 @@ func (ht *TexturesEx2) InitGL() error {
 	// ====================
 	// Texture 2
 	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -274,20 +245,16 @@ func (ht *TexturesEx3) InitGL() error {
 	gl.UseProgram(ht.shader)
 	ht.createBuffers(ht.getVertices())
 
-	// ====================
 	// Texture 1
-	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
 		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
-	// ====================
 	// Texture 2
-	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
@@ -321,20 +288,16 @@ func (ht *TexturesEx4) InitGL() error {
 	gl.UseProgram(ht.shader)
 	ht.createBuffers(ht.getVertices())
 
-	// ====================
 	// Texture 1
-	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/container.png"); err != nil {
 		return err
 	} else {
 		ht.texture1 = tex
 		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
-	// ====================
 	// Texture 2
-	// ====================
-	if tex, err := ht.createTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.NEAREST, gl.NEAREST, "_assets/images/awesomeface.png"); err != nil {
 		return err
 	} else {
 		ht.texture2 = tex
