@@ -104,59 +104,19 @@ func (hc *HelloCoordinates) InitGL() error {
 
 	gl.BindVertexArray(0) // Unbind VAO
 
-	// ====================
 	// Texture 1
-	// ====================
-	gl.GenTextures(1, &hc.texture1)
-	gl.BindTexture(gl.TEXTURE_2D, hc.texture1)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	rgba, err := utils.ImageToPixelData("_assets/images/container.png")
-	if err != nil {
-		panic(err)
-	}
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
-
-	// ====================
-	// Texture 2
-	// ====================
-	gl.GenTextures(1, &hc.texture2)
-	gl.BindTexture(gl.TEXTURE_2D, hc.texture2)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-	rgba, err = utils.ImageToPixelData("_assets/images/awesomeface.png")
-	if err != nil {
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
 		return err
+	} else {
+		hc.texture1 = tex
 	}
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(rgba.Rect.Size().X),
-		int32(rgba.Rect.Size().Y),
-		0,
-		gl.RGBA,
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(rgba.Pix))
-	gl.GenerateMipmap(gl.TEXTURE_2D)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	// Texture 2
+	if tex, err := utils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/awesomeface.png"); err != nil {
+		return err
+	} else {
+		hc.texture2 = tex
+	}
 
 	return nil
 }

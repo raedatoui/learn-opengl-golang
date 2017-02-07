@@ -170,6 +170,10 @@ func (ht *TexturesEx1) InitGL() error {
 	return nil
 }
 
+func (ht *TexturesEx1) GetSubHeader() string {
+	return "flip the happy face in the frag shader"
+}
+
 type TexturesEx2 struct {
 	TexturesEx1
 }
@@ -217,6 +221,10 @@ func (ht *TexturesEx2) InitGL() error {
 	}
 
 	return nil
+}
+
+func (ht *TexturesEx2) GetSubHeader() string {
+	return "scale tex coord by 2 and set nearest filter on tex to see individual pixels"
 }
 
 type TexturesEx3 struct {
@@ -269,6 +277,10 @@ type TexturesEx4 struct {
 	HelloTextures
 	mixLoc int32
 	mixValue float32
+}
+
+func (ht *TexturesEx3) GetSubHeader() string {
+	return "scale tex down and test various wrapping"
 }
 
 func (ht *TexturesEx4) getShaders() []string {
@@ -345,4 +357,8 @@ func (ht *TexturesEx4) Draw() {
 	gl.BindVertexArray(ht.vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
+}
+
+func (ht *TexturesEx4) GetSubHeader() string {
+	return "cross fade tex using up/dwn arrows, setting opacity as frag uniform "
 }
