@@ -72,7 +72,7 @@ Use the left and arrows to go navigate through the tutorials.
 
 Use the num keys to jump between sections.
 
-![](/Users/ratoui/Desktop/Screen Shot 2017-02-11 at 12.21.47 AM.png)
+![Alt text](/screenshot.png?raw=true "Screenshot")
 
 
 
