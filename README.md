@@ -5,10 +5,10 @@
 ### Installation
 
 This is setup has only been tested on macOS.
-I am currently working with the 4.1 core profile on macOS. This is the latest version that [ships](https://support.apple.com/en-us/HT202823) with macOS and I didn't want to delve upgrading that manually. You need
+I am currently working with the 4.1 core profile on macOS. This is the latest version that [ships](https://support.apple.com/en-us/HT202823) with macOS and I didn't want to delve upgrading that manually.
 
 I figured I would get linux machine at a later if I need to use newer features in the API.
-The nice about go-gl is that you can install multiple profiles and write different programs targeting different version of OpenGL. 
+The nice thing about go-gl is that you can install multiple profiles and write different programs targeting different version of OpenGL. 
 
 #### go-gl packages
 
@@ -73,7 +73,6 @@ Use the left and arrows to go navigate through the tutorials.
 Use the num keys to jump between sections.
 
 ![Alt text](/screenshot.png?raw=true "Screenshot")
-
 
 
 ### Notes
