@@ -60,7 +60,7 @@ Text rendering sucks and is not intended to look good, but good enough and easy 
 
 First, install Assimp on macOS using homebrew `brew install assimp` 
 
-`go get github.com/raedatoui/assimp`
+Then install wrapper, `go get github.com/raedatoui/assimp`
 
 I fixed some minor bugs and changed the cgo directives for linking assimp. Intead of using `LDFLAGS` and other windows specific flags, I used the `pkg-config` flag.
 
@@ -68,7 +68,7 @@ I fixed some minor bugs and changed the cgo directives for linking assimp. Intea
 
 `go run tutorial.go` and you should see this screen
 
-Use the left and arrows to go navigate through the tutorials.
+Use the right and left arrow keys to navigate through the tutorials.
 
 Use the num keys to jump between sections.
 
