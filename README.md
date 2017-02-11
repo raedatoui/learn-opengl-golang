@@ -38,7 +38,7 @@ To test that the installation is working, try the examples from go-gl.
 
 Run the `gl41core-cube` example by executing `go run cube.go`
 
-### learnopengl.com tutorial
+#### learnopengl.com tutorial
 
 1- [**glutils**](https://github.com/raedatoui/glutils)
 
