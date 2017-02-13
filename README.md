@@ -5,9 +5,9 @@
 ### Installation
 
 This is setup has only been tested on macOS.
-I am currently working with the 4.1 core profile on macOS. This is the latest version that [ships](https://support.apple.com/en-us/HT202823) with macOS and I didn't want to delve upgrading that manually.
+I am currently working with the 4.1 core profile on macOS, which is the latest version that [ships](https://support.apple.com/en-us/HT202823) with it. I didn't want to delve into upgrading that manually.
 
-I figured I would get linux machine at a later if I need to use newer features in the API.
+I figured I would get linux machine at a later time if I needed to use newer features in the API.
 The nice thing about go-gl is that you can install multiple profiles and write different programs targeting different version of OpenGL. 
 
 #### go-gl packages
@@ -23,7 +23,7 @@ cd $GOPATH/src/github.com/go-gl/glow
 go build
 ./glow download
 ./glow generate -api=gl -version=4.1 -profile=core -remext=GL_ARB_cl_event
-go install ./gl-core/3.3/gl
+go install ./gl-core/4.1/gl
 ```
 
 3- [**GLFW 3.2**](https://github.com/go-gl/glfw) - Go bindings for GLFW 3
@@ -31,6 +31,10 @@ go install ./gl-core/3.3/gl
 
 4- [**MathGL**](https://github.com/go-gl/mathgl) - A pure Go 3D math library
 `go get github.com/go-gl/mathgl`
+
+This package is the equivalent of the GLM library and probably has all the functionality but after some differences.
+I didnt dive too deep into it, but I am getting different matrices when running the same sample in C++ with glm vs Go with mgl32.
+
 
 To test that the installation is working, try the examples from go-gl.
 
