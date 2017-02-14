@@ -3,8 +3,8 @@ package getstarted
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloTextures struct {
@@ -275,7 +275,7 @@ func (ht *TexturesEx3) InitGL() error {
 
 type TexturesEx4 struct {
 	HelloTextures
-	mixLoc int32
+	mixLoc   int32
 	mixValue float32
 }
 

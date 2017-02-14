@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 	"math"
 )
 
@@ -20,6 +20,10 @@ type Materials struct {
 	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
+	lightPositionMat            mgl32.Mat4
+	rotationAxis                mgl32.Vec3
+	translationMat              mgl32.Mat4
+	scaleMat                    mgl32.Mat4
 }
 
 func (m *Materials) InitGL() error {
@@ -33,10 +37,15 @@ func (m *Materials) InitGL() error {
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		glutils.YAW, glutils.PITCH,
 	)
-	m.lastX = glutils.WIDTH / 2.0
-	m.lastY = glutils.HEIGHT / 2.0
+	m.lastX = sections.WIDTH / 2.0
+	m.lastY = sections.HEIGHT / 2.0
+
+	m.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
+	m.translationMat = mgl32.Translate3D(0, 0, 0.0)
+	m.scaleMat = mgl32.Scale3D(0.2, 0.2, 0.2)
 	// Light attributes
 	m.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
+	m.lightPositionMat = mgl32.Translate3D(m.lightPos[0], m.lightPos[1], m.lightPos[2])
 
 	// Deltatime
 	m.deltaTime = 0.0 // Time between current frame and last frame
@@ -158,7 +167,7 @@ func (m *Materials) Draw() {
 	gl.UseProgram(m.lightingShader)
 
 	lightPosLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("light.position\x00"))
-	viewPosLoc  := gl.GetUniformLocation(m.lightingShader, gl.Str("viewPos\x00"))
+	viewPosLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("viewPos\x00"))
 	gl.Uniform3f(lightPosLoc, m.lightPos.X(), m.lightPos.Y(), m.lightPos.Z())
 	gl.Uniform3f(viewPosLoc, m.camera.Position.X(), m.camera.Position.Y(), m.camera.Position.Z())
 	// Set lights properties
@@ -168,7 +177,7 @@ func (m *Materials) Draw() {
 		float32(math.Sin(glfw.GetTime() * 1.3)),
 	}
 
-	 // Decrease the influence
+	// Decrease the influence
 	diffuseColor := mgl32.Vec3{
 		lightColor.X() * 0.5,
 		lightColor.Y() * 0.5,
@@ -182,7 +191,7 @@ func (m *Materials) Draw() {
 	}
 
 	gl.Uniform3f(gl.GetUniformLocation(
-		m.lightingShader, gl.Str("light.ambient\x00")),  ambientColor.X(), ambientColor.Y(), ambientColor.Z())
+		m.lightingShader, gl.Str("light.ambient\x00")), ambientColor.X(), ambientColor.Y(), ambientColor.Z())
 	gl.Uniform3f(
 		gl.GetUniformLocation(m.lightingShader, gl.Str("light.diffuse\x00")),
 		diffuseColor.X(), diffuseColor.Y(), diffuseColor.Z())
@@ -204,7 +213,7 @@ func (m *Materials) Draw() {
 
 	// Create camera transformations
 	view := m.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(m.camera.Zoom), glutils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(m.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(m.lightingShader, gl.Str("view\x00"))
@@ -215,9 +224,8 @@ func (m *Materials) Draw() {
 
 	// Draw the container (using container's vertex attributes)
 	gl.BindVertexArray(m.containerVAO)
-	model := mgl32.Translate3D(0, 0, 0.0)
 	angle := float32(glfw.GetTime())
-	model = model.Mul4(mgl32.HomogRotate3D(angle, mgl32.Vec3{1.0, 0.3, 0.5}))
+	model := m.translationMat.Mul4(mgl32.HomogRotate3D(angle, m.rotationAxis))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
@@ -233,8 +241,7 @@ func (m *Materials) Draw() {
 	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
 
 	// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-	model2 := mgl32.Translate3D(m.lightPos[0], m.lightPos[1], m.lightPos[2])
-	model2 = model2.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
+	model2 := m.lightPositionMat.Mul4(m.scaleMat) // Make it a smaller cube
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model2[0])
 	// Draw the light object (using light's vertex attributes)
 	gl.BindVertexArray(m.lightVAO)

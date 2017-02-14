@@ -2,8 +2,8 @@ package getstarted
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloTriangle struct {
@@ -12,7 +12,7 @@ type HelloTriangle struct {
 	vao, vbo uint32
 }
 
-func (ht *HelloTriangle) createBuffers(vertices []float32) (uint32, uint32){
+func (ht *HelloTriangle) createBuffers(vertices []float32) (uint32, uint32) {
 	var vao, vbo uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.GenBuffers(1, &vbo)
@@ -50,7 +50,7 @@ func (ht *HelloTriangle) InitGL() error {
 	}` + "\x00"
 
 	var err error
-	ht.program, err =  glutils.BasicProgram(vertexShader, fragShader)
+	ht.program, err = glutils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
 		return err
 	}
@@ -81,11 +81,10 @@ func (ht *HelloTriangle) Close() {
 	gl.DeleteProgram(ht.program)
 }
 
-
 type TriangleEx1 struct {
 	HelloTriangle
-	ebo uint32
-	currentMode   int32
+	ebo         uint32
+	currentMode int32
 }
 
 func (hs *TriangleEx1) InitGL() error {
@@ -168,10 +167,9 @@ func (hs *TriangleEx1) GetSubHeader() string {
 	return "the square always uses GL_LINE for the polygon mode"
 }
 
-
 type TriangleEx2 struct {
 	HelloTriangle
-	program2  uint32
+	program2   uint32
 	vao2, vbo2 uint32
 }
 
@@ -206,7 +204,6 @@ func (ht *TriangleEx2) InitGL() error {
 	  color = vec4(0.8f, 0.2f, 1.0f, 0.8f);
 	}` + "\x00"
 
-
 	var err error
 	ht.program, err = glutils.BasicProgram(vertexShader, fragShader)
 	if err != nil {
@@ -230,7 +227,6 @@ func (ht *TriangleEx2) InitGL() error {
 		0.0, -1.0, 0.0, // Top
 	}
 
-
 	ht.vao, ht.vbo = ht.createBuffers(vertices)
 	ht.vao2, ht.vbo2 = ht.createBuffers(vertices2)
 
@@ -252,4 +248,3 @@ func (ht *TriangleEx2) Draw() {
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
 }
-

@@ -3,9 +3,9 @@ package sections
 import (
 	"errors"
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/raedatoui/glfont"
 	"github.com/raedatoui/glutils"
 	"strings"
-	"github.com/raedatoui/glfont"
 )
 
 type TitleSlide struct {

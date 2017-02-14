@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type LightingColors struct {
@@ -19,6 +19,9 @@ type LightingColors struct {
 	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
+	rotationAxis                mgl32.Vec3
+	translationMat              mgl32.Mat4
+	lightPositionMat            mgl32.Mat4
 }
 
 func (lc *LightingColors) InitGL() error {
@@ -30,15 +33,19 @@ func (lc *LightingColors) InitGL() error {
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		glutils.YAW, glutils.PITCH,
 	)
-	lc.lastX = glutils.WIDTH / 2.0
-	lc.lastY = glutils.HEIGHT / 2.0
+	lc.lastX = sections.WIDTH / 2.0
+	lc.lastY = sections.HEIGHT / 2.0
 
 	// Light attributes
 	lc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
+	lc.lightPositionMat = mgl32.Translate3D(lc.lightPos[0], lc.lightPos[1], lc.lightPos[2])
 
 	// Deltatime
 	lc.deltaTime = 0.0 // Time between current frame and last frame
 	lc.lastFrame = 0.0 // Time of last frame
+
+	lc.translationMat = mgl32.Translate3D(0, 0, 0.0)
+	lc.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
 
 	if sh, err := glutils.Shader(
 		"_assets/lighting/1.colors/colors.vs",
@@ -159,7 +166,7 @@ func (lc *LightingColors) Draw() {
 
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(lc.camera.Zoom), glutils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(lc.camera.Zoom), sections.RATIO, 0.1, 100.0)
 
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("model\x00"))
@@ -171,9 +178,8 @@ func (lc *LightingColors) Draw() {
 
 	// Draw the container (using container's vertex attributes)
 	gl.BindVertexArray(lc.containerVAO)
-	model := mgl32.Translate3D(0, 0, 0.0)
 	angle := float32(glfw.GetTime())
-	model = model.Mul4(mgl32.HomogRotate3D(angle, mgl32.Vec3{1.0, 0.3, 0.5}))
+	model := lc.translationMat.Mul4(mgl32.HomogRotate3D(angle, lc.rotationAxis))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
@@ -189,8 +195,7 @@ func (lc *LightingColors) Draw() {
 	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
 
 	//model2 = model2.Mul4(mgl32.Translate3D(lc.lightPos[0], lc.lightPos[1], lc.lightPos[2]))
-	model2 := mgl32.Translate3D(lc.lightPos[0], lc.lightPos[1], lc.lightPos[2])
-	model2 = model2.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
+	model2 := lc.lightPositionMat.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model2[0])
 	// Draw the light object (using light's vertex attributes)
 	gl.BindVertexArray(lc.lightVAO)

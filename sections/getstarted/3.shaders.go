@@ -3,8 +3,8 @@ package getstarted
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 	"math"
 )
 
@@ -79,7 +79,6 @@ func (hs *HelloShaders) Close() {
 	gl.DeleteProgram(hs.shader)
 }
 
-
 type ShaderEx1 struct {
 	HelloShaders
 	timeValue           float64
@@ -120,7 +119,6 @@ func (hs *ShaderEx1) GetSubHeader() string {
 	return "with a uniform updated by gl.Uniform4f"
 }
 
-
 type ShaderEx2 struct {
 	HelloShaders
 }
@@ -136,7 +134,6 @@ func (hs *ShaderEx2) InitGL() error {
 	return nil
 }
 
-
 type ShaderEx3 struct {
 	HelloShaders
 }
@@ -150,11 +147,10 @@ func (hs *ShaderEx3) InitGL() error {
 	hs.createBuffers()
 
 	gl.UseProgram(hs.shader)
-	gl.Uniform1f(gl.GetUniformLocation(hs.shader,  gl.Str("xOffset\x00")), 0.5)
+	gl.Uniform1f(gl.GetUniformLocation(hs.shader, gl.Str("xOffset\x00")), 0.5)
 
 	return nil
 }
-
 
 type ShaderEx4 struct {
 	HelloShaders

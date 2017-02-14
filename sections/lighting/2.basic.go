@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type BasicSpecular struct {
@@ -19,6 +19,8 @@ type BasicSpecular struct {
 	camera                      glutils.Camera
 	lightPos                    mgl32.Vec3
 	w, a, s, d                  bool
+	rotationAxis                mgl32.Vec3
+	lightPositionMat            mgl32.Mat4
 }
 
 func (bc *BasicSpecular) InitGL() error {
@@ -32,10 +34,11 @@ func (bc *BasicSpecular) InitGL() error {
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		glutils.YAW, glutils.PITCH,
 	)
-	bc.lastX = glutils.WIDTH / 2.0
-	bc.lastY = glutils.HEIGHT / 2.0
+	bc.lastX = sections.WIDTH / 2.0
+	bc.lastY = sections.HEIGHT / 2.0
 	// Light attributes
 	bc.lightPos = mgl32.Vec3{1.2, 1.0, 2.0}
+	bc.lightPositionMat = mgl32.Translate3D(bc.lightPos[0], bc.lightPos[1], bc.lightPos[2])
 
 	// Deltatime
 	bc.deltaTime = 0.0 // Time between current frame and last frame
@@ -51,6 +54,8 @@ func (bc *BasicSpecular) InitGL() error {
 	} else {
 		bc.lampShader = sh
 	}
+
+	bc.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
 
 	vertices := []float32{
 		-0.5, -0.5, -0.5, 0.0, 0.0, -1.0,
@@ -163,7 +168,7 @@ func (bc *BasicSpecular) Draw() {
 
 	// Create camera transformations
 	view := bc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(bc.camera.Zoom), glutils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(bc.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	// Get the uniform locations
 	modelLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("model\x00"))
 	viewLoc := gl.GetUniformLocation(bc.lightingShader, gl.Str("view\x00"))
@@ -176,7 +181,7 @@ func (bc *BasicSpecular) Draw() {
 	gl.BindVertexArray(bc.containerVAO)
 	model := mgl32.Translate3D(0, 0, 0.0)
 	angle := float32(glfw.GetTime())
-	model = model.Mul4(mgl32.HomogRotate3D(angle, mgl32.Vec3{1.0, 0.3, 0.5}))
+	model = model.Mul4(mgl32.HomogRotate3D(angle, bc.rotationAxis))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
@@ -192,8 +197,7 @@ func (bc *BasicSpecular) Draw() {
 	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
 
 	// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-	model2 := mgl32.Translate3D(bc.lightPos[0], bc.lightPos[1], bc.lightPos[2])
-	model2 = model2.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
+	model2 := bc.lightPositionMat.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model2[0])
 	// Draw the light object (using light's vertex attributes)
 	gl.BindVertexArray(bc.lightVAO)

@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloTransformations struct {
@@ -13,11 +13,15 @@ type HelloTransformations struct {
 	shader             uint32
 	vao, vbo, ebo      uint32
 	texture1, texture2 uint32
-	transform          mgl32.Mat4
+	translationMat     mgl32.Mat4
+	rotationAxis       mgl32.Vec3
 }
 
 func (ht *HelloTransformations) InitGL() error {
 	ht.Name = "5. Transformations"
+
+	ht.translationMat = mgl32.Translate3D(0.5, -0.5, 0.0)
+	ht.rotationAxis = mgl32.Vec3{0.0, 0.0, 1.0}.Normalize()
 
 	var err error
 	ht.shader, err = glutils.Shader("_assets/getting_started/5.transformations/transform.vs",
@@ -99,14 +103,12 @@ func (ht *HelloTransformations) Draw() {
 	// Activate shader
 	gl.UseProgram(ht.shader)
 
-	// create transform
-	ht.transform = mgl32.Translate3D(0.5, -0.5, 0.0)
 	// rotate
-	ht.transform = ht.transform.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()), mgl32.Vec3{0.0, 0.0, 1.0}))
+	transform := ht.translationMat.Mul4(mgl32.HomogRotate3D(float32(glfw.GetTime()), ht.rotationAxis))
 	transformLoc := gl.GetUniformLocation(ht.shader, gl.Str("transform\x00"))
 	// here we create a pointer from the first element of the matrix?
 	// read up and update this comm
-	gl.UniformMatrix4fv(transformLoc, 1, false, &ht.transform[0])
+	gl.UniformMatrix4fv(transformLoc, 1, false, &transform[0])
 
 	// Draw container
 	gl.BindVertexArray(ht.vao)

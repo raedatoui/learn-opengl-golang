@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type ModelLoading struct {
@@ -63,7 +63,7 @@ func (ml *ModelLoading) Draw() {
 	gl.UseProgram(ml.shader) //  <-- Don't forget this one!
 
 	// Transformation matrices
-	projection := mgl32.Perspective(float32(ml.camera.Zoom), glutils.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(ml.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
 
 	projLoc := gl.GetUniformLocation(ml.shader, gl.Str("projection\x00"))
@@ -72,7 +72,7 @@ func (ml *ModelLoading) Draw() {
 	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
 
 	// Draw the loaded model
-	model := mgl32.Translate3D(0, -1.75, 0.0)            // Translate it down a bit so it's at the center of the scene
+	model := mgl32.Translate3D(0, -1.75, 0.0)        // Translate it down a bit so it's at the center of the scene
 	model = model.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // It's a bit too big for our scene, so scale it down
 
 	modelLoc := gl.GetUniformLocation(ml.shader, gl.Str("model\x00"))

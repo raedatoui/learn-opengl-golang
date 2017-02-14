@@ -7,6 +7,15 @@ import (
 	"github.com/raedatoui/glutils"
 )
 
+
+// WIDTH is the width of the window
+const WIDTH = 1280
+
+// HEIGHT is the height of the window
+const HEIGHT = 1024
+
+const RATIO = 1280.0 / 1024.0
+
 // Slide is the most basic slide. it has to setup, update, draw and close
 type Slide interface {
 	Init(a ...interface{}) error

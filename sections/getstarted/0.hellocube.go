@@ -9,8 +9,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 	_ "image/png"
 )
 
@@ -121,7 +121,7 @@ func (hc *HelloCube) InitGL() error {
 
 	gl.UseProgram(hc.program)
 
-	projection := mgl32.Perspective(mgl32.DegToRad(45.0), glutils.RATIO, 0.1, 10.0)
+	projection := mgl32.Perspective(mgl32.DegToRad(45.0), sections.RATIO, 0.1, 10.0)
 	projectionUniform := gl.GetUniformLocation(hc.program, gl.Str("projection\x00"))
 	gl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 

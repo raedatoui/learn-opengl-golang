@@ -1,20 +1,21 @@
 package main
 
 import (
+	"fmt"
 	_ "image/png"
 	"log"
 	"os"
 	"runtime"
+	"strconv"
+
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"fmt"
+	"github.com/raedatoui/glfont"
+	"github.com/raedatoui/glutils"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
 	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
-	"github.com/raedatoui/glutils"
-	"strconv"
 	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
-	"github.com/raedatoui/glfont"
 )
 
 var (
@@ -27,6 +28,7 @@ var (
 	keys         map[glfw.Key]bool
 	wireframe    int32
 )
+
 
 func init() {
 	// This is needed to arrange that main() runs on main thread.
@@ -134,7 +136,7 @@ func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 
-	window, err := glfw.CreateWindow(glutils.WIDTH, glutils.HEIGHT, "learnopengl.com in Golang", nil, nil)
+	window, err := glfw.CreateWindow(sections.WIDTH, sections.HEIGHT, "learnopengl.com in Golang", nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -223,7 +225,7 @@ func main() {
 	window = w
 
 	//load font (fontfile, font scale, window width, window height
-	f, err := glfont.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), glutils.WIDTH, glutils.HEIGHT)
+	f, err := glfont.LoadFont("_assets/fonts/huge_agb_v5.ttf", int32(52), sections.WIDTH, sections.HEIGHT)
 	if err != nil {
 		log.Fatalf("LoadFont: %v", err)
 	}
@@ -283,7 +285,7 @@ func main() {
 	// TODO: how to effectively blend shapes that use a frag shader with
 	// TODO: transparency
 	gl.Enable(gl.BLEND)
-	gl.BlendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	var maxAttrib int32
 	gl.GetIntegerv(gl.MAX_VERTEX_ATTRIBS, &maxAttrib)
@@ -305,9 +307,9 @@ func main() {
 			}
 		}
 
-		font.Printf(30, glutils.HEIGHT-20, 0.2, currentSlide.GetColorHex())
+		font.Printf(30, sections.HEIGHT-20, 0.2, currentSlide.GetColorHex())
 		fps := "FPS: " + strconv.FormatFloat(glutils.CalcFPS(1.0), 'f', 2, 64)
-		font.Printf(glutils.WIDTH-80, glutils.HEIGHT-20, 0.25, fps)
+		font.Printf(sections.WIDTH-80, sections.HEIGHT-20, 0.25, fps)
 
 		window.SwapBuffers()
 		// Poll Events

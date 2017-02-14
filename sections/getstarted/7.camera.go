@@ -4,8 +4,8 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/glutils"
+	"github.com/raedatoui/learn-opengl-golang/sections"
 )
 
 type HelloCamera struct {
@@ -14,12 +14,13 @@ type HelloCamera struct {
 	vao, vbo, ebo        uint32
 	texture1, texture2   uint32
 	transform            mgl32.Mat4
-	cubePositions        []mgl32.Vec3
+	cubePositions        []mgl32.Mat4
 	camera               glutils.Camera
 	deltaTime, lastFrame float64
 	w, a, s, d           bool
 	lastX, lastY         float64
 	firstMouse           bool
+	rotationAxis         mgl32.Vec3
 }
 
 func (hc *HelloCamera) InitGL() error {
@@ -78,17 +79,19 @@ func (hc *HelloCamera) InitGL() error {
 		-0.5, 0.5, -0.5, 0.0, 1.0,
 	}
 
-	hc.cubePositions = []mgl32.Vec3{
-		mgl32.Vec3{0.0, 0.0, 0.0},
-		mgl32.Vec3{2.0, 5.0, -15.0},
-		mgl32.Vec3{-1.5, -2.2, -2.5},
-		mgl32.Vec3{-3.8, -2.0, -12.3},
-		mgl32.Vec3{2.4, -0.4, -3.5},
-		mgl32.Vec3{-1.7, 3.0, -7.5},
-		mgl32.Vec3{1.3, -2.0, -2.5},
-		mgl32.Vec3{1.5, 2.0, -2.5},
-		mgl32.Vec3{1.5, 0.2, -1.5},
-		mgl32.Vec3{-1.3, 1.0, -1.5},
+	hc.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
+
+	hc.cubePositions = []mgl32.Mat4{
+		mgl32.Translate3D(0.0, 0.0, 0.0),
+		mgl32.Translate3D(2.0, 5.0, -15.0),
+		mgl32.Translate3D(-1.5, -2.2, -2.5),
+		mgl32.Translate3D(-3.8, -2.0, -12.3),
+		mgl32.Translate3D(2.4, -0.4, -3.5),
+		mgl32.Translate3D(-1.7, 3.0, -7.5),
+		mgl32.Translate3D(1.3, -2.0, -2.5),
+		mgl32.Translate3D(1.5, 2.0, -2.5),
+		mgl32.Translate3D(1.5, 0.2, -1.5),
+		mgl32.Translate3D(-1.3, 1.0, -1.5),
 	}
 
 	// ====================
@@ -178,7 +181,7 @@ func (hc *HelloCamera) Draw() {
 
 	// Create camera transformations
 	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(hc.camera.Zoom), glutils.RATIO, 0.1, 1000.0)
+	projection := mgl32.Perspective(float32(hc.camera.Zoom), sections.RATIO, 0.1, 1000.0)
 
 	// Get their uniform location
 	modelLoc := gl.GetUniformLocation(hc.shader, gl.Str("model\x00"))
@@ -195,16 +198,9 @@ func (hc *HelloCamera) Draw() {
 
 	for i := 0; i < 10; i++ {
 		// Calculate the model matrix for each object and pass it to shader before drawing
-		model := mgl32.Translate3D(
-			hc.cubePositions[i][0],
-			hc.cubePositions[i][1],
-			hc.cubePositions[i][2])
-		//angle := 20.0 * float32(i)
-		//if i % 3 == 0 {
+		model := hc.cubePositions[i]
 		angle := float32(glfw.GetTime()) * float32(i+1)
-		//}  // Every 3rd iteration (including the first) we set the angle using GLFW's time function.
-
-		model = model.Mul4(mgl32.HomogRotate3D(angle, mgl32.Vec3{1.0, 0.3, 0.5}))
+		model = model.Mul4(mgl32.HomogRotate3D(angle, hc.rotationAxis))
 		gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
 		gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	}
