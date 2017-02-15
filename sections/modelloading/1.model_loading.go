@@ -10,7 +10,7 @@ import (
 
 type ModelLoading struct {
 	sections.BaseSketch
-	shader               uint32
+	shader               *glutils.Shader
 	model                glutils.Model
 	camera               glutils.Camera
 	deltaTime, lastFrame float64
@@ -28,11 +28,14 @@ func (ml *ModelLoading) InitGL() error {
 	)
 	ml.Name = "3. Model Loading"
 	// Setup and compile our shaders
-	ml.shader, _ = glutils.Shader("_assets/model_loading/shader.vs",
+	ml.shader, _ = glutils.NewShader("_assets/model_loading/shader.vs",
 		"_assets/model_loading/shader.frag", "")
+	ml.shader.AddUniform("projection")
+	ml.shader.AddUniform("view")
+	ml.shader.AddUniform("model")
+
 	// Load models
 	ml.model, _ = glutils.NewModel("_assets/objects/nanosuit/", "nanosuit.obj", false)
-
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 	return nil
 }
@@ -60,16 +63,14 @@ func (ml *ModelLoading) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ml.Color32.R, ml.Color32.G, ml.Color32.B, ml.Color32.A)
 
-	gl.UseProgram(ml.shader) //  <-- Don't forget this one!
+	gl.UseProgram(ml.shader.Program) //  <-- Don't forget this one!
 
 	// Transformation matrices
 	projection := mgl32.Perspective(float32(ml.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
 
-	projLoc := gl.GetUniformLocation(ml.shader, gl.Str("projection\x00"))
-	viewLoc := gl.GetUniformLocation(ml.shader, gl.Str("view\x00"))
-	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
-	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
+	gl.UniformMatrix4fv(ml.shader.GetUniform("view"), 1, false, &view[0])
+	gl.UniformMatrix4fv(ml.shader.GetUniform("projection"), 1, false, &projection[0])
 
 	// Draw the loaded model
 	model := mgl32.Translate3D(0, -1.75, 0.0)        // Translate it down a bit so it's at the center of the scene
@@ -77,7 +78,7 @@ func (ml *ModelLoading) Draw() {
 
 	modelLoc := gl.GetUniformLocation(ml.shader, gl.Str("model\x00"))
 	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
-	ml.model.Draw(ml.shader)
+	ml.model.Draw(ml.shader.Program)
 }
 
 func (lc *ModelLoading) HandleMousePosition(xpos, ypos float64) {

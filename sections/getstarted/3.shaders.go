@@ -11,12 +11,12 @@ import (
 type HelloShaders struct {
 	sections.BaseSketch
 	vao, vbo uint32
-	shader   uint32
+	shader   glutils.Shader
 }
 
 func (hs *HelloShaders) createShader(v, f string) error {
 	var err error
-	hs.shader, err = glutils.Shader(v, f, "")
+	hs.shader, err = glutils.NewShader(v, f, "")
 
 	if err != nil {
 		return err
@@ -67,7 +67,7 @@ func (hs *HelloShaders) Draw() {
 	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
 
 	// Draw the triangle
-	gl.UseProgram(hs.shader)
+	gl.UseProgram(hs.shader.Program)
 	gl.BindVertexArray(hs.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
@@ -76,7 +76,7 @@ func (hs *HelloShaders) Draw() {
 func (hs *HelloShaders) Close() {
 	gl.DeleteVertexArrays(1, &hs.vao)
 	gl.DeleteBuffers(1, &hs.vbo)
-	gl.DeleteProgram(hs.shader)
+	gl.DeleteProgram(hs.shader.Program)
 }
 
 type ShaderEx1 struct {
@@ -91,10 +91,9 @@ func (hs *ShaderEx1) InitGL() error {
 	if err := hs.createShader("_assets/getting_started/3.shaders/basic.vs", "_assets/getting_started/3.shaders/uniform.frag"); err != nil {
 		return err
 	}
-	hs.vertexColorLocation = gl.GetUniformLocation(hs.shader, gl.Str("ourColor\x00"))
+	hs.shader.AddUniform("ourColor")
 
 	hs.createBuffers()
-
 	return nil
 }
 
@@ -108,8 +107,8 @@ func (hs *ShaderEx1) Draw() {
 	gl.ClearColor(hs.Color32.R, hs.Color32.G, hs.Color32.B, hs.Color32.A)
 
 	// Draw the triangle
-	gl.UseProgram(hs.shader)
-	gl.Uniform4f(hs.vertexColorLocation, 0.0, hs.greenValue, 0.0, 1.0)
+	gl.UseProgram(hs.shader.Program)
+	gl.Uniform4f(hs.shader.GetUniform("ourColor"), 0.0, hs.greenValue, 0.0, 1.0)
 	gl.BindVertexArray(hs.vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
@@ -146,8 +145,8 @@ func (hs *ShaderEx3) InitGL() error {
 
 	hs.createBuffers()
 
-	gl.UseProgram(hs.shader)
-	gl.Uniform1f(gl.GetUniformLocation(hs.shader, gl.Str("xOffset\x00")), 0.5)
+	gl.UseProgram(hs.shader.Program)
+	gl.Uniform1f(hs.shader.GetUniform("xOffset"), 0.5)
 
 	return nil
 }
