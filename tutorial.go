@@ -14,8 +14,6 @@ import (
 	"github.com/raedatoui/glutils"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
-	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
-	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
 )
 
 var (
@@ -28,7 +26,6 @@ var (
 	keys         map[glfw.Key]bool
 	wireframe    int32
 )
-
 
 func init() {
 	// This is needed to arrange that main() runs on main thread.
@@ -168,6 +165,7 @@ func setup() (*glfw.Window, error) {
 func setupSlides() []sections.Slide {
 	// make a slice of pointers to sketch instances
 	return []sections.Slide{
+		new(getstarted.HelloShaders),
 		new(sections.TitleSlide),
 		new(getstarted.HelloCube),
 		new(sections.TitleSlide),
@@ -183,28 +181,28 @@ func setupSlides() []sections.Slide {
 		new(getstarted.ShaderEx3),
 		new(getstarted.ShaderEx4),
 
-		new(getstarted.HelloTextures),
-		new(getstarted.TexturesEx1),
-		new(getstarted.TexturesEx2),
-		new(getstarted.TexturesEx3),
-		new(getstarted.TexturesEx4),
-
-		new(getstarted.HelloTransformations),
-		new(getstarted.HelloCoordinates),
-		new(getstarted.HelloCamera),
-
-		new(sections.TitleSlide),
-		new(lighting.LightingColors),
-		new(lighting.BasicSpecular),
-		new(lighting.Materials),
-
-		new(sections.TitleSlide),
-		new(modelloading.ModelLoading),
-
-		new(sections.TitleSlide),
-		new(sections.TitleSlide),
-		new(sections.TitleSlide),
-		new(sections.TitleSlide),
+		//new(getstarted.HelloTextures),
+		//new(getstarted.TexturesEx1),
+		//new(getstarted.TexturesEx2),
+		//new(getstarted.TexturesEx3),
+		//new(getstarted.TexturesEx4),
+		//
+		//new(getstarted.HelloTransformations),
+		//new(getstarted.HelloCoordinates),
+		//new(getstarted.HelloCamera),
+		//
+		//new(sections.TitleSlide),
+		//new(lighting.LightingColors),
+		//new(lighting.BasicSpecular),
+		//new(lighting.Materials),
+		//
+		//new(sections.TitleSlide),
+		//new(modelloading.ModelLoading),
+		//
+		//new(sections.TitleSlide),
+		//new(sections.TitleSlide),
+		//new(sections.TitleSlide),
+		//new(sections.TitleSlide),
 	}
 }
 

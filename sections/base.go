@@ -7,7 +7,6 @@ import (
 	"github.com/raedatoui/glutils"
 )
 
-
 // WIDTH is the width of the window
 const WIDTH = 1280
 

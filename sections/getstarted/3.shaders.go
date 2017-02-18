@@ -10,8 +10,8 @@ import (
 
 type HelloShaders struct {
 	sections.BaseSketch
-	vao, vbo uint32
-	shader   glutils.Shader
+	shader *glutils.Shader
+	va     glutils.VertexArray
 }
 
 func (hs *HelloShaders) createShader(v, f string) error {
@@ -31,29 +31,26 @@ func (hs *HelloShaders) createBuffers() {
 		-0.5, -0.5, 0.0, 0.0, 1.0, 0.0, // Bottom Left
 		0.0, 0.5, 0.0, 0.0, 0.0, 1.0, // Top
 	}
-	gl.GenVertexArrays(1, &hs.vao)
-	gl.GenBuffers(1, &hs.vbo)
+	attr := make(map[uint32]int32)
+	attr[hs.shader.Attributes["position"]] = 3
+	attr[hs.shader.Attributes["color"]] = 3
+	hs.va = glutils.VertexArray{
+		Data:       vertices,
+		Stride:     6,
+		Normalized: false,
+		DrawMode:   gl.STATIC_DRAW,
+		Attributes: attr,
+	}
 
-	gl.BindVertexArray(hs.vao)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, hs.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
-
-	// position uniform
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-
-	//color uniform
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 6*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
-	gl.EnableVertexAttribArray(1)
-
-	gl.BindVertexArray(0)
+	hs.va.Setup()
 }
 
 func (hs *HelloShaders) InitGL() error {
 	hs.Name = "3a. Shaders"
 
-	if err := hs.createShader("_assets/getting_started/3.shaders/basic.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader(
+		"_assets/getting_started/3.shaders/basic.vs",
+		"_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
@@ -68,15 +65,14 @@ func (hs *HelloShaders) Draw() {
 
 	// Draw the triangle
 	gl.UseProgram(hs.shader.Program)
-	gl.BindVertexArray(hs.vao)
+	gl.BindVertexArray(hs.va.Vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
 }
 
 func (hs *HelloShaders) Close() {
-	gl.DeleteVertexArrays(1, &hs.vao)
-	gl.DeleteBuffers(1, &hs.vbo)
-	gl.DeleteProgram(hs.shader.Program)
+	hs.shader.Delete()
+	hs.va.Delete()
 }
 
 type ShaderEx1 struct {
@@ -88,10 +84,11 @@ type ShaderEx1 struct {
 
 func (hs *ShaderEx1) InitGL() error {
 	hs.Name = "3b. Shaders Ex1"
-	if err := hs.createShader("_assets/getting_started/3.shaders/basic.vs", "_assets/getting_started/3.shaders/uniform.frag"); err != nil {
+	if err := hs.createShader(
+		"_assets/getting_started/3.shaders/basic.vs",
+		"_assets/getting_started/3.shaders/uniform.frag"); err != nil {
 		return err
 	}
-	hs.shader.AddUniform("ourColor")
 
 	hs.createBuffers()
 	return nil
@@ -108,8 +105,8 @@ func (hs *ShaderEx1) Draw() {
 
 	// Draw the triangle
 	gl.UseProgram(hs.shader.Program)
-	gl.Uniform4f(hs.shader.GetUniform("ourColor"), 0.0, hs.greenValue, 0.0, 1.0)
-	gl.BindVertexArray(hs.vao)
+	gl.Uniform4f(hs.shader.Uniforms["ourColor"], 0.0, hs.greenValue, 0.0, 1.0)
+	gl.BindVertexArray(hs.va.Vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 3)
 	gl.BindVertexArray(0)
 }
@@ -124,7 +121,9 @@ type ShaderEx2 struct {
 
 func (hs *ShaderEx2) InitGL() error {
 	hs.Name = "3c. Shaders Ex2"
-	if err := hs.createShader("_assets/getting_started/3.shaders/reverse.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader(
+		"_assets/getting_started/3.shaders/reverse.vs",
+		"_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
@@ -139,14 +138,16 @@ type ShaderEx3 struct {
 
 func (hs *ShaderEx3) InitGL() error {
 	hs.Name = "3b. Shaders Ex3"
-	if err := hs.createShader("_assets/getting_started/3.shaders/offset.vs", "_assets/getting_started/3.shaders/basic.frag"); err != nil {
+	if err := hs.createShader(
+		"_assets/getting_started/3.shaders/offset.vs",
+		"_assets/getting_started/3.shaders/basic.frag"); err != nil {
 		return err
 	}
 
 	hs.createBuffers()
 
 	gl.UseProgram(hs.shader.Program)
-	gl.Uniform1f(hs.shader.GetUniform("xOffset"), 0.5)
+	gl.Uniform1f(hs.shader.Uniforms["xOffset"], 0.5)
 
 	return nil
 }
@@ -157,7 +158,9 @@ type ShaderEx4 struct {
 
 func (hs *ShaderEx4) InitGL() error {
 	hs.Name = "3c. Shaders Ex4"
-	if err := hs.createShader("_assets/getting_started/3.shaders/ex4.vs", "_assets/getting_started/3.shaders/ex4.frag"); err != nil {
+	if err := hs.createShader(
+		"_assets/getting_started/3.shaders/ex4.vs",
+		"_assets/getting_started/3.shaders/ex4.frag"); err != nil {
 		return err
 	}
 

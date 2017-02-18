@@ -9,8 +9,8 @@ import (
 
 type HelloTextures struct {
 	sections.BaseSketch
-	shader             uint32
-	vao, vbo, ebo      uint32
+	shader             glutils.Shader
+	va glutils.VertexArray
 	texture1, texture2 uint32
 	texLoc1, texLoc2   int32
 }
@@ -36,29 +36,20 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 		1, 2, 3, // Second Triangle
 	}
 
-	gl.GenVertexArrays(1, &ht.vao)
-	gl.GenBuffers(1, &ht.vbo)
-	gl.GenBuffers(1, &ht.ebo)
+	attr := make(map[uint32]int32)
+	attr[ht.shader.Attributes["position"]] = 3
+	attr[ht.shader.Attributes["color"]] = 3
+	attr[ht.shader.Attributes["texCoord"]] = 2
 
-	gl.BindVertexArray(ht.vao)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, ht.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
-
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ht.ebo)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(indices), gl.STATIC_DRAW)
-
-	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-	// Color attribute
-	gl.VertexAttribPointer(1, 3, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(3*glutils.GL_FLOAT32_SIZE))
-	gl.EnableVertexAttribArray(1)
-	// TexCoord attribute
-	gl.VertexAttribPointer(2, 2, gl.FLOAT, false, 8*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(6*glutils.GL_FLOAT32_SIZE))
-	gl.EnableVertexAttribArray(2)
-
-	gl.BindVertexArray(0) // Unbind VAO
+	v := glutils.VertexArray{
+		Data: vertices,
+		Indices: indices,
+		Stride: 8,
+		Normalized: false,
+		DrawMode: gl.STATIC_DRAW,
+		Attributes: attr,
+	}
+	v.Setup()
 }
 
 func (ht *HelloTextures) InitGL() error {
@@ -66,11 +57,10 @@ func (ht *HelloTextures) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.NewShader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.shader)
 
 	ht.createBuffers(ht.getVertices())
 
@@ -81,7 +71,7 @@ func (ht *HelloTextures) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
+		ht.texLoc1 = ht.shader.Uniforms["ourTexture1"]
 	}
 
 	// ====================
@@ -91,7 +81,7 @@ func (ht *HelloTextures) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
+		ht.texLoc1 = ht.shader.Uniforms["ourTexture2"]
 	}
 
 	return nil
@@ -111,7 +101,7 @@ func (ht *HelloTextures) Draw() {
 	gl.Uniform1i(ht.texLoc2, 1)
 
 	// Activate shader
-	gl.UseProgram(ht.shader)
+	gl.UseProgram(ht.shader.Program)
 
 	// Draw container
 	gl.BindVertexArray(ht.vao)
@@ -123,7 +113,7 @@ func (ht *HelloTextures) Close() {
 	gl.DeleteVertexArrays(1, &ht.vao)
 	gl.DeleteBuffers(1, &ht.vbo)
 	gl.DeleteBuffers(1, &ht.ebo)
-	gl.DeleteProgram(ht.shader)
+	gl.DeleteProgram(ht.shader.Program)
 }
 
 type TexturesEx1 struct {
