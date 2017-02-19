@@ -10,7 +10,7 @@ import (
 
 type HelloShaders struct {
 	sections.BaseSketch
-	shader *glutils.Shader
+	shader glutils.Shader
 	va     glutils.VertexArray
 }
 
@@ -31,9 +31,10 @@ func (hs *HelloShaders) createBuffers() {
 		-0.5, -0.5, 0.0, 0.0, 1.0, 0.0, // Bottom Left
 		0.0, 0.5, 0.0, 0.0, 0.0, 1.0, // Top
 	}
-	attr := make(map[uint32]int32)
-	attr[hs.shader.Attributes["position"]] = 3
-	attr[hs.shader.Attributes["color"]] = 3
+	attr := make(glutils.AttributesMap)
+	attr[hs.shader.Attributes["position"]] = [2]int{3, 0}
+	attr[hs.shader.Attributes["color"]] = [2]int{3, 3}
+
 	hs.va = glutils.VertexArray{
 		Data:       vertices,
 		Stride:     6,

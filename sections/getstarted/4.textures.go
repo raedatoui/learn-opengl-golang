@@ -10,9 +10,8 @@ import (
 type HelloTextures struct {
 	sections.BaseSketch
 	shader             glutils.Shader
-	va glutils.VertexArray
+	va                 glutils.VertexArray
 	texture1, texture2 uint32
-	texLoc1, texLoc2   int32
 }
 
 func (ht *HelloTextures) getShaders() []string {
@@ -36,17 +35,17 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 		1, 2, 3, // Second Triangle
 	}
 
-	attr := make(map[uint32]int32)
-	attr[ht.shader.Attributes["position"]] = 3
-	attr[ht.shader.Attributes["color"]] = 3
-	attr[ht.shader.Attributes["texCoord"]] = 2
+	attr := make(glutils.AttributesMap)
+	attr.Add(ht.shader.Attributes["position"], 3, 0)
+	attr.Add(ht.shader.Attributes["color"], 3, 3)
+	attr.Add(ht.shader.Attributes["texCoord"], 2, 6)
 
 	v := glutils.VertexArray{
-		Data: vertices,
-		Indices: indices,
-		Stride: 8,
+		Data:       vertices,
+		Indices:    indices,
+		Stride:     8,
 		Normalized: false,
-		DrawMode: gl.STATIC_DRAW,
+		DrawMode:   gl.STATIC_DRAW,
 		Attributes: attr,
 	}
 	v.Setup()
@@ -71,7 +70,6 @@ func (ht *HelloTextures) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = ht.shader.Uniforms["ourTexture1"]
 	}
 
 	// ====================
@@ -81,7 +79,6 @@ func (ht *HelloTextures) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc1 = ht.shader.Uniforms["ourTexture2"]
 	}
 
 	return nil
@@ -91,29 +88,28 @@ func (ht *HelloTextures) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
 
+
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
-	gl.Uniform1i(ht.texLoc1, 0)
+	gl.Uniform1i(ht.shader.Uniforms["ourTexture1"], 0)
 
 	gl.ActiveTexture(gl.TEXTURE1)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
-	gl.Uniform1i(ht.texLoc2, 1)
+	gl.Uniform1i(ht.shader.Uniforms["ourTexture2"], 1)
 
 	// Activate shader
 	gl.UseProgram(ht.shader.Program)
 
 	// Draw container
-	gl.BindVertexArray(ht.vao)
+	gl.BindVertexArray(ht.va.Vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
 
 func (ht *HelloTextures) Close() {
-	gl.DeleteVertexArrays(1, &ht.vao)
-	gl.DeleteBuffers(1, &ht.vbo)
-	gl.DeleteBuffers(1, &ht.ebo)
-	gl.DeleteProgram(ht.shader.Program)
+	ht.shader.Delete()
+	ht.va.Delete()
 }
 
 type TexturesEx1 struct {
@@ -130,11 +126,11 @@ func (ht *TexturesEx1) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.NewShader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.shader)
+
 	ht.createBuffers(ht.getVertices())
 
 	// ====================
@@ -144,7 +140,6 @@ func (ht *TexturesEx1) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
 	// ====================
@@ -154,7 +149,6 @@ func (ht *TexturesEx1) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	}
 
 	return nil
@@ -183,11 +177,11 @@ func (ht *TexturesEx2) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.NewShader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.shader)
+
 	ht.createBuffers(ht.getVertices())
 
 	// ====================
@@ -197,7 +191,6 @@ func (ht *TexturesEx2) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
 	// ====================
@@ -207,7 +200,6 @@ func (ht *TexturesEx2) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	}
 
 	return nil
@@ -236,11 +228,10 @@ func (ht *TexturesEx3) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.NewShader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.shader)
 	ht.createBuffers(ht.getVertices())
 
 	// Texture 1
@@ -248,7 +239,6 @@ func (ht *TexturesEx3) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
 	// Texture 2
@@ -256,7 +246,6 @@ func (ht *TexturesEx3) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	}
 
 	// mixvalue uniform
@@ -265,7 +254,6 @@ func (ht *TexturesEx3) InitGL() error {
 
 type TexturesEx4 struct {
 	HelloTextures
-	mixLoc   int32
 	mixValue float32
 }
 
@@ -283,11 +271,10 @@ func (ht *TexturesEx4) InitGL() error {
 
 	var err error
 	shaders := ht.getShaders()
-	ht.shader, err = glutils.Shader(shaders[0], shaders[1], "")
+	ht.shader, err = glutils.NewShader(shaders[0], shaders[1], "")
 	if err != nil {
 		return err
 	}
-	gl.UseProgram(ht.shader)
 	ht.createBuffers(ht.getVertices())
 
 	// Texture 1
@@ -295,7 +282,6 @@ func (ht *TexturesEx4) InitGL() error {
 		return err
 	} else {
 		ht.texture1 = tex
-		ht.texLoc1 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture1\x00"))
 	}
 
 	// Texture 2
@@ -303,10 +289,8 @@ func (ht *TexturesEx4) InitGL() error {
 		return err
 	} else {
 		ht.texture2 = tex
-		ht.texLoc2 = gl.GetUniformLocation(ht.shader, gl.Str("ourTexture2\x00"))
 	}
 
-	ht.mixLoc = gl.GetUniformLocation(ht.shader, gl.Str("mixValue\x00"))
 	return nil
 }
 
@@ -330,21 +314,21 @@ func (ht *TexturesEx4) Draw() {
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
 
 	// Activate shader
-	gl.UseProgram(ht.shader)
+	gl.UseProgram(ht.shader.Program)
 
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture1)
-	gl.Uniform1i(ht.texLoc1, 0)
+	gl.Uniform1i(ht.shader.Uniforms["ourTexture1"], 0)
 
 	gl.ActiveTexture(gl.TEXTURE1)
 	gl.BindTexture(gl.TEXTURE_2D, ht.texture2)
-	gl.Uniform1i(ht.texLoc2, 1)
+	gl.Uniform1i(ht.shader.Uniforms["ourTexture2"], 1)
 
-	gl.Uniform1f(ht.mixLoc, ht.mixValue)
+	gl.Uniform1f(ht.shader.Uniforms["mixValue"], ht.mixValue)
 
 	// Draw container
-	gl.BindVertexArray(ht.vao)
+	gl.BindVertexArray(ht.va.Vao)
 	gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, gl.PtrOffset(0))
 	gl.BindVertexArray(0)
 }
