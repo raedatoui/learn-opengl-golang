@@ -25,6 +25,7 @@ type Slide interface {
 	GetHeader() string
 	GetSubHeader() string
 	SetName(s string)
+	GetName() string
 	GetColorHex() string
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey, keys map[glfw.Key]bool)
 	HandleMousePosition(xpos, ypos float64)

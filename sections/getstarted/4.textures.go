@@ -34,13 +34,12 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 		0, 1, 3, // First Triangle
 		1, 2, 3, // Second Triangle
 	}
-
-	attr := make(glutils.AttributesMap)
+	attr := glutils.NewAttributesMap()
 	attr.Add(ht.shader.Attributes["position"], 3, 0)
-	attr.Add(ht.shader.Attributes["color"], 3, 3)
+	attr.Add(ht.shader.Attributes["color"], 3, 2)
 	attr.Add(ht.shader.Attributes["texCoord"], 2, 6)
 
-	v := glutils.VertexArray{
+	ht.va = glutils.VertexArray{
 		Data:       vertices,
 		Indices:    indices,
 		Stride:     8,
@@ -48,7 +47,7 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 		DrawMode:   gl.STATIC_DRAW,
 		Attributes: attr,
 	}
-	v.Setup()
+	ht.va.Setup()
 }
 
 func (ht *HelloTextures) InitGL() error {
@@ -87,7 +86,6 @@ func (ht *HelloTextures) InitGL() error {
 func (ht *HelloTextures) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ht.Color32.R, ht.Color32.G, ht.Color32.B, ht.Color32.A)
-
 
 	// Bind Textures using texture units
 	gl.ActiveTexture(gl.TEXTURE0)

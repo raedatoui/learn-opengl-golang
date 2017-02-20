@@ -10,7 +10,7 @@ import (
 
 type ModelLoading struct {
 	sections.BaseSketch
-	shader               *glutils.Shader
+	shader               glutils.Shader
 	model                glutils.Model
 	camera               glutils.Camera
 	deltaTime, lastFrame float64
@@ -30,10 +30,6 @@ func (ml *ModelLoading) InitGL() error {
 	// Setup and compile our shaders
 	ml.shader, _ = glutils.NewShader("_assets/model_loading/shader.vs",
 		"_assets/model_loading/shader.frag", "")
-	ml.shader.AddUniform("projection")
-	ml.shader.AddUniform("view")
-	ml.shader.AddUniform("model")
-
 	// Load models
 	ml.model, _ = glutils.NewModel("_assets/objects/nanosuit/", "nanosuit.obj", false)
 	gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
@@ -63,21 +59,20 @@ func (ml *ModelLoading) Draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.ClearColor(ml.Color32.R, ml.Color32.G, ml.Color32.B, ml.Color32.A)
 
-	gl.UseProgram(ml.shader.Program) //  <-- Don't forget this one!
+	gl.UseProgram(ml.shader.Program)
 
 	// Transformation matrices
 	projection := mgl32.Perspective(float32(ml.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
 
-	gl.UniformMatrix4fv(ml.shader.GetUniform("view"), 1, false, &view[0])
-	gl.UniformMatrix4fv(ml.shader.GetUniform("projection"), 1, false, &projection[0])
+	gl.UniformMatrix4fv(ml.shader.Uniforms["view"], 1, false, &view[0])
+	gl.UniformMatrix4fv(ml.shader.Uniforms["projection"], 1, false, &projection[0])
 
 	// Draw the loaded model
 	model := mgl32.Translate3D(0, -1.75, 0.0)        // Translate it down a bit so it's at the center of the scene
 	model = model.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // It's a bit too big for our scene, so scale it down
 
-	modelLoc := gl.GetUniformLocation(ml.shader, gl.Str("model\x00"))
-	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
+	gl.UniformMatrix4fv(ml.shader.Uniforms["model"], 1, false, &model[0])
 	ml.model.Draw(ml.shader.Program)
 }
 

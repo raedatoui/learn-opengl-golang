@@ -10,23 +10,40 @@ import (
 
 type LightingColors struct {
 	sections.BaseSketch
-	lightingShader, lampShader  uint32
-	vbo, containerVAO, lightVAO uint32
-	lastX                       float64
-	lastY                       float64
-	firstMouse                  bool
-	deltaTime, lastFrame        float64
-	camera                      glutils.Camera
-	lightPos                    mgl32.Vec3
-	w, a, s, d                  bool
-	rotationAxis                mgl32.Vec3
-	translationMat              mgl32.Mat4
-	lightPositionMat            mgl32.Mat4
+	lightingShader, lampShader glutils.Shader
+	containerVa, lightVa       glutils.VertexArray
+	lastX                      float64
+	lastY                      float64
+	firstMouse                 bool
+	deltaTime, lastFrame       float64
+	camera                     glutils.Camera
+	lightPos                   mgl32.Vec3
+	w, a, s, d                 bool
+	rotationAxis               mgl32.Vec3
+	translationMat             mgl32.Mat4
+	lightPositionMat           mgl32.Mat4
+	scaleMat                   mgl32.Mat4
 }
 
-func (lc *LightingColors) InitGL() error {
-	lc.Name = "1. Colors"
+func (lc *LightingColors) GetHeader() string {
+	return "1. Colors"
+}
 
+func (lc *LightingColors) initShaders(v1, f1, v2, f2 string) error {
+	if sh, err := glutils.NewShader(v1, f1, ""); err != nil {
+		return err
+	} else {
+		lc.lightingShader = sh
+	}
+	if sh, err := glutils.NewShader(v2, f2, ""); err != nil {
+		return err
+	} else {
+		lc.lampShader = sh
+	}
+	return nil
+}
+
+func (lc *LightingColors) initCamera() {
 	// Camera
 	lc.camera = glutils.NewCamera(
 		mgl32.Vec3{0.0, 0.0, 3.0},
@@ -45,91 +62,93 @@ func (lc *LightingColors) InitGL() error {
 	lc.lastFrame = 0.0 // Time of last frame
 
 	lc.translationMat = mgl32.Translate3D(0, 0, 0.0)
+	lc.scaleMat = mgl32.Scale3D(0.2, 0.2, 0.2)
 	lc.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
+}
 
-	if sh, err := glutils.Shader(
+func (lc *LightingColors) getVertices() []float32 {
+	return []float32{
+		-0.5, -0.5, -0.5,
+		0.5, -0.5, -0.5,
+		0.5, 0.5, -0.5,
+		0.5, 0.5, -0.5,
+		-0.5, 0.5, -0.5,
+		-0.5, -0.5, -0.5,
+
+		-0.5, -0.5, 0.5,
+		0.5, -0.5, 0.5,
+		0.5, 0.5, 0.5,
+		0.5, 0.5, 0.5,
+		-0.5, 0.5, 0.5,
+		-0.5, -0.5, 0.5,
+
+		-0.5, 0.5, 0.5,
+		-0.5, 0.5, -0.5,
+		-0.5, -0.5, -0.5,
+		-0.5, -0.5, -0.5,
+		-0.5, -0.5, 0.5,
+		-0.5, 0.5, 0.5,
+
+		0.5, 0.5, 0.5,
+		0.5, 0.5, -0.5,
+		0.5, -0.5, -0.5,
+		0.5, -0.5, -0.5,
+		0.5, -0.5, 0.5,
+		0.5, 0.5, 0.5,
+
+		-0.5, -0.5, -0.5,
+		0.5, -0.5, -0.5,
+		0.5, -0.5, 0.5,
+		0.5, -0.5, 0.5,
+		-0.5, -0.5, 0.5,
+		-0.5, -0.5, -0.5,
+
+		-0.5, 0.5, -0.5,
+		0.5, 0.5, -0.5,
+		0.5, 0.5, 0.5,
+		0.5, 0.5, 0.5,
+		-0.5, 0.5, 0.5,
+		-0.5, 0.5, -0.5,
+	}
+}
+
+func (lc *LightingColors) initContainers(vertices []float32) {
+
+	attr := glutils.NewAttributesMap()
+	attr.Add(lc.lightingShader.Attributes["position"], 3, 0)
+	lc.containerVa = glutils.VertexArray{
+		Data:       vertices,
+		Stride:     3,
+		DrawMode:   gl.STATIC_DRAW,
+		Normalized: false,
+		Attributes: attr,
+	}
+	lc.containerVa.Setup()
+
+	attr2 := glutils.NewAttributesMap()
+	attr2.Add(lc.lampShader.Attributes["position"], 3, 0)
+	lc.lightVa = glutils.VertexArray{
+		Vbo:        lc.containerVa.Vbo,
+		Attributes: attr2,
+		DrawMode:   gl.STATIC_DRAW,
+		Normalized: false,
+		Stride:     3,
+	}
+	lc.lightVa.Setup()
+}
+
+func (lc *LightingColors) InitGL() error {
+	lc.initCamera()
+	if err := lc.initShaders(
 		"_assets/lighting/1.colors/colors.vs",
-		"_assets/lighting/1.colors/colors.frag", ""); err != nil {
-		return err
-	} else {
-		lc.lightingShader = sh
-	}
-	if sh, err := glutils.Shader(
+		"_assets/lighting/1.colors/colors.frag",
 		"_assets/lighting/1.colors/lamp.vs",
-		"_assets/lighting/1.colors/lamp.frag", ""); err != nil {
+		"_assets/lighting/1.colors/lamp.frag",
+	); err != nil {
 		return err
-	} else {
-		lc.lampShader = sh
 	}
-
-	vertices := []float32{
-		-0.5, -0.5, -0.5,
-		0.5, -0.5, -0.5,
-		0.5, 0.5, -0.5,
-		0.5, 0.5, -0.5,
-		-0.5, 0.5, -0.5,
-		-0.5, -0.5, -0.5,
-
-		-0.5, -0.5, 0.5,
-		0.5, -0.5, 0.5,
-		0.5, 0.5, 0.5,
-		0.5, 0.5, 0.5,
-		-0.5, 0.5, 0.5,
-		-0.5, -0.5, 0.5,
-
-		-0.5, 0.5, 0.5,
-		-0.5, 0.5, -0.5,
-		-0.5, -0.5, -0.5,
-		-0.5, -0.5, -0.5,
-		-0.5, -0.5, 0.5,
-		-0.5, 0.5, 0.5,
-
-		0.5, 0.5, 0.5,
-		0.5, 0.5, -0.5,
-		0.5, -0.5, -0.5,
-		0.5, -0.5, -0.5,
-		0.5, -0.5, 0.5,
-		0.5, 0.5, 0.5,
-
-		-0.5, -0.5, -0.5,
-		0.5, -0.5, -0.5,
-		0.5, -0.5, 0.5,
-		0.5, -0.5, 0.5,
-		-0.5, -0.5, 0.5,
-		-0.5, -0.5, -0.5,
-
-		-0.5, 0.5, -0.5,
-		0.5, 0.5, -0.5,
-		0.5, 0.5, 0.5,
-		0.5, 0.5, 0.5,
-		-0.5, 0.5, 0.5,
-		-0.5, 0.5, -0.5,
-	}
-
-	// First, set the container's VAO (and VBO)
-	gl.GenVertexArrays(1, &lc.containerVAO)
-	gl.GenBuffers(1, &lc.vbo)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, lc.vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*glutils.GL_FLOAT32_SIZE, gl.Ptr(vertices), gl.STATIC_DRAW)
-
-	gl.BindVertexArray(lc.containerVAO)
-
-	// Position attribute
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-	gl.BindVertexArray(0)
-
-	// Then, we set the light's VAO (VBO stays the same. After all, the vertices are the same for the light object (also a 3D cube))
-	gl.GenVertexArrays(1, &lc.lightVAO)
-	gl.BindVertexArray(lc.lightVAO)
-	// We only need to bind to the VBO (to link it with glVertexAttribPointer), no need to fill it; the VBO's data already contains all we need.
-	gl.BindBuffer(gl.ARRAY_BUFFER, lc.vbo)
-	// Set the vertex attributes (only position data for the lamp))
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 3*glutils.GL_FLOAT32_SIZE, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-	gl.BindVertexArray(0)
-
+	vertices := lc.getVertices()
+	lc.initContainers(vertices)
 	return nil
 }
 
@@ -151,65 +170,71 @@ func (lc *LightingColors) Update() {
 		lc.camera.ProcessKeyboard(glutils.RIGHT, lc.deltaTime)
 	}
 }
-
-func (lc *LightingColors) Draw() {
+func (lc *LightingColors) clear() {
 	// Clear the colorbuffer
 	gl.ClearColor(lc.Color32.R, lc.Color32.G, lc.Color32.B, lc.Color32.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+}
 
-	// Use cooresponding shader when setting uniforms/drawing objects
-	gl.UseProgram(lc.lightingShader)
-	objectColorLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("objectColor\x00"))
-	lightColorLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("lightColor\x00"))
-	gl.Uniform3f(objectColorLoc, 1.0, 0.5, 0.31)
-	gl.Uniform3f(lightColorLoc, 1.0, 0.5, 1.0)
+func (lc *LightingColors) setLightingUniforms() {
+	// Use corresponding shader when setting uniforms/drawing objects
+	gl.Uniform3f(lc.lightingShader.Uniforms["objectColor"], 1.0, 0.5, 0.31)
+	gl.Uniform3f(lc.lightingShader.Uniforms["lightColor"], 1.0, 0.5, 1.0)
+}
 
+func (lc *LightingColors) getCameraTransforms() (mgl32.Mat4, mgl32.Mat4) {
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
 	projection := mgl32.Perspective(float32(lc.camera.Zoom), sections.RATIO, 0.1, 100.0)
+	return view, projection
+}
 
-	// Get the uniform locations
-	modelLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("model\x00"))
-	viewLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("view\x00"))
-	projLoc := gl.GetUniformLocation(lc.lightingShader, gl.Str("projection\x00"))
+func (lc *LightingColors) transformShader(shader glutils.Shader, view, projection mgl32.Mat4) {
 	// Pass the matrices to the shader
-	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
-	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
-
+	gl.UniformMatrix4fv(shader.Uniforms["view"], 1, false, &view[0])
+	gl.UniformMatrix4fv(shader.Uniforms["projection"], 1, false, &projection[0])
+}
+func (lc *LightingColors) drawContainer() {
 	// Draw the container (using container's vertex attributes)
-	gl.BindVertexArray(lc.containerVAO)
 	angle := float32(glfw.GetTime())
 	model := lc.translationMat.Mul4(mgl32.HomogRotate3D(angle, lc.rotationAxis))
-	gl.UniformMatrix4fv(modelLoc, 1, false, &model[0])
+	gl.UniformMatrix4fv(lc.lightingShader.Uniforms["model"], 1, false, &model[0])
+
+	gl.BindVertexArray(lc.containerVa.Vao)
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
+}
+func (lc *LightingColors) drawLamp() {
+	//model2 = model2.Mul4(mgl32.Translate3D(lc.lightPos[0], lc.lightPos[1], lc.lightPos[2]))
+	model := lc.lightPositionMat.Mul4(lc.scaleMat) // Make it a smaller cube
+	gl.UniformMatrix4fv(lc.lampShader.Uniforms["model"], 1, false, &model[0])
+	// Draw the light object (using light's vertex attributes)
+	gl.BindVertexArray(lc.lightVa.Vao)
+	gl.DrawArrays(gl.TRIANGLES, 0, 36)
+	gl.BindVertexArray(0)
+}
+
+func (lc *LightingColors) Draw() {
+	lc.clear()
+	gl.UseProgram(lc.lightingShader.Program)
+	lc.setLightingUniforms()
+	v, p := lc.getCameraTransforms()
+	lc.transformShader(lc.lightingShader, v, p)
+	lc.drawContainer()
 
 	// Also draw the lamp object, again binding the appropriate shader
-	gl.UseProgram(lc.lampShader)
-	// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-	modelLoc = gl.GetUniformLocation(lc.lampShader, gl.Str("model\x00"))
-	viewLoc = gl.GetUniformLocation(lc.lampShader, gl.Str("view\x00"))
-	projLoc = gl.GetUniformLocation(lc.lampShader, gl.Str("projection\x00"))
+	gl.UseProgram(lc.lampShader.Program)
 	// Set matrices
-	gl.UniformMatrix4fv(viewLoc, 1, false, &view[0])
-	gl.UniformMatrix4fv(projLoc, 1, false, &projection[0])
+	lc.transformShader(lc.lampShader, v, p)
 
-	//model2 = model2.Mul4(mgl32.Translate3D(lc.lightPos[0], lc.lightPos[1], lc.lightPos[2]))
-	model2 := lc.lightPositionMat.Mul4(mgl32.Scale3D(0.2, 0.2, 0.2)) // Make it a smaller cube
-	gl.UniformMatrix4fv(modelLoc, 1, false, &model2[0])
-	// Draw the light object (using light's vertex attributes)
-	gl.BindVertexArray(lc.lightVAO)
-	gl.DrawArrays(gl.TRIANGLES, 0, 36)
-	gl.BindVertexArray(0)
-
+	lc.drawLamp()
 }
 
 func (lc *LightingColors) Close() {
-	gl.DeleteVertexArrays(1, &lc.lightVAO)
-	gl.DeleteVertexArrays(1, &lc.containerVAO)
-	gl.DeleteBuffers(1, &lc.vbo)
-	gl.DeleteProgram(lc.lightingShader)
-	gl.DeleteProgram(lc.lampShader)
+	lc.lampShader.Delete()
+	lc.lightingShader.Delete()
+	lc.lightVa.Delete()
+	lc.containerVa.Delete()
 }
 
 func (lc *LightingColors) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw.ModifierKey, keys map[glfw.Key]bool) {

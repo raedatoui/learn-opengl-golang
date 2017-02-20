@@ -169,3 +169,24 @@ func (hs *ShaderEx4) InitGL() error {
 
 	return nil
 }
+
+func (hs *ShaderEx4) createBuffers() {
+	var vertices = []float32{
+		// Positions      // Colors
+		0.5, -0.5, 0.0, 1.0, 0.0, 0.0, // Bottom Right
+		-0.5, -0.5, 0.0, 0.0, 1.0, 0.0, // Bottom Left
+		0.0, 0.5, 0.0, 0.0, 0.0, 1.0, // Top
+	}
+	attr := glutils.NewAttributesMap()
+	attr.Add(hs.shader.Attributes["position"], 3, 0)
+
+	hs.va = glutils.VertexArray{
+		Data:       vertices,
+		Stride:     6,
+		Normalized: false,
+		DrawMode:   gl.STATIC_DRAW,
+		Attributes: attr,
+	}
+
+	hs.va.Setup()
+}

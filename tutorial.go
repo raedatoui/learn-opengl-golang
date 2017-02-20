@@ -14,6 +14,8 @@ import (
 	"github.com/raedatoui/glutils"
 	"github.com/raedatoui/learn-opengl-golang/sections"
 	"github.com/raedatoui/learn-opengl-golang/sections/getstarted"
+	"github.com/raedatoui/learn-opengl-golang/sections/lighting"
+	"github.com/raedatoui/learn-opengl-golang/sections/modelloading"
 )
 
 var (
@@ -187,21 +189,21 @@ func setupSlides() []sections.Slide {
 		new(getstarted.TexturesEx4),
 
 		new(getstarted.HelloTransformations),
-		//new(getstarted.HelloCoordinates),
-		//new(getstarted.HelloCamera),
-		//
-		//new(sections.TitleSlide),
-		//new(lighting.LightingColors),
-		//new(lighting.BasicSpecular),
-		//new(lighting.Materials),
-		//
-		//new(sections.TitleSlide),
-		//new(modelloading.ModelLoading),
-		//
-		//new(sections.TitleSlide),
-		//new(sections.TitleSlide),
-		//new(sections.TitleSlide),
-		//new(sections.TitleSlide),
+		new(getstarted.HelloCoordinates),
+		new(getstarted.HelloCamera),
+
+		new(sections.TitleSlide),
+		new(lighting.LightingColors),
+		new(lighting.BasicSpecular),
+		new(lighting.Materials),
+
+		new(sections.TitleSlide),
+		new(modelloading.ModelLoading),
+
+		new(sections.TitleSlide),
+		new(sections.TitleSlide),
+		new(sections.TitleSlide),
+		new(sections.TitleSlide),
 	}
 }
 

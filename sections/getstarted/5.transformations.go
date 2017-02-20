@@ -39,9 +39,9 @@ func (ht *HelloTransformations) InitGL() error {
 		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
 	}
 
-	attr := make(glutils.AttributesMap)
-	attr[ht.shader.Attributes["position"]] = [2]int{3, 0}
-	attr[ht.shader.Attributes["texCoord"]] = [2]int{2, 6}
+	attr := glutils.NewAttributesMap()
+	attr.Add(ht.shader.Attributes["position"], 3, 0)
+	attr.Add(ht.shader.Attributes["texCoord"], 2, 6)
 
 	indices := []uint32{ // Note that we start from 0!
 		0, 1, 3, // First Triangle
