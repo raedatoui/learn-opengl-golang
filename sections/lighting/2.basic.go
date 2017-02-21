@@ -58,7 +58,6 @@ func (lc *BasicSpecular) getVertices() []float32 {
 		-0.5, 0.5, -0.5, 0.0, 1.0, 0.0,
 	}
 }
-
 func (bc *BasicSpecular) initContainers(vertices []float32) {
 
 	attr := glutils.NewAttributesMap()
@@ -85,6 +84,12 @@ func (bc *BasicSpecular) initContainers(vertices []float32) {
 	bc.lightVa.Setup()
 }
 
+func (bc *BasicSpecular) setLightingUniforms() {
+	gl.Uniform3f(bc.lightingShader.Uniforms["objectColor"], 1.0, 0.5, 0.31)
+	gl.Uniform3f(bc.lightingShader.Uniforms["lightColor"], 1.0, 0.5, 1.0)
+	gl.Uniform3f(bc.lightingShader.Uniforms["lightPos"], bc.lightPos[0], bc.lightPos[1], bc.lightPos[2])
+	gl.Uniform3f(bc.lightingShader.Uniforms["viewPos"], bc.camera.Position[0], bc.camera.Position[1], bc.camera.Position[2])
+}
 func (bc *BasicSpecular) InitGL() error {
 	bc.initCamera()
 	if err := bc.initShaders(
@@ -97,12 +102,6 @@ func (bc *BasicSpecular) InitGL() error {
 	}
 	bc.initContainers(bc.getVertices())
 	return nil
-}
-func (bc *BasicSpecular) setLightingUniforms() {
-	gl.Uniform3f(bc.lightingShader.Uniforms["objectColor"], 1.0, 0.5, 0.31)
-	gl.Uniform3f(bc.lightingShader.Uniforms["lightColor"], 1.0, 0.5, 1.0)
-	gl.Uniform3f(bc.lightingShader.Uniforms["lightPos"], bc.lightPos[0], bc.lightPos[1], bc.lightPos[2])
-	gl.Uniform3f(bc.lightingShader.Uniforms["viewPos"], bc.camera.Position[0], bc.camera.Position[1], bc.camera.Position[2])
 }
 
 func (bc *BasicSpecular) Draw() {

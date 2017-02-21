@@ -42,7 +42,6 @@ func (lc *LightingColors) initShaders(v1, f1, v2, f2 string) error {
 	}
 	return nil
 }
-
 func (lc *LightingColors) initCamera() {
 	// Camera
 	lc.camera = glutils.NewCamera(
@@ -65,7 +64,6 @@ func (lc *LightingColors) initCamera() {
 	lc.scaleMat = mgl32.Scale3D(0.2, 0.2, 0.2)
 	lc.rotationAxis = mgl32.Vec3{1.0, 0.3, 0.5}.Normalize()
 }
-
 func (lc *LightingColors) getVertices() []float32 {
 	return []float32{
 		-0.5, -0.5, -0.5,
@@ -111,7 +109,6 @@ func (lc *LightingColors) getVertices() []float32 {
 		-0.5, 0.5, -0.5,
 	}
 }
-
 func (lc *LightingColors) initContainers(vertices []float32) {
 
 	attr := glutils.NewAttributesMap()
@@ -136,7 +133,6 @@ func (lc *LightingColors) initContainers(vertices []float32) {
 	}
 	lc.lightVa.Setup()
 }
-
 func (lc *LightingColors) InitGL() error {
 	lc.initCamera()
 	if err := lc.initShaders(
@@ -170,25 +166,23 @@ func (lc *LightingColors) Update() {
 		lc.camera.ProcessKeyboard(glutils.RIGHT, lc.deltaTime)
 	}
 }
+
 func (lc *LightingColors) clear() {
 	// Clear the colorbuffer
 	gl.ClearColor(lc.Color32.R, lc.Color32.G, lc.Color32.B, lc.Color32.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 }
-
 func (lc *LightingColors) setLightingUniforms() {
 	// Use corresponding shader when setting uniforms/drawing objects
 	gl.Uniform3f(lc.lightingShader.Uniforms["objectColor"], 1.0, 0.5, 0.31)
 	gl.Uniform3f(lc.lightingShader.Uniforms["lightColor"], 1.0, 0.5, 1.0)
 }
-
 func (lc *LightingColors) getCameraTransforms() (mgl32.Mat4, mgl32.Mat4) {
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
 	projection := mgl32.Perspective(float32(lc.camera.Zoom), sections.RATIO, 0.1, 100.0)
 	return view, projection
 }
-
 func (lc *LightingColors) transformShader(shader glutils.Shader, view, projection mgl32.Mat4) {
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(shader.Uniforms["view"], 1, false, &view[0])
@@ -213,7 +207,6 @@ func (lc *LightingColors) drawLamp() {
 	gl.DrawArrays(gl.TRIANGLES, 0, 36)
 	gl.BindVertexArray(0)
 }
-
 func (lc *LightingColors) Draw() {
 	lc.clear()
 	gl.UseProgram(lc.lightingShader.Program)

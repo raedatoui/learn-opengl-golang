@@ -18,7 +18,6 @@ func (ht *HelloTextures) getShaders() []string {
 	return []string{"_assets/getting_started/4.textures/texture.vs",
 		"_assets/getting_started/4.textures/texture.frag"}
 }
-
 func (ht *HelloTextures) getVertices() []float32 {
 	return []float32{
 		// Positions      // Colors       // Texture Coords
@@ -28,7 +27,6 @@ func (ht *HelloTextures) getVertices() []float32 {
 		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, // Top Left
 	}
 }
-
 func (ht *HelloTextures) createBuffers(vertices []float32) {
 	indices := []uint32{ // Note that we start from 0!
 		0, 1, 3, // First Triangle
@@ -49,7 +47,6 @@ func (ht *HelloTextures) createBuffers(vertices []float32) {
 	}
 	ht.va.Setup()
 }
-
 func (ht *HelloTextures) InitGL() error {
 	ht.Name = "4. Textures"
 
@@ -118,7 +115,6 @@ func (ht *TexturesEx1) getShaders() []string {
 	return []string{"_assets/getting_started/4.textures/texture.vs",
 		"_assets/getting_started/4.textures/textureex1.frag"}
 }
-
 func (ht *TexturesEx1) InitGL() error {
 	ht.Name = "4a. Textures Ex1"
 
@@ -169,7 +165,6 @@ func (ht *TexturesEx2) getVertices() []float32 {
 		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 2.0, // Top Left
 	}
 }
-
 func (ht *TexturesEx2) InitGL() error {
 	ht.Name = "4b. Textures Ex2"
 
@@ -220,7 +215,6 @@ func (ht *TexturesEx3) getVertices() []float32 {
 		-0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.45, 0.55, // Top Left
 	}
 }
-
 func (ht *TexturesEx3) InitGL() error {
 	ht.Name = "4c. Textures Ex3"
 
@@ -263,7 +257,6 @@ func (ht *TexturesEx4) getShaders() []string {
 	return []string{"_assets/getting_started/4.textures/texture.vs",
 		"_assets/getting_started/4.textures/textureex4.frag"}
 }
-
 func (ht *TexturesEx4) InitGL() error {
 	ht.Name = "4d. Textures Ex4"
 

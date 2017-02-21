@@ -106,7 +106,6 @@ func (hc *HelloCoordinates) createBuffers() error {
 	}
 	return nil
 }
-
 func (hc *HelloCoordinates) createTextures() error {
 	// Texture 1
 	if tex, err := glutils.NewTexture(gl.REPEAT, gl.REPEAT, gl.LINEAR, gl.LINEAR, "_assets/images/container.png"); err != nil {
@@ -123,7 +122,6 @@ func (hc *HelloCoordinates) createTextures() error {
 	}
 	return nil
 }
-
 func (hc *HelloCoordinates) InitGL() error {
 	if err := hc.createShader(); err != nil {
 		return err
@@ -161,7 +159,6 @@ func (hc *HelloCoordinates) setTransformations() {
 	// but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
 	gl.UniformMatrix4fv(hc.shader.Uniforms["projection"], 1, false, &projection[0])
 }
-
 func (hc *HelloCoordinates) renderVertexArray() {
 	// Draw container
 	gl.BindVertexArray(hc.va.Vao)

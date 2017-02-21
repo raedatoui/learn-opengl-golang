@@ -16,20 +16,6 @@ func (m *Materials) GetHeader() string {
 	return "2. Basic Specular Lighting"
 }
 
-func (m *Materials) InitGL() error {
-	m.initCamera()
-	if err := m.initShaders(
-		"_assets/lighting/3.materials/materials.vs",
-		"_assets/lighting/3.materials/materials.frag",
-		"_assets/lighting/3.materials/lamp.vs",
-		"_assets/lighting/3.materials/lamp.frag",
-	); err != nil {
-		return err
-	}
-	m.initContainers(m.getVertices())
-	return nil
-}
-
 func (m *Materials) setLightingUniforms() {
 	gl.Uniform3f(m.lightingShader.Uniforms["light.position"], m.lightPos.X(), m.lightPos.Y(), m.lightPos.Z())
 	gl.Uniform3f(m.lightingShader.Uniforms["viewPos"], m.camera.Position.X(), m.camera.Position.Y(), m.camera.Position.Z())
@@ -62,6 +48,19 @@ func (m *Materials) setLightingUniforms() {
 	gl.Uniform3f(m.lightingShader.Uniforms["material.diffuse"], 1.0, 0.5, 0.31)
 	gl.Uniform3f(m.lightingShader.Uniforms["material.specular"], 0.5, 0.5, 0.5) // Specular doesn't have full effect on this object's material
 	gl.Uniform1f(m.lightingShader.Uniforms["material.shininess"], 32.0)
+}
+func (m *Materials) InitGL() error {
+	m.initCamera()
+	if err := m.initShaders(
+		"_assets/lighting/3.materials/materials.vs",
+		"_assets/lighting/3.materials/materials.frag",
+		"_assets/lighting/3.materials/lamp.vs",
+		"_assets/lighting/3.materials/lamp.frag",
+	); err != nil {
+		return err
+	}
+	m.initContainers(m.getVertices())
+	return nil
 }
 
 func (m *Materials) Draw() {
