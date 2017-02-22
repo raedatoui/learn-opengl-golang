@@ -27,8 +27,8 @@ func (hc *HelloCamera) InitGL() error {
 		mgl32.Vec3{0.0, 1.0, 3.0},
 		glutils.YAW, glutils.PITCH,
 	)
-	hc.lastX = sections.WIDTH
-	hc.lastY = sections.HEIGHT
+	hc.lastX = sections.WIDTH / 2
+	hc.lastY = sections.HEIGHT / 2
 	hc.firstMouse = true
 
 	if err := hc.createShader(); err != nil {
@@ -66,7 +66,7 @@ func (hc *HelloCamera) Update() {
 func (hc *HelloCamera) setTransformations() {
 	// Create transformations
 	view := hc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(hc.camera.Zoom), sections.RATIO, 0.1, 1000.0)
+	projection := mgl32.Perspective(float32(hc.camera.Zoom), sections.Ratio, 0.1, 1000.0)
 
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(hc.shader.Uniforms["view"], 1, false, &view[0])

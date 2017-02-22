@@ -180,7 +180,7 @@ func (lc *LightingColors) setLightingUniforms() {
 func (lc *LightingColors) getCameraTransforms() (mgl32.Mat4, mgl32.Mat4) {
 	// Create camera transformations
 	view := lc.camera.GetViewMatrix()
-	projection := mgl32.Perspective(float32(lc.camera.Zoom), sections.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(lc.camera.Zoom), sections.Ratio, 0.1, 100.0)
 	return view, projection
 }
 func (lc *LightingColors) transformShader(shader glutils.Shader, view, projection mgl32.Mat4) {

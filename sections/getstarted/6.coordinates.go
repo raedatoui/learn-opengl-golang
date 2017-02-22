@@ -152,7 +152,7 @@ func (hc *HelloCoordinates) setTextures() {
 func (hc *HelloCoordinates) setTransformations() {
 	// Create transformations
 	view := mgl32.Translate3D(0.0, 0.0, -3.0)
-	projection := mgl32.Perspective(45.0, sections.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(45.0, sections.Ratio, 0.1, 100.0)
 	// Pass the matrices to the shader
 	gl.UniformMatrix4fv(hc.shader.Uniforms["view"], 1, false, &view[0])
 	// Note: currently we set the projection matrix each frame,

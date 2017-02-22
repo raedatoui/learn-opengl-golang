@@ -123,6 +123,10 @@ func scrollCallback(w *glfw.Window, xoff float64, yoff float64) {
 }
 
 func resizeCallback(w *glfw.Window, width int, height int) {
+	sections.WIDTH = float64(width)
+	sections.HEIGHT = float64(height)
+	sections.Ratio = float32(sections.WIDTH / sections.HEIGHT)
+	font.Resize(sections.WIDTH, sections.HEIGHT)
 	gl.Viewport(0, 0, int32(width), int32(height))
 	currentSlide.Update()
 	currentSlide.Draw()
@@ -135,7 +139,7 @@ func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, gl.TRUE)
 
-	window, err := glfw.CreateWindow(sections.WIDTH, sections.HEIGHT, "learnopengl.com in Golang", nil, nil)
+	window, err := glfw.CreateWindow(int(sections.WIDTH), int(sections.HEIGHT), "learnopengl.com in Golang", nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -306,9 +310,9 @@ func main() {
 			}
 		}
 
-		font.Printf(30, sections.HEIGHT-20, 0.2, currentSlide.GetColorHex())
+		font.Printf(30, float32(sections.HEIGHT)-20, 0.2, currentSlide.GetColorHex())
 		fps := "FPS: " + strconv.FormatFloat(glutils.CalcFPS(1.0), 'f', 2, 64)
-		font.Printf(sections.WIDTH-80, sections.HEIGHT-20, 0.25, fps)
+		font.Printf(float32(sections.WIDTH)-80, float32(sections.HEIGHT)-20, 0.25, fps)
 
 		window.SwapBuffers()
 		// Poll Events

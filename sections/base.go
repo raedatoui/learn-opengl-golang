@@ -8,12 +8,12 @@ import (
 )
 
 // WIDTH is the width of the window
-const WIDTH = 1280
+var WIDTH = 1280.0
 
 // HEIGHT is the height of the window
-const HEIGHT = 1024
+var HEIGHT = 1024.0
 
-const RATIO = 1280.0 / 1024.0
+var Ratio = float32(WIDTH / HEIGHT)
 
 // Slide is the most basic slide. it has to setup, update, draw and close
 type Slide interface {

@@ -62,7 +62,7 @@ func (ml *ModelLoading) Draw() {
 	gl.UseProgram(ml.shader.Program)
 
 	// Transformation matrices
-	projection := mgl32.Perspective(float32(ml.camera.Zoom), sections.RATIO, 0.1, 100.0)
+	projection := mgl32.Perspective(float32(ml.camera.Zoom), sections.Ratio, 0.1, 100.0)
 	view := ml.camera.GetViewMatrix()
 
 	gl.UniformMatrix4fv(ml.shader.Uniforms["view"], 1, false, &view[0])
