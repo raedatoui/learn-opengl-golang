@@ -128,8 +128,6 @@ func resizeCallback(w *glfw.Window, width int, height int) {
 	sections.Ratio = float32(sections.WIDTH / sections.HEIGHT)
 	font.Resize(sections.WIDTH, sections.HEIGHT)
 	gl.Viewport(0, 0, int32(width), int32(height))
-	currentSlide.Update()
-	currentSlide.Draw()
 }
 
 func setup() (*glfw.Window, error) {
@@ -193,6 +191,9 @@ func setupSlides() []sections.Slide {
 		new(getstarted.TexturesEx4),
 
 		new(getstarted.HelloTransformations),
+		new(getstarted.TransformationEx1),
+		new(getstarted.TransformationEx2),
+
 		new(getstarted.HelloCoordinates),
 		new(getstarted.HelloCamera),
 
