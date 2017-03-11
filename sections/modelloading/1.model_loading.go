@@ -6,6 +6,8 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/raedatoui/glutils"
 	"github.com/raedatoui/learn-opengl-golang/sections"
+	"path"
+	"fmt"
 )
 
 type ModelLoading struct {
@@ -101,6 +103,15 @@ func (ml *ModelLoading) HandleKeyboard(k glfw.Key, s int, a glfw.Action, mk glfw
 
 func (ml *ModelLoading) HandleScroll(xoff, yoff float64) {
 	ml.camera.ProcessMouseScroll(yoff)
+}
+
+func (ml *ModelLoading) HandleFiles(names []string) {
+	f := path.Base(names[0])
+	dir := path.Dir(names[0]) + "/"
+	fmt.Println(f, dir)
+	ml.model.Dispose()
+	ml.model, _ = glutils.NewModel(dir, f, false)
+	//gl.PolygonMode(gl.FRONT_AND_BACK, gl.LINE)
 }
 
 func (ml *ModelLoading) Close() {

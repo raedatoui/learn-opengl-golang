@@ -130,6 +130,12 @@ func resizeCallback(w *glfw.Window, width int, height int) {
 	gl.Viewport(0, 0, int32(width), int32(height))
 }
 
+func fileDropCallback(w *glfw.Window, names []string) {
+	if currentSlide != nil {
+		currentSlide.HandleFiles(names)
+	}
+}
+
 func setup() (*glfw.Window, error) {
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.ContextVersionMajor, 4)
@@ -156,6 +162,8 @@ func setup() (*glfw.Window, error) {
 	window.SetCursorPosCallback(mouseCallback)
 	window.SetScrollCallback(scrollCallback)
 
+	// File Drag n Drop
+	window.SetDropCallback(fileDropCallback)
 	version := gl.GoStr(gl.GetString(gl.VERSION))
 	glsl := gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION))
 	fmt.Println("OpenGL version", version, glsl)

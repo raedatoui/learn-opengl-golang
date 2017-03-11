@@ -30,6 +30,7 @@ type Slide interface {
 	HandleKeyboard(k glfw.Key, s int, a glfw.Action, m glfw.ModifierKey, keys map[glfw.Key]bool)
 	HandleMousePosition(xpos, ypos float64)
 	HandleScroll(xoff, yoff float64)
+	HandleFiles(names []string)
 	DrawText() bool
 }
 
@@ -83,6 +84,10 @@ func (s *BaseSlide) HandleMousePosition(xpos, ypos float64) {
 }
 
 func (s *BaseSlide) HandleScroll(xoff, yoff float64) {
+
+}
+
+func (s *BaseSlide) HandleFiles(names []string) {
 
 }
 
