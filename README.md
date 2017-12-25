@@ -13,7 +13,7 @@ The nice thing about go-gl is that you can install multiple profiles and write d
 #### go-gl packages
 
 1- **[gl](https://github.com/go-gl/gl)** - OpenGL core  profile v4.1
-`go get -u github.com/go-gl/v4.1-core/gl`
+`go get -u github.com/go-gl/gl/v4.1-core/gl`
 
 2- [**Glow**](https://github.com/go-gl/glow) - Go binding generator for OpenGL 
 
