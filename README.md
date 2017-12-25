@@ -23,7 +23,8 @@ cd $GOPATH/src/github.com/go-gl/glow
 go build
 ./glow download
 ./glow generate -api=gl -version=4.1 -profile=core -remext=GL_ARB_cl_event
-go install ./gl-core/4.1/gl
+# the profile is now installed in a gl directory
+go install ./gl
 ```
 
 3- [**GLFW 3.2**](https://github.com/go-gl/glfw) - Go bindings for GLFW 3
