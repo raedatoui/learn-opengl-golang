@@ -17,7 +17,7 @@ The nice thing about go-gl is that you can install multiple profiles and write d
 
 2- [**Glow**](https://github.com/go-gl/glow) - Go binding generator for OpenGL 
 
-```bash
+```shell
 go get github.com/go-gl/glow
 cd $GOPATH/src/github.com/go-gl/glow
 go build
@@ -31,7 +31,7 @@ go install ./gl
 `go get -u github.com/go-gl/glfw/v3.2/glfw`
 
 4- [**MathGL**](https://github.com/go-gl/mathgl) - A pure Go 3D math library
-`go get github.com/go-gl/mathgl`
+`go get github.com/go-gl/mathgl/...`
 
 This package is the equivalent of the GLM library and probably has all the functionality but after some differences.
 I didnt dive too deep into it, but I am getting different matrices when running the same sample in C++ with glm vs Go with mgl32.
@@ -39,9 +39,11 @@ I didnt dive too deep into it, but I am getting different matrices when running 
 
 To test that the installation is working, try the examples from go-gl.
 
-`go get github.com/go-gl/examples` 
-
-Run the `gl41core-cube` example by executing `go run cube.go`
+```shell
+go get github.com/go-gl/example
+cd $GOPATH/src/github.com/go-gl/example
+go run gl41core-cube/cube.go
+```
 
 #### learnopengl.com tutorial
 
