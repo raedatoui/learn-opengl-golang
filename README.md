@@ -47,15 +47,19 @@ go run gl41core-cube/cube.go
 
 #### learnopengl.com tutorial
 
-1- [**glutils**](https://github.com/raedatoui/glutils)
+1- [**assimp**](https://github.com/raedatoui/assimp) - Go wrapper of [Assimp](http://www.assimp.org/)
+
+First, install Assimp on macOS using homebrew `brew install assimp` 
+
+Then install wrapper, `go get github.com/raedatoui/assimp`
+
+2- [**glutils**](https://github.com/raedatoui/glutils)
 
 Some of the utllities developed throughout the tutorials like shader compilation and linking, camera, loading textures, loading models from assimp, other redundant GL commands,etc were packaged together. Initially, these lived within the tutorial repo as the `utils` package and we later moved to a dedicated [repo](https://github.com/raedatoui/glutils) in the hope of being useful for other projects.
 
 `go get github.com/raedatoui/glutils` 
 
-I had to fork 2 libraries and update them to get everything working.
-
-2- [**glfont**](https://github.com/raedatoui/glfont) - A modern opengl text rendering library for golang
+3- [**glfont**](https://github.com/raedatoui/glfont) - A modern opengl text rendering library for golang
 
 `go get github.com/raedatoui/glfont`
 
@@ -63,17 +67,14 @@ I made minor changes to this package where I use the shader functions from the `
 
 Text rendering sucks and is not intended to look good, but good enough and easy to use for the sake of this tutorial.
 
-3- [**assimp**](https://github.com/raedatoui/assimp) - Go wrapper of [Assimp](http://www.assimp.org/)
-
-First, install Assimp on macOS using homebrew `brew install assimp` 
-
-Then install wrapper, `go get github.com/raedatoui/assimp`
-
-I fixed some minor bugs and changed the cgo directives for linking assimp. Intead of using `LDFLAGS` and other windows specific flags, I used the `pkg-config` flag.
-
 ### Run
 
-`go run tutorial.go` and you should see this screen
+```shell
+go get github.com/raedatoui/learn-opengl-golang
+cd $GOPATH/src/github.com/raedatoui/learn-opengl-golang
+go run tutorial.go
+```
+and you should see this screen
 
 Use the right and left arrow keys to navigate through the tutorials.
 
